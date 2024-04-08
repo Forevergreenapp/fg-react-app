@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-          <div style={{ textAlign: 'center', marginTop: '20vh' }}>
+          <div style={{ textAlign: 'center', marginTop: '5vh' }}>
           <h1>Forevergreen React App</h1>
           <p>Welcome to the Forevergreen React App landing page.</p>
           <button
