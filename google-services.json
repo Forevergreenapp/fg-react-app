@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "489135632905",
+    "project_id": "fg-react-app",
+    "storage_bucket": "fg-react-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:489135632905:android:68e47bce5e6c23c52a3ed8",
+        "android_client_info": {
+          "package_name": "com.fgdevteam.fgreactapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqQfbJd8di0tScVblh2VEbBFUioYYB4Xc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
