@@ -12,12 +12,12 @@ export default function App() {
         </Text>
         <Image
           className="w-[48rem] h-96"
-          source={require("../assets/images/tree-logo.png")}
+          source={require("../../assets/images/tree-logo.png")}
         />
       </View>
       <View className="w-full mb-8">
         <Link
-          href="/(auth)/register"
+          href="/register"
           asChild
           className="bg-primary rounded-full p-6 hover:bg-primary/90 px-12"
         >
@@ -27,7 +27,7 @@ export default function App() {
         </Link>
         <Text className="mt-4 text-xl text-center font-extrabold">
           Already helping our planet?{" "}
-          <Link href="/(tabs)/home" className="mr-8">
+          <Link href="../(tabs)/home" className="mr-8">
             <Text className="font-extrabold underline">Log in</Text>
           </Link>
         </Text>
