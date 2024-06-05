@@ -21,7 +21,7 @@ export default function App() {
       <View className="items-center">
         <Image
           className="w-80 h-40"
-          source={require("../assets/images/tree-logo.png")}
+          source={require("../../assets/images/tree-logo.png")}
         />
       </View>
       <View className="space-y-4 px-12">

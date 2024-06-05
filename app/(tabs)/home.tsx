@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, useWindowDimensions, ScrollView } from 'react-native'
 import { LineChart } from 'react-native-chart-kit';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Link } from 'expo-router';
 
 const TextButton = ({ label, style }: { label: string; style: string }) => (
   <View className={`flex items-center justify-center w-7 h-7 m-1 rounded-full ${style}`}>
@@ -10,21 +9,11 @@ const TextButton = ({ label, style }: { label: string; style: string }) => (
   </View>
 );
 
-// Define the type for the stack navigator
-type RootStackParamList = {
-  home: undefined;
-  referral: undefined;
-};
-
-// Create a type for the navigation prop
-type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'home'>;
-
 // Demo home screen component
 // I will add functionality as it becomes available
 
 const HomeScreen = () => {
   const { width } = useWindowDimensions();
-  const navigation = useNavigation<HomeScreenNavigationProp>();
 
   return (
     <ScrollView className="flex-1 bg-white">
@@ -135,7 +124,7 @@ const HomeScreen = () => {
           </View>
         </View>
 
-        {/* Forevergreen Community Leaders */}
+        {/* Forevergreen Community Leaders/Referral */}
         <View className="mb-6">
           <Text className="text-2xl mb-4 text-center font-bold">Community Leaders</Text>
           <View className="flex flex-row justify-between bg-[#eeeeee] p-6 items-center rounded-2xl">
@@ -150,9 +139,11 @@ const HomeScreen = () => {
                 <Text className="font-bold">3.</Text> zyardley - 8 Referrals
               </Text>
             </View>
-            <TouchableOpacity style={{ backgroundColor: '#409858', marginLeft:5 ,borderRadius: 9999, alignItems: 'center', justifyContent: 'center', height: 40, width: 150 }} onPress={() => navigation.navigate('referral')}> 
+            <Link href="/(misc)/referral" asChild>
+            <TouchableOpacity style={{ backgroundColor: '#409858', marginLeft:5 ,borderRadius: 9999, alignItems: 'center', justifyContent: 'center', height: 40, width: 150 }}> 
               <Text style={{ color: 'white', textAlign: 'center', fontSize: 20, fontWeight: 'bold', }}> Refer a friend! </Text>
             </TouchableOpacity>
+            </Link>
           </View>
         </View>
 
