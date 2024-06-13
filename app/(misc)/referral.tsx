@@ -35,13 +35,13 @@ const ReferralForm = () => {
 
   return (
     <KeyboardAvoidingView behavior='padding' style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex-1 bg-white p-4">
+      <ScrollView className="flex-1 bg-white">
+        <View className="p-6">
           <View className="absolute w-[300px] h-[300px] bg-[#409858] rounded-full top-[200px] left-[200px]" />
           <View className="absolute w-[200px] h-[200px] bg-[#409858] rounded-full bottom-[100px] right-[300px]" />
 
           <View className="flex items-center mt-8">
-            <Text className="text-5xl font-bold my-2">
+            <Text className="text-5xl font-bold">
               Forever<Text className="text-[#409858]">green</Text>
             </Text>
             <Text className="text-3xl font-bold">Refer a Friend</Text>
