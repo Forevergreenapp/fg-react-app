@@ -1,122 +1,223 @@
-import { useState } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { TextInput } from "react-native-paper";
-import { useTheme } from "react-native-paper";
-import Icon from "react-native-vector-icons/FontAwesome";
-import { Link } from "expo-router";
+import React, { useState } from 'react';
+import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { TextInput, useTheme } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import ErrorBoundary from '../../components/ErrorBoundary'; // Make sure this path is correct
 
-export default function App() {
+export default function Register() {
   const theme = useTheme();
 
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleCreateAccount = () => {
+    // Handle create account logic
+  };
+
+  const handleContinueWithGoogle = () => {
+    // Handle continue with Google logic
+  };
 
   return (
-    <SafeAreaView className="flex-1 justify-center px-4 bg-background">
-      <Text className="text-5xl font-bold text-center tracking-tighter my-10">
-        Sign <Text className="text-primary">Up</Text>
-      </Text>
-      <View className="items-center">
-        <Image
-          className="w-80 h-40"
-          source={require("../../assets/images/tree-logo.png")}
-        />
-      </View>
-      <View className="space-y-4 px-12">
-        <View className="relative">
-          <Text className="mb-2">Email</Text>
-          <TextInput
-            placeholder="Ex. abc@example.com"
-            className="w-full pl-16"
-            value={email}
-            onChangeText={setEmail}
-            mode="outlined"
-            dense={true}
-            outlineStyle={{ borderColor: theme.colors.onBackground }}
-            theme={{ roundness: 9999 }}
-          />
-          <Icon
-            name="at"
-            size={25}
-            color={theme.colors.onBackground}
-            className="absolute left-6 top-1/2 transform translate-y-1/5"
-          />
-        </View>
-        <View className="relative">
-          <Text className="mt-4 mb-2">Your Name</Text>
-          <TextInput
-            placeholder="Ex. John Smith"
-            className="w-full pl-16"
-            value={name}
-            onChangeText={setName}
-            mode="outlined"
-            dense={true}
-            outlineStyle={{ borderColor: theme.colors.onBackground }}
-            theme={{ roundness: 9999 }}
-          />
-          <Icon
-            name="user-o"
-            size={25}
-            color={theme.colors.onBackground}
-            className="absolute left-6 top-1/2 transform translate-y-1/3"
-          />
-        </View>
-        <View className="relative">
-          <Text className="mt-4 mb-2">Your Password</Text>
-          <TextInput
-            placeholder="Your Password"
-            secureTextEntry
-            className="w-full pl-16"
-            value={password}
-            onChangeText={setPassword}
-            mode="outlined"
-            dense={true}
-            outlineStyle={{ borderColor: theme.colors.onBackground }}
-            theme={{ roundness: 9999 }}
-          />
-          <Icon
-            name="lock"
-            size={25}
-            color={theme.colors.onBackground}
-            className="absolute left-6 top-1/2 transform translate-y-1/3"
-          />
-        </View>
-        <Link
-          href="/"
-          asChild
-          className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-8 border"
-        >
-          <Text className="text-onPrimary text-center text-2xl font-bold">
-            Create Account
-          </Text>
-        </Link>
-        <View className="flex flex-row items-center my-4">
-          <View className="flex-1 h-1 bg-onBackground" />
-          <Text className="mx-4 font-bold text-xl">Or</Text>
-          <View className="flex-1 h-1 bg-onBackground" />
-        </View>
-        <View className="relative">
-          <Link href="/register" asChild className="rounded-full p-4 border">
-            <Text className="text-center text-xl font-bold pl-8 tracking-wide">
-              Continue with Google
-            </Text>
-          </Link>
-          <Icon
-            name="google"
-            size={25}
-            color={theme.colors.onBackground}
-            className="absolute left-10 top-1/2 transform -translate-y-1/2"
-          />
-        </View>
-        <Text className="mt-4 text-xl text-center font-extrabold">
-          Already helping our planet?{" "}
-          <Link href="/" className="mr-8">
-            <Text className="font-extrabold underline">Log in</Text>
-          </Link>
+    <ErrorBoundary> {/* Wrap component with Error Boundary */}
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.title}>
+          Sign <Text style={styles.primary}>Up</Text>
         </Text>
-      </View>
-    </SafeAreaView>
+        <View style={styles.imageContainer}>
+          <Image
+            style={styles.image}
+            source={require('../../assets/images/tree-logo.png')}
+          />
+        </View>
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Email</Text>
+            <View style={styles.iconInputContainer}>
+              <Icon name="at" size={25} color={theme.colors.onBackground} style={styles.icon} />
+              <TextInput
+                placeholder="Ex. abc@example.com"
+                value={email}
+                onChangeText={setEmail}
+                mode="outlined"
+                dense={true}
+                outlineStyle={{ borderColor: theme.colors.onBackground }}
+                theme={{ roundness: 9999 }}
+                style={styles.input}
+              />
+            </View>
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Your Name</Text>
+            <View style={styles.iconInputContainer}>
+              <Icon name="user-o" size={25} color={theme.colors.onBackground} style={styles.icon} />
+              <TextInput
+                placeholder="Ex. John Smith"
+                value={name}
+                onChangeText={setName}
+                mode="outlined"
+                dense={true}
+                outlineStyle={{ borderColor: theme.colors.onBackground }}
+                theme={{ roundness: 9999 }}
+                style={styles.input}
+              />
+            </View>
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Your Password</Text>
+            <View style={styles.iconInputContainer}>
+              <Icon name="lock" size={25} color={theme.colors.onBackground} style={styles.icon} />
+              <TextInput
+                placeholder="Your Password"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+                mode="outlined"
+                dense={true}
+                outlineStyle={{ borderColor: theme.colors.onBackground }}
+                theme={{ roundness: 9999 }}
+                style={styles.input}
+              />
+            </View>
+          </View>
+          <Pressable
+            onPress={handleCreateAccount}
+            style={styles.createAccountButton}
+          >
+            <Text style={styles.createAccountText}>Create Account</Text>
+          </Pressable>
+          <View style={styles.separatorContainer}>
+            <View style={styles.separator} />
+            <Text style={styles.separatorText}>Or</Text>
+            <View style={styles.separator} />
+          </View>
+          <Pressable
+            onPress={handleContinueWithGoogle}
+            style={styles.googleButton}
+          >
+            <Text style={styles.googleButtonText}>Continue with Google</Text>
+            <Icon
+              name="google"
+              size={25}
+              color={theme.colors.onBackground}
+              style={styles.googleIcon}
+            />
+          </Pressable>
+          <Text style={styles.loginText}>
+            Already helping our planet?{' '}
+            <Pressable onPress={() => { /* Navigate to login */ }}>
+              <Text style={styles.loginLink}>Log in</Text>
+            </Pressable>
+          </Text>
+        </View>
+      </SafeAreaView>
+    </ErrorBoundary>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    backgroundColor: 'white',
+  },
+  title: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  primary: {
+    color: '#409858',
+  },
+  imageContainer: {
+    alignItems: 'center',
+  },
+  image: {
+    width: 200,
+    height: 100,
+  },
+  formContainer: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  label: {
+    marginBottom: 8,
+  },
+  iconInputContainer: {
+    position: 'relative',
+    justifyContent: 'center',
+  },
+  input: {
+    paddingLeft: 40,
+  },
+  icon: {
+    position: 'absolute',
+    left: 10,
+    top: 18,
+  },
+  createAccountButton: {
+    backgroundColor: '#409858',
+    borderRadius: 50,
+    paddingVertical: 15,
+    marginVertical: 20,
+    borderColor: '#409858',
+    borderWidth: 1,
+  },
+  createAccountText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  separatorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  separator: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#d1d1d1',
+  },
+  separatorText: {
+    marginHorizontal: 10,
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  googleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 50,
+    paddingVertical: 15,
+    borderColor: '#409858',
+    borderWidth: 1,
+  },
+  googleButtonText: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+    paddingLeft: 30,
+  },
+  googleIcon: {
+    position: 'absolute',
+    left: 20,
+  },
+  loginText: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  loginLink: {
+    color: '#409858',
+    textDecorationLine: 'underline',
+  },
+});
+
