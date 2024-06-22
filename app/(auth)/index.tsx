@@ -27,7 +27,7 @@ export default function App() {
         </Link>
         <Text className="mt-4 text-xl text-center font-extrabold">
           Already helping our planet?{" "}
-          <Link href="../(tabs)/home" className="mr-8">
+          <Link href="/login" className="mr-8">
             <Text className="font-extrabold underline">Log in</Text>
           </Link>
         </Text>

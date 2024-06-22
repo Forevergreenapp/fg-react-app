@@ -12,22 +12,21 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Link } from "expo-router";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { router } from "expo-router";
 
-export default function Register() {
+export default function App() {
   const theme = useTheme();
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const auth = getAuth();
 
   /* Function to sign up the user with the email and password */
-  const signUp = () => {
-    createUserWithEmailAndPassword(auth, email, password)
+  const login = () => {
+    signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        Alert.alert("Success", "User signed up successfully!");
+        Alert.alert("Success", "User logged in successfully!");
         router.replace("/home");
       })
       .catch((error) => {
@@ -38,11 +37,11 @@ export default function Register() {
   };
 
   return (
-    <KeyboardAvoidingView>
-      <SafeAreaView className="flex-1 justify-center px-4 bg-background">
-        <ScrollView>
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <SafeAreaView className="flex-1 justify-center px-4 bg-background">
           <Text className="text-5xl font-bold text-center tracking-tighter my-10">
-            Sign <Text className="text-primary">Up</Text>
+            Log <Text className="text-primary">in</Text>
           </Text>
           <View className="items-center">
             <Image
@@ -50,7 +49,7 @@ export default function Register() {
               source={require("../../assets/images/tree-logo.png")}
             />
           </View>
-          <View className="space-y-4 px-12">
+          <View className="space-y-4 px-12 mt-6">
             <View className="relative">
               <Text className="mb-2">Email</Text>
               <TextInput
@@ -65,31 +64,12 @@ export default function Register() {
               />
               <Icon
                 name="at"
-                size={25}
+                size={24}
                 color={theme.colors.onBackground}
                 className="absolute left-6 top-1/2 transform translate-y-1/5"
               />
             </View>
-            <View className="relative">
-              <Text className="mt-4 mb-2">Your Name</Text>
-              <TextInput
-                placeholder="Ex. John Smith"
-                className="w-full pl-16"
-                value={name}
-                onChangeText={setName}
-                mode="outlined"
-                dense={true}
-                outlineStyle={{ borderColor: theme.colors.onBackground }}
-                theme={{ roundness: 9999 }}
-              />
-              <Icon
-                name="user-o"
-                size={25}
-                color={theme.colors.onBackground}
-                className="absolute left-6 top-1/2 transform translate-y-1/3"
-              />
-            </View>
-            <View className="relative">
+            <View className="relative mt-6">
               <Text className="mt-4 mb-2">Your Password</Text>
               <TextInput
                 placeholder="Your Password"
@@ -104,22 +84,28 @@ export default function Register() {
               />
               <Icon
                 name="lock"
-                size={25}
+                size={24}
                 color={theme.colors.onBackground}
                 className="absolute left-6 top-1/2 transform translate-y-1/3"
               />
             </View>
+            <View className="flex flex-row justify-end">
+              <Link href="/forgot-password" className="text-primary">
+                <Text className="text-lg font-bold mt-2">Forgot Password?</Text>
+              </Link>
+            </View>
             <View className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-8 border">
-              <TouchableOpacity onPress={signUp}>
+              <TouchableOpacity onPress={login}>
                 <Text className="text-onPrimary text-center text-2xl font-bold">
-                  Create Account
+                  Log in
                 </Text>
               </TouchableOpacity>
             </View>
-            <View className="flex-row items-center my-4">
-              <View className="flex-1 h-1 bg-black" />
-              <Text className="px-4 text-black font-bold text-xl">Or</Text>
-              <View className="flex-1 h-1 bg-black" />
+            {/* <Button title="Sign Up!" onPress={() => {}} /> */}
+            <View className="flex flex-row items-center my-4">
+              <View className="flex-1 h-1 bg-onBackground" />
+              <Text className="mx-4 font-bold text-xl">Or</Text>
+              <View className="flex-1 h-1 bg-onBackground" />
             </View>
             <View className="flex flex-row items-center justify-center bg-white border border-black rounded-full p-4 shadow-md">
               <TouchableOpacity>
@@ -136,19 +122,16 @@ export default function Register() {
                 </Text>
               </TouchableOpacity>
             </View>
-            <View className="mt-4 flex flex-row items-center justify-center gap-8">
-              <Text className="text-onPrimaryContainer text-lg font-bold">
-                Already helping our planet?
-              </Text>
-              <Link href="/login" asChild>
-                <TouchableOpacity>
-                  <Text className="underline text-onPrimaryContainer text-lg font-bold">Log In</Text>
-                </TouchableOpacity>
+            <View className="flex-row justify-center mt-8">
+              <Link href="/register" asChild>
+                <Text className="text-xl font-extrabold underline">
+                  Back to Sign Up
+                </Text>
               </Link>
             </View>
           </View>
-        </ScrollView>
-      </SafeAreaView>
+        </SafeAreaView>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
