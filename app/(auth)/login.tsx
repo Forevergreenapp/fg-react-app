@@ -12,30 +12,27 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Link } from "expo-router";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { router } from "expo-router";
 
 export default function App() {
   const theme = useTheme();
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const auth = getAuth();
 
   /* Function to sign up the user with the email and password */
-  const signUp = () => {
-    createUserWithEmailAndPassword(auth, email, password)
+  const login = () => {
+    signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed up
         const user = userCredential.user;
-        Alert.alert("Success", "User signed up successfully!");
+        Alert.alert("Success", "User logged in successfully!");
         router.replace("/home");
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        Alert.alert("Error", errorMessage);
-        // ..
+        Alert.alert("Error", `Code: ${errorCode}\nMessage: ${errorMessage}`);
       });
   };
 
@@ -49,7 +46,7 @@ export default function App() {
           <View className="items-center">
             <Image
               className="w-80 h-40"
-              source={require("../assets/images/tree-logo.png")}
+              source={require("../../assets/images/tree-logo.png")}
             />
           </View>
           <View className="space-y-4 px-12 mt-6">
@@ -94,15 +91,13 @@ export default function App() {
             </View>
             <View className="flex flex-row justify-end">
               <Link href="/forgot-password" className="text-primary">
-                <Text className="text-lg font-bold mt-2">
-                  Forgot Password?
-                </Text>
+                <Text className="text-lg font-bold mt-2">Forgot Password?</Text>
               </Link>
             </View>
             <View className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-8 border">
-              <TouchableOpacity onPress={signUp}>
+              <TouchableOpacity onPress={login}>
                 <Text className="text-onPrimary text-center text-2xl font-bold">
-                  Create Account
+                  Log in
                 </Text>
               </TouchableOpacity>
             </View>
@@ -112,29 +107,28 @@ export default function App() {
               <Text className="mx-4 font-bold text-xl">Or</Text>
               <View className="flex-1 h-1 bg-onBackground" />
             </View>
-            <View className="relative">
-              <Link
-                href="/register"
-                asChild
-                className="rounded-full p-4 border"
-              >
-                <Text className="text-center text-xl font-bold pl-8 tracking-wide">
+            <View className="flex flex-row items-center justify-center bg-white border border-black rounded-full p-4 shadow-md">
+              <TouchableOpacity>
+                <Image
+                  source={{
+                    uri: "https://img.icons8.com/color/48/000000/google-logo.png",
+                  }}
+                  className="w-8 h-8 mr-4"
+                />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Text className="text-center text-xl font-bold">
                   Continue with Google
                 </Text>
-              </Link>
-              <Icon
-                name="google"
-                size={24}
-                color={theme.colors.onBackground}
-                className="absolute left-10 top-1/2 transform -translate-y-1/2"
-              />
+              </TouchableOpacity>
             </View>
-            <Text className="mt-4 text-xl text-center font-extrabold">
-              Already helping our planet?{" "}
-              <Link href="/login" className="mr-8">
-                <Text className="font-extrabold underline">Log in</Text>
+            <View className="flex-row justify-center mt-8">
+              <Link href="/register" asChild>
+                <Text className="text-xl font-extrabold underline">
+                  Back to Sign Up
+                </Text>
               </Link>
-            </Text>
+            </View>
           </View>
         </SafeAreaView>
       </ScrollView>
