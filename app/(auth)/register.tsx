@@ -15,7 +15,7 @@ import { Link } from "expo-router";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { router } from "expo-router";
 
-export default function App() {
+export default function Register() {
   const theme = useTheme();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
