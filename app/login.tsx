@@ -40,82 +40,11 @@ export default function App() {
   };
 
   return (
-    <SafeAreaView className="flex-1 justify-center px-4 bg-background">
-      <Text className="text-5xl font-bold text-center tracking-tighter my-10">
-        Sign <Text className="text-primary">Up</Text>
-      </Text>
-      <View className="items-center">
-        <Image
-          className="w-80 h-40"
-          source={require("../../assets/images/tree-logo.png")}
-        />
-      </View>
-      <View className="space-y-4 px-12">
-        <View className="relative">
-          <Text className="mb-2">Email</Text>
-          <TextInput
-            placeholder="Ex. abc@example.com"
-            className="w-full pl-16"
-            value={email}
-            onChangeText={setEmail}
-            mode="outlined"
-            dense={true}
-            outlineStyle={{ borderColor: theme.colors.onBackground }}
-            theme={{ roundness: 9999 }}
-          />
-          <Icon
-            name="at"
-            size={25}
-            color={theme.colors.onBackground}
-            className="absolute left-6 top-1/2 transform translate-y-1/5"
-          />
-        </View>
-        <View className="relative">
-          <Text className="mt-4 mb-2">Your Name</Text>
-          <TextInput
-            placeholder="Ex. John Smith"
-            className="w-full pl-16"
-            value={name}
-            onChangeText={setName}
-            mode="outlined"
-            dense={true}
-            outlineStyle={{ borderColor: theme.colors.onBackground }}
-            theme={{ roundness: 9999 }}
-          />
-          <Icon
-            name="user-o"
-            size={25}
-            color={theme.colors.onBackground}
-            className="absolute left-6 top-1/2 transform translate-y-1/3"
-          />
-        </View>
-        <View className="relative">
-          <Text className="mt-4 mb-2">Your Password</Text>
-          <TextInput
-            placeholder="Your Password"
-            secureTextEntry
-            className="w-full pl-16"
-            value={password}
-            onChangeText={setPassword}
-            mode="outlined"
-            dense={true}
-            outlineStyle={{ borderColor: theme.colors.onBackground }}
-            theme={{ roundness: 9999 }}
-          />
-          <Icon
-            name="lock"
-            size={25}
-            color={theme.colors.onBackground}
-            className="absolute left-6 top-1/2 transform translate-y-1/3"
-          />
-        </View>
-        <Link
-          href="/"
-          asChild
-          className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-8 border"
-        >
-          <Text className="text-onPrimary text-center text-2xl font-bold">
-            Create Account
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <SafeAreaView className="flex-1 justify-center px-4 bg-background">
+          <Text className="text-5xl font-bold text-center tracking-tighter my-10">
+            Log <Text className="text-primary">in</Text>
           </Text>
           <View className="items-center">
             <Image
@@ -123,7 +52,7 @@ export default function App() {
               source={require("../assets/images/tree-logo.png")}
             />
           </View>
-          <View className="space-y-4 px-12">
+          <View className="space-y-4 px-12 mt-6">
             <View className="relative">
               <Text className="mb-2">Email</Text>
               <TextInput
@@ -143,26 +72,7 @@ export default function App() {
                 className="absolute left-6 top-1/2 transform translate-y-1/5"
               />
             </View>
-            <View className="relative">
-              <Text className="mt-4 mb-2">Your Name</Text>
-              <TextInput
-                placeholder="Ex. John Smith"
-                className="w-full pl-16"
-                value={name}
-                onChangeText={setName}
-                mode="outlined"
-                dense={true}
-                outlineStyle={{ borderColor: theme.colors.onBackground }}
-                theme={{ roundness: 9999 }}
-              />
-              <Icon
-                name="user-o"
-                size={24}
-                color={theme.colors.onBackground}
-                className="absolute left-6 top-1/2 transform translate-y-1/3"
-              />
-            </View>
-            <View className="relative">
+            <View className="relative mt-6">
               <Text className="mt-4 mb-2">Your Password</Text>
               <TextInput
                 placeholder="Your Password"
@@ -181,6 +91,13 @@ export default function App() {
                 color={theme.colors.onBackground}
                 className="absolute left-6 top-1/2 transform translate-y-1/3"
               />
+            </View>
+            <View className="flex flex-row justify-end">
+              <Link href="/forgot-password" className="text-primary">
+                <Text className="text-lg font-bold mt-2">
+                  Forgot Password?
+                </Text>
+              </Link>
             </View>
             <View className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-8 border">
               <TouchableOpacity onPress={signUp}>
