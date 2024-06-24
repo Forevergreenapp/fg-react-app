@@ -119,10 +119,16 @@ export default function RootLayout() {
 
   return (
     <PaperProvider theme={theme}>
-      <Stack>
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(misc)" options={{ headerShown: false }} />
+      <Stack
+        screenOptions={{
+          // Hide the header for all other routes.
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="(misc)" />
         <Stack.Screen name="+not-found" />
       </Stack>
     </PaperProvider>

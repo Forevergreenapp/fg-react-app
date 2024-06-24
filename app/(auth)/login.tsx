@@ -27,7 +27,7 @@ export default function App() {
       .then((userCredential) => {
         const user = userCredential.user;
         Alert.alert("Success", "User logged in successfully!");
-        router.replace("/home");
+        router.replace("/(tabs)/home");
       })
       .catch((error) => {
         const errorCode = error.code;

@@ -28,7 +28,7 @@ export default function Register() {
       .then((userCredential) => {
         const user = userCredential.user;
         Alert.alert("Success", "User signed up successfully!");
-        router.replace("/home");
+        router.replace("/(tabs)/home");
       })
       .catch((error) => {
         const errorCode = error.code;
