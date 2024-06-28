@@ -1,4 +1,5 @@
 import React from 'react';
+// Replace TouchableOpacity with pressable eventually
 import { View, Text, TouchableOpacity, useWindowDimensions, ScrollView } from 'react-native'
 import { LineChart } from 'react-native-chart-kit';
 import { Link } from 'expo-router';
