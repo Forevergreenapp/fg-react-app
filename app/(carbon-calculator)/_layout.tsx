@@ -11,7 +11,7 @@ export default function CarbonCalculatorLayout() {
       <Stack.Screen name="transportation" />
       <Stack.Screen name="diet" />
       <Stack.Screen name="energy" />
-      {/* <Stack.Screen name="results" options={{ headerShown: false }} />  */}
+      <Stack.Screen name="breakdown" /> 
     </Stack>
   );
 }
