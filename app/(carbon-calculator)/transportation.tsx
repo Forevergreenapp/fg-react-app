@@ -7,7 +7,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useTheme, RadioButton, TextInput } from "react-native-paper";
+import {
+  useTheme,
+  RadioButton,
+  TextInput,
+  HelperText,
+} from "react-native-paper";
 import * as Progress from "react-native-progress";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { router } from "expo-router";
@@ -15,34 +20,65 @@ import { Slider } from "@react-native-assets/slider";
 
 export default function TransportationCalculator() {
   const theme = useTheme();
+
   const [longFlights, setLongFlights] = useState(0);
   const [shortFlights, setShortFlights] = useState(0);
-  const [carType, setCarType] = useState("Gas");
+  const [carType, setCarType] = useState("");
   const [milesPerWeek, setMilesPerWeek] = useState("");
-  const [useTrain, setUseTrain] = useState("Yes");
+  const [milesError, setMilesError] = useState("");
+  const [useTrain, setUseTrain] = useState("");
   const [trainFrequency, setTrainFrequency] = useState("");
-  const [useBus, setUseBus] = useState("Yes");
+  const [trainFrequencyError, setTrainFrequencyError] = useState("");
+  const [useBus, setUseBus] = useState("");
   const [busFrequency, setBusFrequency] = useState("");
-  const [walkBike, setWalkBike] = useState("Yes");
+  const [busFrequencyError, setBusFrequencyError] = useState("");
+  const [walkBike, setWalkBike] = useState("");
   const [walkBikeFrequency, setWalkBikeFrequency] = useState("");
+  const [walkBikeFrequencyError, setWalkBikeFrequencyError] = useState("");
   const [flgihtEmissions, setFlightEmissions] = useState(0.0);
   const [carEmissions, setCarEmissions] = useState(0.0);
   const [publicTransportEmissions, setPublicTransportEmissions] = useState(0.0);
   const [totalEmissions, setTotalEmissions] = useState(0.0);
   const [isFormValid, setIsFormValid] = useState(false);
 
+  const validateNumber = (
+    value: string,
+    setter: React.Dispatch<React.SetStateAction<string>>,
+    errorSetter: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    if (value === "") {
+      setter("");
+      errorSetter("");
+    } else if (isNaN(Number(value)) || parseFloat(value) < 0) {
+      errorSetter("Please enter a valid amount");
+    } else {
+      const decimalPlaces = value.split(".")[1];
+      if (decimalPlaces && decimalPlaces.length > 2) {
+        setter(value.slice(0, -1));
+      } else {
+        setter(value);
+        errorSetter("");
+      }
+    }
+  };
+
   useEffect(() => {
-    // Validate form
     const validateForm = () => {
       const isTrainValid =
-        useTrain === "No" || (useTrain === "Yes" && trainFrequency !== "");
+        useTrain === "No" ||
+        (useTrain === "Yes" && trainFrequency !== "" && !trainFrequencyError);
       const isBusValid =
-        useBus === "No" || (useBus === "Yes" && busFrequency !== "");
+        useBus === "No" ||
+        (useBus === "Yes" && busFrequency !== "" && !busFrequencyError);
       const isWalkBikeValid =
-        walkBike === "No" || (walkBike === "Yes" && walkBikeFrequency !== "");
+        walkBike === "No" ||
+        (walkBike === "Yes" &&
+          walkBikeFrequency !== "" &&
+          !walkBikeFrequencyError);
 
       if (
         milesPerWeek !== "" &&
+        !milesError &&
         isTrainValid &&
         isBusValid &&
         isWalkBikeValid
@@ -56,12 +92,16 @@ export default function TransportationCalculator() {
     validateForm();
   }, [
     milesPerWeek,
+    milesError,
     useTrain,
     trainFrequency,
+    trainFrequencyError,
     useBus,
     busFrequency,
+    busFrequencyError,
     walkBike,
     walkBikeFrequency,
+    walkBikeFrequencyError,
   ]);
 
   return (
@@ -75,7 +115,7 @@ export default function TransportationCalculator() {
                 name="arrow-left"
                 size={24}
                 color="black"
-                onPress={() => router.replace("/(tabs)/home")}
+                onPress={() => router.replace("/(auth)/getstarted")}
               />
               <View className="w-5/6">
                 <Progress.Bar
@@ -186,7 +226,9 @@ export default function TransportationCalculator() {
               <TextInput
                 placeholder="Your Answer"
                 value={milesPerWeek}
-                onChangeText={setMilesPerWeek}
+                onChangeText={(value) =>
+                  validateNumber(value, setMilesPerWeek, setMilesError)
+                }
                 keyboardType="numeric"
                 mode="outlined"
                 outlineStyle={{ borderColor: "transparent" }}
@@ -196,6 +238,9 @@ export default function TransportationCalculator() {
                 }}
               />
             </View>
+            <HelperText type="error" visible={!!milesError}>
+              {milesError}
+            </HelperText>
 
             {/* Train/metro */}
             <Text className="mt-8 text-xl">Do you use the train/metro?</Text>
@@ -226,8 +271,12 @@ export default function TransportationCalculator() {
                   <View className="mt-2 bg-white border border-[#D9D9D9] rounded-lg overflow-hidden">
                     <TextInput
                       value={trainFrequency}
-                      onChangeText={(trainFrequency) =>
-                        setTrainFrequency(trainFrequency)
+                      onChangeText={(value) =>
+                        validateNumber(
+                          value,
+                          setTrainFrequency,
+                          setTrainFrequencyError
+                        )
                       }
                       keyboardType="numeric"
                       mode="outlined"
@@ -239,6 +288,9 @@ export default function TransportationCalculator() {
                       }}
                     />
                   </View>
+                  <HelperText type="error" visible={!!trainFrequencyError}>
+                    {trainFrequencyError}
+                  </HelperText>
                 </View>
               )}
             </View>
@@ -272,7 +324,13 @@ export default function TransportationCalculator() {
                   <View className="mt-2 bg-white border border-[#D9D9D9] rounded-lg overflow-hidden">
                     <TextInput
                       value={busFrequency}
-                      onChangeText={setBusFrequency}
+                      onChangeText={(value) =>
+                        validateNumber(
+                          value,
+                          setBusFrequency,
+                          setBusFrequencyError
+                        )
+                      }
                       keyboardType="numeric"
                       mode="outlined"
                       outlineStyle={{ borderColor: "transparent" }}
@@ -283,6 +341,9 @@ export default function TransportationCalculator() {
                       }}
                     />
                   </View>
+                  <HelperText type="error" visible={!!busFrequencyError}>
+                    {busFrequencyError}
+                  </HelperText>
                 </View>
               )}
             </View>
@@ -318,7 +379,13 @@ export default function TransportationCalculator() {
                   <View className="mt-2 bg-white border border-[#D9D9D9] rounded-lg overflow-hidden">
                     <TextInput
                       value={walkBikeFrequency}
-                      onChangeText={setWalkBikeFrequency}
+                      onChangeText={(value) =>
+                        validateNumber(
+                          value,
+                          setWalkBikeFrequency,
+                          setWalkBikeFrequencyError
+                        )
+                      }
                       keyboardType="numeric"
                       mode="outlined"
                       outlineStyle={{ borderColor: "transparent" }}
@@ -329,6 +396,9 @@ export default function TransportationCalculator() {
                       }}
                     />
                   </View>
+                  <HelperText type="error" visible={!!walkBikeFrequencyError}>
+                    {walkBikeFrequencyError}
+                  </HelperText>
                 </View>
               )}
             </View>
@@ -353,29 +423,31 @@ export default function TransportationCalculator() {
                 <Text className="text-lg">tons of CO2 per year</Text>
               </View>
             </View>
+          </View>
 
-            {/* Next Button */}
-            <View
-              className={`absolute py-3 px-4 rounded-full border-2 right-10 top-1/2 -translate-y-3 ${
-                isFormValid
-                  ? "border-black bg-[#AEDCA7]"
-                  : "border-gray-300 bg-gray-300"
-              }`}
+          {/* Next Button */}
+          <View className="flex items-end mb-10 mr-10">
+            <TouchableOpacity
+              onPress={() => {
+                if (isFormValid) {
+                  router.replace("diet");
+                }
+              }}
             >
-              <TouchableOpacity
-                onPress={() => {
-                  if (isFormValid) {
-                    router.replace("/(carbon-calculator)/diet");
-                  }
-                }}
+              <View
+                className={`py-3 px-4 rounded-full border-2 h-16 w-16 ${
+                  isFormValid
+                    ? "border-black bg-[#AEDCA7]"
+                    : "border-gray-300 bg-gray-300"
+                }`}
               >
                 <Icon
                   name="arrow-right"
                   size={30}
                   color={isFormValid ? "#000" : "#AAA"}
                 />
-              </TouchableOpacity>
-            </View>
+              </View>
+            </TouchableOpacity>
           </View>
         </SafeAreaView>
       </ScrollView>

@@ -9,6 +9,7 @@ const Sitemap = ({ navigation }: any) => {
       <Link href="/(misc)/referral" className="text-xl underline">Referral Page</Link>
       <Link href="/(tabs)/home" className="text-xl underline">Home Page</Link>
       <Link href="/(carbon-calculator)/transportation" className="text-xl underline">Carbon Calculator Page</Link>
+      <Link href="/(carbon-calculator)/breakdown" className="text-xl underline">Carbon Calculator Breakdown</Link>
     </View>
   );
 };
