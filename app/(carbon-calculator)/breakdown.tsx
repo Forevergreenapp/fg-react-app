@@ -5,7 +5,6 @@ import {
   ScrollView,
   Pressable,
   Image,
-  Dimensions,
   TouchableOpacity,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -14,8 +13,6 @@ import PieChart from "./pie-chart";
 import BarChart from "./bar-chart";
 
 export default function Breakdown() {
-  const screenWidth = Dimensions.get("window").width;
-
   // TODO: Get and set the emissions from the calculator algorithm API
   const emissionsPerYear = 16;
   const emissionsPerMonth = (emissionsPerYear / 12).toFixed(2);
@@ -172,20 +169,32 @@ export default function Breakdown() {
             <Text className="text-center mb-4 text-lg">
               Support green projects around the world!
             </Text>
-            <Pressable className="bg-[#44945F] rounded-full py-3 mb-4">
-              <Text className="text-white text-center text-lg font-bold">
-                Learn More
-              </Text>
-            </Pressable>
+            <View className="bg-[#44945F] rounded-full py-3 mb-4">
+              <TouchableOpacity
+                onPress={() => {
+                  router.replace("carbon-credit");
+                }}
+              >
+                <Text className="text-white text-center text-lg font-bold">
+                  Learn More
+                </Text>
+              </TouchableOpacity>
+            </View>
             <Text className="text-center mb-4 text-lg">
               Build your legacy and leave a lasting impact by planting your own
               forest.
             </Text>
-            <Pressable className="bg-[#44945F] rounded-full py-3 mb-6">
-              <Text className="text-white text-center text-lg font-bold">
-                Start the Pledge today!
-              </Text>
-            </Pressable>
+            <View className="bg-[#44945F] rounded-full py-3 mb-6">
+              <TouchableOpacity
+                onPress={() => {
+                  router.replace("tree-planting");
+                }}
+              >
+                <Text className="text-white text-center text-lg font-bold">
+                  Start the Pledge today!
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
