@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { router } from 'expo-router';
 import React from 'react';
 import { ScrollView, Text, Pressable, View, Image } from 'react-native';
 
@@ -16,18 +16,17 @@ export default function TreePlantingScreen() {
                 </View>
             </View>
             <View className="flex-row justify-around mb-6">
-                <Link href="/plant-tree">
-                    <Pressable className="bg-[#eeeeee] p-4 rounded-lg">
-                        <Text className='text-3xl text-center'>🌱</Text>
-                        <Text className='text-lg'>Plant a new tree!</Text>
-                    </Pressable>
-                </Link>
-                <Link href="/view-forest">
-                    <Pressable className="bg-[#eeeeee] p-4 rounded-lg">
-                        <Text className='text-3xl text-center'>🌳</Text>
-                        <Text className='text-lg'>View my Forest!</Text>
-                    </Pressable>
-                </Link>
+                <Pressable
+                    className="bg-[#eeeeee] p-4 rounded-lg"
+                    onPress={() => router.push('plant-a-tree')}
+                >
+                    <Text className='text-3xl text-center'>🌱</Text>
+                    <Text className='text-lg'>Plant a new tree!</Text>
+                </Pressable>
+                <Pressable className="bg-[#eeeeee] p-4 rounded-lg">
+                    <Text className='text-3xl text-center'>🌳</Text>
+                    <Text className='text-lg'>View my Forest!</Text>
+                </Pressable>
             </View>
             <View className="flex-1 items-center mb-4">
                 <Image
@@ -94,11 +93,9 @@ export default function TreePlantingScreen() {
                 <Text className="text-base text-center mb-4 text-lg">
                     The Forevergreen tree planting subscription includes 1 tree planted on our reforestation projects. We will populate your forest with all the relevant data and credit the carbon sequestered to you. Build a forest and a sustainable future with a consistent effort.
                 </Text>
-                <Link href="/plant-tree">
-                    <Pressable className="bg-[#409858] p-4 rounded-3xl">
-                        <Text className="text-xl font-bold text-white text-center">$10 Month</Text>
-                    </Pressable>
-                </Link>
+                <Pressable className="bg-[#409858] p-4 rounded-3xl">
+                    <Text className="text-xl font-bold text-white text-center">$10 Month</Text>
+                </Pressable>
             </View>
         </ScrollView>
     );

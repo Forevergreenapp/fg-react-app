@@ -8,7 +8,8 @@ export default function MiscLayout() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="referral" options={{ title: "Refer a Friend" }} />
+      <Stack.Screen name="referral"/>
+      <Stack.Screen name="plant-a-tree"/>
     </Stack>
   );
 }
