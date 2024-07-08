@@ -11,6 +11,7 @@ export default function DietCalculator() {
   const [diet, setDiet] = useState("");
   const [dietEmissions, setDietEmissions] = useState(0.0);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [progress, setProgress] = useState(0.33);
 
   const dietOptions = [
     "Meat Lover",
@@ -42,7 +43,17 @@ export default function DietCalculator() {
       default:
         setDietEmissions(0.0);
     }
+
+    if (diet !== "") {
+      setProgress(0.66);
+    } else {
+      setProgress(0.33);
+    }
   }, [diet]);
+
+  const handleDietSelection = (selectedDiet: string) => {
+    setDiet(selectedDiet);
+  };
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -58,7 +69,7 @@ export default function DietCalculator() {
             />
             <View className="w-5/6">
               <Progress.Bar
-                progress={0.66}
+                progress={progress}
                 width={null}
                 color="#AEDCA7"
                 unfilledColor="#FFF"
@@ -79,7 +90,7 @@ export default function DietCalculator() {
                 <RadioButton
                   value={option}
                   status={diet === option ? "checked" : "unchecked"}
-                  onPress={() => setDiet(option)}
+                  onPress={() => handleDietSelection(option)}
                   color="#44945F"
                 />
                 <Text className="text-lg">{option}</Text>

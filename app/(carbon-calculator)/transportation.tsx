@@ -40,6 +40,75 @@ export default function TransportationCalculator() {
   const [publicTransportEmissions, setPublicTransportEmissions] = useState(0.0);
   const [totalEmissions, setTotalEmissions] = useState(0.0);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [completedQuestions, setCompletedQuestions] = useState({
+    longFlights: false,
+    shortFlights: false,
+    carType: false,
+    milesPerWeek: false,
+    useTrain: false,
+    useBus: false,
+    walkBike: false,
+  });
+
+  const updateProgress = () => {
+    const totalQuestions = Object.keys(completedQuestions).length;
+    const completedCount =
+      Object.values(completedQuestions).filter(Boolean).length;
+    setProgress((completedCount / totalQuestions) * 0.33);
+  };
+
+  useEffect(() => {
+    updateProgress();
+  }, [completedQuestions]);
+
+  const markQuestionCompleted = (question: string) => {
+    setCompletedQuestions((prev) => ({ ...prev, [question]: true }));
+  };
+
+  // Modify the existing state setters to mark questions as completed
+  const setLongFlightsWithCompletion = (
+    value: React.SetStateAction<number>
+  ) => {
+    setLongFlights(value);
+    markQuestionCompleted("longFlights");
+  };
+
+  const setShortFlightsWithCompletion = (
+    value: React.SetStateAction<number>
+  ) => {
+    setShortFlights(value);
+    markQuestionCompleted("shortFlights");
+  };
+
+  const setCarTypeWithCompletion = (value: React.SetStateAction<string>) => {
+    setCarType(value);
+    markQuestionCompleted("carType");
+  };
+
+  const setMilesPerWeekWithCompletion = (
+    value: React.SetStateAction<string>
+  ) => {
+    setMilesPerWeek(value);
+    if (value !== "") {
+      markQuestionCompleted("milesPerWeek");
+    }
+  };
+
+  const setUseTrainWithCompletion = (value: React.SetStateAction<string>) => {
+    setUseTrain(value);
+    markQuestionCompleted("useTrain");
+  };
+
+  const setUseBusWithCompletion = (value: React.SetStateAction<string>) => {
+    setUseBus(value);
+    markQuestionCompleted("useBus");
+  };
+
+  const setWalkBikeWithCompletion = (value: React.SetStateAction<string>) => {
+    setWalkBike(value);
+    markQuestionCompleted("walkBike");
+  };
 
   const validateNumber = (
     value: string,
@@ -119,7 +188,7 @@ export default function TransportationCalculator() {
               />
               <View className="w-5/6">
                 <Progress.Bar
-                  progress={0.33}
+                  progress={progress}
                   width={null}
                   color="#AEDCA7"
                   unfilledColor="#FFF"
@@ -143,7 +212,7 @@ export default function TransportationCalculator() {
                 maximumValue={7}
                 step={1}
                 value={longFlights}
-                onValueChange={setLongFlights}
+                onValueChange={setLongFlightsWithCompletion}
                 minimumTrackTintColor="#8E8F8E"
                 maximumTrackTintColor="#D9D9D9"
                 thumbTintColor="#8E8F8E"
@@ -170,7 +239,7 @@ export default function TransportationCalculator() {
                 maximumValue={7}
                 step={1}
                 value={shortFlights}
-                onValueChange={setShortFlights}
+                onValueChange={setShortFlightsWithCompletion}
                 minimumTrackTintColor="#8E8F8E"
                 maximumTrackTintColor="#D9D9D9"
                 thumbTintColor="#8E8F8E"
@@ -193,7 +262,7 @@ export default function TransportationCalculator() {
                 <RadioButton
                   value="Gas"
                   status={carType === "Gas" ? "checked" : "unchecked"}
-                  onPress={() => setCarType("Gas")}
+                  onPress={() => setCarTypeWithCompletion("Gas")}
                   color="#44945F"
                 />
                 <Text className="text-lg">Gas</Text>
@@ -202,7 +271,7 @@ export default function TransportationCalculator() {
                 <RadioButton
                   value="Hybrid"
                   status={carType === "Hybrid" ? "checked" : "unchecked"}
-                  onPress={() => setCarType("Hybrid")}
+                  onPress={() => setCarTypeWithCompletion("Hybrid")}
                   color="#44945F"
                 />
                 <Text className="text-lg">Hybrid</Text>
@@ -211,7 +280,7 @@ export default function TransportationCalculator() {
                 <RadioButton
                   value="Electric"
                   status={carType === "Electric" ? "checked" : "unchecked"}
-                  onPress={() => setCarType("Electric")}
+                  onPress={() => setCarTypeWithCompletion("Electric")}
                   color="#44945F"
                 />
                 <Text className="text-lg">Electric</Text>
@@ -227,7 +296,11 @@ export default function TransportationCalculator() {
                 placeholder="Your Answer"
                 value={milesPerWeek}
                 onChangeText={(value) =>
-                  validateNumber(value, setMilesPerWeek, setMilesError)
+                  validateNumber(
+                    value,
+                    setMilesPerWeekWithCompletion,
+                    setMilesError
+                  )
                 }
                 keyboardType="numeric"
                 mode="outlined"
@@ -250,7 +323,7 @@ export default function TransportationCalculator() {
                   <RadioButton
                     value="Yes"
                     status={useTrain === "Yes" ? "checked" : "unchecked"}
-                    onPress={() => setUseTrain("Yes")}
+                    onPress={() => setUseTrainWithCompletion("Yes")}
                     color="#44945F"
                   />
                   <Text className="text-lg">Yes</Text>
@@ -259,7 +332,7 @@ export default function TransportationCalculator() {
                   <RadioButton
                     value="No"
                     status={useTrain === "No" ? "checked" : "unchecked"}
-                    onPress={() => setUseTrain("No")}
+                    onPress={() => setUseTrainWithCompletion("No")}
                     color="#44945F"
                   />
                   <Text className="text-lg">No</Text>
@@ -303,7 +376,7 @@ export default function TransportationCalculator() {
                   <RadioButton
                     value="Yes"
                     status={useBus === "Yes" ? "checked" : "unchecked"}
-                    onPress={() => setUseBus("Yes")}
+                    onPress={() => setUseBusWithCompletion("Yes")}
                     color="#44945F"
                   />
                   <Text className="text-lg">Yes</Text>
@@ -312,7 +385,7 @@ export default function TransportationCalculator() {
                   <RadioButton
                     value="No"
                     status={useBus === "No" ? "checked" : "unchecked"}
-                    onPress={() => setUseBus("No")}
+                    onPress={() => setUseBusWithCompletion("No")}
                     color="#44945F"
                   />
                   <Text className="text-lg">No</Text>
@@ -358,7 +431,7 @@ export default function TransportationCalculator() {
                   <RadioButton
                     value="Yes"
                     status={walkBike === "Yes" ? "checked" : "unchecked"}
-                    onPress={() => setWalkBike("Yes")}
+                    onPress={() => setWalkBikeWithCompletion("Yes")}
                     color="#44945F"
                   />
                   <Text className="text-lg">Yes</Text>
@@ -367,7 +440,7 @@ export default function TransportationCalculator() {
                   <RadioButton
                     value="No"
                     status={walkBike === "No" ? "checked" : "unchecked"}
-                    onPress={() => setWalkBike("No")}
+                    onPress={() => setWalkBikeWithCompletion("No")}
                     color="#44945F"
                   />
                   <Text className="text-lg">No</Text>
