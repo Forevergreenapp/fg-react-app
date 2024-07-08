@@ -314,7 +314,7 @@ export default function EnergyCalculator() {
 
           {/* People in Home */}
           <Text className="mt-6 text-lg">
-            How many people do you live with?
+            How many people live in your household?
           </Text>
           <View className="mt-4">
             <Slider

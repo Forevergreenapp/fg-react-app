@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable, StatusBar, Image } from "react-native";
+import { View, Text, StatusBar, Image } from "react-native";
 import { Link } from "expo-router";
 
 export default function App() {

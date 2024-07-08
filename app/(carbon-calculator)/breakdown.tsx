@@ -1,16 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
   ScrollView,
-  Pressable,
   Image,
   TouchableOpacity,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { router } from "expo-router";
-import PieChart from "../../components/pie-chart"
-import BarChart from "../../components/bar-chart";
+import PieChart from "../../components/PieChart"
+import BarChart from "../../components/BarChart";
 
 export default function Breakdown() {
   // TODO: Get and set the emissions from the calculator algorithm API
