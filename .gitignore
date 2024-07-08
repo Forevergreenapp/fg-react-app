@@ -20,4 +20,8 @@ venv/
 expo-env.d.ts
 # @end expo-cli
 
+# Environmental variables
 .env
+
+# Dev tools for windows
+%ProgramData%/
