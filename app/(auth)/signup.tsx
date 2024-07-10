@@ -12,10 +12,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Link } from "expo-router";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import { router } from "expo-router";
 
-export default function Register() {
+export default function SignupScreen() {
   const theme = useTheme();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -27,7 +31,12 @@ export default function Register() {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        Alert.alert("Success", "User signed up successfully!");
+        // Update the user's profile with the display name
+        return updateProfile(user, {
+          displayName: name,
+        });
+      })
+      .then(() => {
         router.replace("/(tabs)/home");
       })
       .catch((error) => {
@@ -142,7 +151,9 @@ export default function Register() {
               </Text>
               <Link href="/login" asChild>
                 <TouchableOpacity>
-                  <Text className="underline text-onPrimaryContainer text-lg font-bold">Log In</Text>
+                  <Text className="underline text-onPrimaryContainer text-lg font-bold">
+                    Log In
+                  </Text>
                 </TouchableOpacity>
               </Link>
             </View>

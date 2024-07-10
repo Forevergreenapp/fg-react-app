@@ -5,7 +5,7 @@ import { Link } from "expo-router";
 const Sitemap = () => {
   return (
     <View className="flex flex-col m-16 gap-4">
-      <Link href="/(auth)/getstarted" className="text-xl underline">
+      <Link href="/(auth)/get-started" className="text-xl underline">
         Get Started Page
       </Link>
       <Link href="/(misc)/referral" className="text-xl underline">

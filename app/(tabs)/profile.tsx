@@ -1,7 +1,9 @@
-import React from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
+import { getAuth, onAuthStateChanged, User, signOut } from "firebase/auth";
+import { useRouter } from "expo-router";
 
 const SettingsItem = ({ title }: { title: string }) => (
   <TouchableOpacity>
@@ -18,6 +20,48 @@ const SettingsItem = ({ title }: { title: string }) => (
 );
 
 export default function ProfileSettings() {
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
+  const auth = getAuth();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+      } else {
+        router.replace("/(auth)/login");
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (!user) {
+    // You can show a loading state here if you want
+    return null;
+  }
+
+  const handleLogout = () => {
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Logout",
+        onPress: () => {
+          signOut(auth)
+            .then(() => {
+              router.replace("/(auth)/login");
+            })
+            .catch((error) => {
+              Alert.alert("Error", "Failed to logout. Please try again.");
+            });
+        },
+      },
+    ]);
+  };
+
   return (
     <ScrollView className="flex-1 bg-white">
       <View className="p-6">
@@ -41,8 +85,10 @@ export default function ProfileSettings() {
           {/* <ProfileIcon /> */}
           <Text className="text-4xl mr-4">👤</Text>
           <View className="ml-3">
-            <Text className="text-lg font-semibold">Username</Text>
-            <Text className="">useremail@email.com</Text>
+            <Text className="text-lg font-semibold">
+              {user.displayName || "User"}
+            </Text>
+            <Text className="">{user.email}</Text>
           </View>
         </LinearGradient>
 
@@ -70,6 +116,7 @@ export default function ProfileSettings() {
           </View>
         </LinearGradient>
 
+        {/* Manage Subscriptions */}
         <LinearGradient
           colors={["#F8F8F8", "#BDFFFF"]}
           start={{ x: 0.5, y: 0 }}
@@ -90,6 +137,14 @@ export default function ProfileSettings() {
             </TouchableOpacity>
           </View>
         </LinearGradient>
+
+        {/* Logout Button */}
+        <TouchableOpacity
+          onPress={handleLogout}
+          className="bg-red-400 p-4 rounded-lg mt-4"
+        >
+          <Text className="text-center font-bold text-2xl">Logout</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );

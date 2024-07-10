@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StatusBar, Image } from "react-native";
 import { Link } from "expo-router";
 
-export default function App() {
+export default function GetStartedScreen() {
   return (
     <View className="flex-1 bg-background items-center justify-center px-5">
       <StatusBar barStyle="dark-content" />
@@ -17,7 +17,7 @@ export default function App() {
       </View>
       <View className="w-full mb-8">
         <Link
-          href="/register"
+          href="/signup"
           asChild
           className="bg-primary rounded-full p-6 hover:bg-primary/90 px-12"
         >

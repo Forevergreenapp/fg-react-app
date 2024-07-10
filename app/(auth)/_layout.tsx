@@ -8,9 +8,11 @@ export default function AuthLayout() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="getstarted" />
-      <Stack.Screen name="register" />
+      <Stack.Screen name="get-started" />
+      <Stack.Screen name="signup" />
       <Stack.Screen name="login" />
+      <Stack.Screen name="forgot-password" />
+      {/* <Stack.Screen name="new-password" /> */}
     </Stack>
   );
 }
