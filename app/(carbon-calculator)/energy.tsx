@@ -43,6 +43,35 @@ export default function EnergyCalculator() {
   const [transportationDietEmissions, setTransportationDietEmissions] =
     useState(0.0);
   const [totalEmissions, setTotalEmissions] = useState(0.0);
+  const [progress, setProgress] = useState(0.66);
+
+  const updateProgress = useCallback(() => {
+    let completedQuestions = 0;
+    const totalQuestions = 7; // Total number of questions
+
+    if (state) completedQuestions++;
+    if (electricBill) completedQuestions++;
+    if (waterBill) completedQuestions++;
+    if (propaneBill) completedQuestions++;
+    if (gasBill) completedQuestions++;
+    if (useWoodStove) completedQuestions++;
+    if (peopleInHome !== 1) completedQuestions++; // Assuming 1 is the default value
+
+    const newProgress = 0.83 + (completedQuestions / totalQuestions) * 0.17;
+    setProgress(newProgress);
+  }, [
+    state,
+    electricBill,
+    waterBill,
+    propaneBill,
+    gasBill,
+    useWoodStove,
+    peopleInHome,
+  ]);
+
+  useEffect(() => {
+    updateProgress();
+  }, [updateProgress]);
 
   const filteredStates = statesData.filter(
     (s) =>
@@ -96,6 +125,7 @@ export default function EnergyCalculator() {
       isPropaneBillValid &&
       isGasBillValid;
     setIsFormValid(isFormValid);
+    updateProgress(); // Update progress when form validity changes
   }, [
     state,
     electricBill,
@@ -108,6 +138,7 @@ export default function EnergyCalculator() {
     gasBillError,
     useWoodStove,
     peopleInHome,
+    updateProgress,
   ]);
 
   return (
@@ -123,7 +154,7 @@ export default function EnergyCalculator() {
           />
           <View className="w-5/6">
             <Progress.Bar
-              progress={1}
+              progress={progress}
               width={null}
               color="#AEDCA7"
               unfilledColor="#FFF"
@@ -283,7 +314,7 @@ export default function EnergyCalculator() {
 
           {/* People in Home */}
           <Text className="mt-6 text-lg">
-            How many people do you live with?
+            How many people live in your household?
           </Text>
           <View className="mt-4">
             <Slider
