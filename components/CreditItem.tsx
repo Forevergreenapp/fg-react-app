@@ -1,10 +1,10 @@
 import React from "react";
 import {
-  View,
   Text,
-  Image,
+  View,
   TouchableOpacity,
   ImageSourcePropType,
+  Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -21,18 +21,16 @@ const CreditItem = ({
   colors: string[];
   onPress: () => void;
 }) => (
-  <View className="max-w-28 mb-4">
-    <TouchableOpacity onPress={onPress}>
-      <View className="w-28 h-28 rounded-xl overflow-hidden">
-        <LinearGradient
-          colors={colors}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          className="w-full h-full justify-center items-center"
-        >
-          <Image source={icon} className="h-[70%] w-[65%]" />
-        </LinearGradient>
-      </View>
+  <View className="h-44 w-28">
+    <TouchableOpacity onPress={onPress} className="mb-4">
+      <LinearGradient
+        colors={colors}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        className="w-28 h-28 justify-center items-center rounded-xl overflow-hidden"
+      >
+        <Image source={icon} style={{ height: 75, width: 70 }} />
+      </LinearGradient>
       <Text className="text-base line-clamp-2 mt-1 mb-4 min-h-12">{name}</Text>
       <Text className="text-base font-bold">
         {amount.includes("?") ? "" : amount}

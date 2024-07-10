@@ -13,12 +13,21 @@ const images = {
   placeholder: require("../../assets/images/carbon-credits/placeholder.png"),
 };
 
+const chunkArray = (array: any[], size: number) => {
+  const chunkedArr = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunkedArr.push(array.slice(i, i + size));
+  }
+  return chunkedArr;
+};
+
 export default function CarbonCreditScreen() {
   const [selectedProject, setSelectedProject] = useState(carbonCredits[0]);
+  const creditChunks = chunkArray(carbonCredits, 3);
 
   return (
     <ScrollView className="flex-1 bg-white">
-      <View className="px-6 pt-6 pb-4">
+      <View className="p-6">
         <View className="flex items-center mt-8">
           <Text className="text-5xl font-bold">
             Forever<Text className="text-[#409858]">green</Text>
@@ -33,16 +42,21 @@ export default function CarbonCreditScreen() {
       </View>
 
       {/* Credits */}
-      <View className="flex-row flex-wrap justify-between mb-5 px-6">
-        {carbonCredits.map((credit, index) => (
-          <CreditItem
-            key={index}
-            name={credit.name}
-            amount={credit.amount}
-            icon={images[credit.icon as keyof typeof images]}
-            colors={credit.colors}
-            onPress={() => setSelectedProject(credit)}
-          />
+      {/* NOTE: I have no idea why flex wrap is not working. So I have to do it manually. */}
+      <View className="flex flex-col">
+        {creditChunks.map((chunk, chunkIndex) => (
+          <View key={chunkIndex} className="flex flex-row justify-around">
+            {chunk.map((credit, index) => (
+              <CreditItem
+                key={index}
+                name={credit.name}
+                amount={credit.amount}
+                icon={images[credit.icon as keyof typeof images]}
+                colors={credit.colors}
+                onPress={() => setSelectedProject(credit)}
+              />
+            ))}
+          </View>
         ))}
       </View>
 
@@ -60,8 +74,8 @@ export default function CarbonCreditScreen() {
           zero every month. This is the easiest way to reduce your impact on the
           planet and support awesome climate projects!
         </Text>
-        <TouchableOpacity className="bg-[#409858] px-8 py-4 mx-auto rounded-full">
-          <Text className="font-bold text-white text-center text-xl">
+        <TouchableOpacity className="bg-[#409858] p-4 mx-auto rounded-full">
+          <Text className="font-bold text-white text-center text-xl px-2">
             $20/Month
           </Text>
         </TouchableOpacity>

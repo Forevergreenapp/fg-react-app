@@ -38,12 +38,11 @@ const ProjectCard = ({
   };
 
   return (
-    <View className="bg-gray-100 rounded-lg m-6 shadow-md">
-      <View className="p-4">
+    // Could not get tailwind to work here. Really inconsistent and dissapointing
+    <View style={{ backgroundColor: "#EEEEEE", borderRadius: 20, padding: 15, margin: 20}}>
+      <View>
         {/* Title */}
         <Text className="text-xl font-bold mb-2">{project.name}</Text>
-        {/* <Text>{project.details[0].title}</Text>
-        <Text>{project.details[0].content}</Text> */}
 
         {/* Description */}
         <PagerView
@@ -52,7 +51,7 @@ const ProjectCard = ({
           onPageSelected={(e) => {
             setCurrentPage(e.nativeEvent.position);
           }}
-          style={{ flex: 1, height: expanded ? 400 : 120 }}
+          style={{ flex: 1, height: expanded ? 520 : 140 }}
         >
           {project.details.map((detail, index) => (
             <View key={index}>
@@ -60,7 +59,7 @@ const ProjectCard = ({
               {/* Basically bold the words before a colon, unless there isn't a colon. This is mainly for Key Features */}
               <View
                 style={{
-                  maxHeight: expanded ? undefined : 60,
+                  maxHeight: expanded ? undefined : 80,
                   overflow: "hidden",
                 }}
               >
@@ -98,7 +97,7 @@ const ProjectCard = ({
       </View>
 
       {/* Controls */}
-      <View className="flex-row justify-between items-center -mx-2">
+      <View className="flex-row justify-center items-center mt-4 mb-4 gap-4">
         {/* Arrow Left */}
         <TouchableOpacity onPress={() => navigateDetails("prev")}>
           <Icon name="chevron-left" size={48}></Icon>
@@ -107,7 +106,7 @@ const ProjectCard = ({
         {/* Coin Image */}
         <Image
           source={images[project.icon as keyof typeof images]}
-          className="w-[70px] h-[75px] -ml-4"
+          style={{ height: 75, width: 70 }}
         />
 
         {/* Dollar per ton of CO2 */}
@@ -119,14 +118,14 @@ const ProjectCard = ({
               ? (project.cost / 100).toFixed(2).slice(0, -3)
               : (project.cost / 100).toFixed(2)}
           </Text>
-          <View className="flex-col">
+          <View className="flex-col ml-2">
             <Text className="leading-tight">per ton</Text>
             <Text className="leading-tight">CO2</Text>
           </View>
         </View>
 
         {/* Quantity */}
-        <View className="my-12 -mr-4">
+        <View className="">
           <View className="flex-row items-center mt-2">
             <TouchableOpacity
               onPress={decrementQuantity}
@@ -134,7 +133,12 @@ const ProjectCard = ({
             >
               <Icon name="minus" size={24} color={"#fff"}></Icon>
             </TouchableOpacity>
-            <Text className="mx-2 text-xl font-bold">{quantity}</Text>
+            <Text
+              className="text-xl font-bold"
+              style={{ height: 20, width: 20, textAlign: "center" }}
+            >
+              {quantity}
+            </Text>
             <TouchableOpacity
               onPress={incrementQuantity}
               className="bg-black w-8 h-8 rounded-lg items-center justify-center"
@@ -151,7 +155,7 @@ const ProjectCard = ({
       </View>
 
       {/* Total & Add to Cart */}
-      <View className="flex-row ml-auto items-center gap-8">
+      <View className="flex-row items-center gap-8 justify-end">
         <Text className="text-3xl font-bold">Total:</Text>
         <Text className="text-3xl">
           $
@@ -159,14 +163,14 @@ const ProjectCard = ({
             ? ((project.cost * quantity) / 100).toFixed(2).slice(0, -3)
             : ((project.cost * quantity) / 100).toFixed(2)}
         </Text>
-        <TouchableOpacity className="bg-[#409858] px-4 py-2 rounded-full flex-row gap-4 justify-center align-baseline">
+        <TouchableOpacity className="bg-[#409858] p-2 rounded-full flex-row justify-center align-baseline">
           <Icon
             name="shopping-cart"
             size={18}
             color={"#fff"}
-            className="pt-1.5"
+            className="p-2"
           ></Icon>
-          <Text className="text-white font-bold py-1.5">Add to Cart</Text>
+          <Text className="text-white font-bold p-2">Add to Cart</Text>
         </TouchableOpacity>
       </View>
     </View>
