@@ -1,202 +1,452 @@
 [
   {
     "name": "Alabama",
-    "abbreviation": "AL"
+    "abbreviation": "AL",
+    "stateEGridValue": 787.66,
+    "averageMonthlyElectricityBill": 186.71,
+    "averageMonthlyWaterBill": 30,
+    "averageMonthlyGasBill": 81,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Alaska",
-    "abbreviation": "AK"
+    "abbreviation": "AK",
+    "stateEGridValue": 912.71,
+    "averageMonthlyElectricityBill": 144.36,
+    "averageMonthlyWaterBill": 68,
+    "averageMonthlyGasBill": 164,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Arizona",
-    "abbreviation": "AZ"
+    "abbreviation": "AZ",
+    "stateEGridValue": 709.12,
+    "averageMonthlyElectricityBill": 161.70,
+    "averageMonthlyWaterBill": 64,
+    "averageMonthlyGasBill": 82,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Arkansas",
-    "abbreviation": "AR"
+    "abbreviation": "AR",
+    "stateEGridValue": 1056.0,
+    "averageMonthlyElectricityBill": 139.86,
+    "averageMonthlyWaterBill": 26,
+    "averageMonthlyGasBill": 65,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "California",
-    "abbreviation": "CA"
+    "abbreviation": "CA",
+    "stateEGridValue": 455.94,
+    "averageMonthlyElectricityBill": 183.29,
+    "averageMonthlyWaterBill": 77,
+    "averageMonthlyGasBill": 34,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Colorado",
-    "abbreviation": "CO"
+    "abbreviation": "CO",
+    "stateEGridValue": 1166.0,
+    "averageMonthlyElectricityBill": 102.21,
+    "averageMonthlyWaterBill": 39,
+    "averageMonthlyGasBill": 47,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Connecticut",
-    "abbreviation": "CT"
+    "abbreviation": "CT",
+    "stateEGridValue": 520.86,
+    "averageMonthlyElectricityBill": 211.79,
+    "averageMonthlyWaterBill": 69,
+    "averageMonthlyGasBill": 107,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Delaware",
-    "abbreviation": "DE"
+    "abbreviation": "DE",
+    "stateEGridValue": 899.25,
+    "averageMonthlyElectricityBill": 172.01,
+    "averageMonthlyWaterBill": 46,
+    "averageMonthlyGasBill": 80,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Florida",
-    "abbreviation": "FL"
+    "abbreviation": "FL",
+    "stateEGridValue": 815.57,
+    "averageMonthlyElectricityBill": 162.76,
+    "averageMonthlyWaterBill": 33,
+    "averageMonthlyGasBill": 105,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Georgia",
-    "abbreviation": "GA"
+    "abbreviation": "GA",
+    "stateEGridValue": 737.19,
+    "averageMonthlyElectricityBill": 154.54,
+    "averageMonthlyWaterBill": 28,
+    "averageMonthlyGasBill": 118,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Hawaii",
-    "abbreviation": "HI"
+    "abbreviation": "HI",
+    "stateEGridValue": 1453.0,
+    "averageMonthlyElectricityBill": 232.73,
+    "averageMonthlyWaterBill": 64,
+    "averageMonthlyGasBill": 122,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Idaho",
-    "abbreviation": "ID"
+    "abbreviation": "ID",
+    "stateEGridValue": 247.85,
+    "averageMonthlyElectricityBill": 115.07,
+    "averageMonthlyWaterBill": 38,
+    "averageMonthlyGasBill": 40,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Illinois",
-    "abbreviation": "IL"
+    "abbreviation": "IL",
+    "stateEGridValue": 588.41,
+    "averageMonthlyElectricityBill": 120.10,
+    "averageMonthlyWaterBill": 26,
+    "averageMonthlyGasBill": 97,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Indiana",
-    "abbreviation": "IN"
+    "abbreviation": "IN",
+    "stateEGridValue": 1567.0,
+    "averageMonthlyElectricityBill": 145.64,
+    "averageMonthlyWaterBill": 30,
+    "averageMonthlyGasBill": 122,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Iowa",
-    "abbreviation": "IA"
+    "abbreviation": "IA",
+    "stateEGridValue": 617.35,
+    "averageMonthlyElectricityBill": 116.33,
+    "averageMonthlyWaterBill": 32,
+    "averageMonthlyGasBill": 73,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Kansas",
-    "abbreviation": "KS"
+    "abbreviation": "KS",
+    "stateEGridValue": 820.17,
+    "averageMonthlyElectricityBill": 133.45,
+    "averageMonthlyWaterBill": 27,
+    "averageMonthlyGasBill": 106,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Kentucky",
-    "abbreviation": "KY"
+    "abbreviation": "KY",
+    "stateEGridValue": 1720.0,
+    "averageMonthlyElectricityBill": 142.22,
+    "averageMonthlyWaterBill": 49,
+    "averageMonthlyGasBill": 94,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Louisiana",
-    "abbreviation": "LA"
+    "abbreviation": "LA",
+    "stateEGridValue": 818.06,
+    "averageMonthlyElectricityBill": 148.70,
+    "averageMonthlyWaterBill": 21,
+    "averageMonthlyGasBill": 55,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Maine",
-    "abbreviation": "ME"
+    "abbreviation": "ME",
+    "stateEGridValue": 336.61,
+    "averageMonthlyElectricityBill": 119.34,
+    "averageMonthlyWaterBill": 24,
+    "averageMonthlyGasBill": 104,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Maryland",
-    "abbreviation": "MD"
+    "abbreviation": "MD",
+    "stateEGridValue": 637.05,
+    "averageMonthlyElectricityBill": 172.79,
+    "averageMonthlyWaterBill": 46,
+    "averageMonthlyGasBill": 80,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Massachusetts",
-    "abbreviation": "MA"
+    "abbreviation": "MA",
+    "stateEGridValue": 851.74,
+    "averageMonthlyElectricityBill": 170.22,
+    "averageMonthlyWaterBill": 34,
+    "averageMonthlyGasBill": 77,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Michigan",
-    "abbreviation": "MI"
+    "abbreviation": "MI",
+    "stateEGridValue": 1009.0,
+    "averageMonthlyElectricityBill": 125.38,
+    "averageMonthlyWaterBill": 29,
+    "averageMonthlyGasBill": 74,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Minnesota",
-    "abbreviation": "MN"
+    "abbreviation": "MN",
+    "stateEGridValue": 768.24,
+    "averageMonthlyElectricityBill": 116.57,
+    "averageMonthlyWaterBill": 28,
+    "averageMonthlyGasBill": 55,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Mississippi",
-    "abbreviation": "MS"
+    "abbreviation": "MS",
+    "stateEGridValue": 886.21,
+    "averageMonthlyElectricityBill": 173.63,
+    "averageMonthlyWaterBill": 23,
+    "averageMonthlyGasBill": 63,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Missouri",
-    "abbreviation": "MO"
+    "abbreviation": "MO",
+    "stateEGridValue": 1506.0,
+    "averageMonthlyElectricityBill": 134.84,
+    "averageMonthlyWaterBill": 39,
+    "averageMonthlyGasBill": 108,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Montana",
-    "abbreviation": "MT"
+    "abbreviation": "MT",
+    "stateEGridValue": 1023.0,
+    "averageMonthlyElectricityBill": 113.68,
+    "averageMonthlyWaterBill": 38,
+    "averageMonthlyGasBill": 37,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Nebraska",
-    "abbreviation": "NE"
+    "abbreviation": "NE",
+    "stateEGridValue": 1097.0,
+    "averageMonthlyElectricityBill": 123.60,
+    "averageMonthlyWaterBill": 23,
+    "averageMonthlyGasBill": 68,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Nevada",
-    "abbreviation": "NV"
+    "abbreviation": "NV",
+    "stateEGridValue": 676.96,
+    "averageMonthlyElectricityBill": 155.78,
+    "averageMonthlyWaterBill": 26,
+    "averageMonthlyGasBill": 56,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "New Hampshire",
-    "abbreviation": "NH"
+    "abbreviation": "NH",
+    "stateEGridValue": 302.93,
+    "averageMonthlyElectricityBill": 143.29,
+    "averageMonthlyWaterBill": 27,
+    "averageMonthlyGasBill": 90,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "New Jersey",
-    "abbreviation": "NJ"
+    "abbreviation": "NJ",
+    "stateEGridValue": 486.63,
+    "averageMonthlyElectricityBill": 125.83,
+    "averageMonthlyWaterBill": 72,
+    "averageMonthlyGasBill": 66,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "New Mexico",
-    "abbreviation": "NM"
+    "abbreviation": "NM",
+    "stateEGridValue": 985.81,
+    "averageMonthlyElectricityBill": 94.17,
+    "averageMonthlyWaterBill": 32,
+    "averageMonthlyGasBill": 60,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "New York",
-    "abbreviation": "NY"
+    "abbreviation": "NY",
+    "stateEGridValue": 489.71,
+    "averageMonthlyElectricityBill": 135.98,
+    "averageMonthlyWaterBill": 30,
+    "averageMonthlyGasBill": 96,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "North Carolina",
-    "abbreviation": "NC"
+    "abbreviation": "NC",
+    "stateEGridValue": 654.57,
+    "averageMonthlyElectricityBill": 160.59,
+    "averageMonthlyWaterBill": 20,
+    "averageMonthlyGasBill": 63,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "North Dakota",
-    "abbreviation": "ND"
+    "abbreviation": "ND",
+    "stateEGridValue": 1311.0,
+    "averageMonthlyElectricityBill": 126.78,
+    "averageMonthlyWaterBill": 31,
+    "averageMonthlyGasBill": 62,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Ohio",
-    "abbreviation": "OH"
+    "abbreviation": "OH",
+    "stateEGridValue": 1156.0,
+    "averageMonthlyElectricityBill": 146.40,
+    "averageMonthlyWaterBill": 27,
+    "averageMonthlyGasBill": 148,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Oklahoma",
-    "abbreviation": "OK"
+    "abbreviation": "OK",
+    "stateEGridValue": 686.63,
+    "averageMonthlyElectricityBill": 143.91,
+    "averageMonthlyWaterBill": 35,
+    "averageMonthlyGasBill": 71,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Oregon",
-    "abbreviation": "OR"
+    "abbreviation": "OR",
+    "stateEGridValue": 298.21,
+    "averageMonthlyElectricityBill": 138.12,
+    "averageMonthlyWaterBill": 76,
+    "averageMonthlyGasBill": 32,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Pennsylvania",
-    "abbreviation": "PA"
+    "abbreviation": "PA",
+    "stateEGridValue": 711.37,
+    "averageMonthlyElectricityBill": 153.29,
+    "averageMonthlyWaterBill": 31,
+    "averageMonthlyGasBill": 103,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Rhode Island",
-    "abbreviation": "RI"
+    "abbreviation": "RI",
+    "stateEGridValue": 811.32,
+    "averageMonthlyElectricityBill": 164.51,
+    "averageMonthlyWaterBill": 32,
+    "averageMonthlyGasBill": 95,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "South Carolina",
-    "abbreviation": "SC"
+    "abbreviation": "SC",
+    "stateEGridValue": 556.74,
+    "averageMonthlyElectricityBill": 162.11,
+    "averageMonthlyWaterBill": 33,
+    "averageMonthlyGasBill": 96,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "South Dakota",
-    "abbreviation": "SD"
+    "abbreviation": "SD",
+    "stateEGridValue": 325.11,
+    "averageMonthlyElectricityBill": 135.85,
+    "averageMonthlyWaterBill": 26,
+    "averageMonthlyGasBill": 50,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Tennessee",
-    "abbreviation": "TN"
+    "abbreviation": "TN",
+    "stateEGridValue": 693.63,
+    "averageMonthlyElectricityBill": 151.59,
+    "averageMonthlyWaterBill": 43,
+    "averageMonthlyGasBill": 66,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Texas",
-    "abbreviation": "TX"
+    "abbreviation": "TX",
+    "stateEGridValue": 818.54,
+    "averageMonthlyElectricityBill": 176.94,
+    "averageMonthlyWaterBill": 37,
+    "averageMonthlyGasBill": 61,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Utah",
-    "abbreviation": "UT"
+    "abbreviation": "UT",
+    "stateEGridValue": 1514.0,
+    "averageMonthlyElectricityBill": 86.68,
+    "averageMonthlyWaterBill": 38,
+    "averageMonthlyGasBill": 35,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Vermont",
-    "abbreviation": "VT"
+    "abbreviation": "VT",
+    "stateEGridValue": 35.63,
+    "averageMonthlyElectricityBill": 124.11,
+    "averageMonthlyWaterBill": 18,
+    "averageMonthlyGasBill": 89,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Virginia",
-    "abbreviation": "VA"
+    "abbreviation": "VA",
+    "stateEGridValue": 587.45,
+    "averageMonthlyElectricityBill": 162.79,
+    "averageMonthlyWaterBill": 36,
+    "averageMonthlyGasBill": 80,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Washington",
-    "abbreviation": "WA"
+    "abbreviation": "WA",
+    "stateEGridValue": 184.81,
+    "averageMonthlyElectricityBill": 119.94,
+    "averageMonthlyWaterBill": 75,
+    "averageMonthlyGasBill": 33,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "West Virginia",
-    "abbreviation": "WV"
+    "abbreviation": "WV",
+    "stateEGridValue": 1959.0,
+    "averageMonthlyElectricityBill": 167.11,
+    "averageMonthlyWaterBill": 91,
+    "averageMonthlyGasBill": 69,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Wisconsin",
-    "abbreviation": "WI"
+    "abbreviation": "WI",
+    "stateEGridValue": 1171.0,
+    "averageMonthlyElectricityBill": 118.40,
+    "averageMonthlyWaterBill": 18,
+    "averageMonthlyGasBill": 77,
+    "averageMonthlyPropaneBill": 152
   },
   {
     "name": "Wyoming",
-    "abbreviation": "WY"
+    "abbreviation": "WY",
+    "stateEGridValue": 1804.0,
+    "averageMonthlyElectricityBill": 108.70,
+    "averageMonthlyWaterBill": 53,
+    "averageMonthlyGasBill": 43,
+    "averageMonthlyPropaneBill": 152
   }
 ]

@@ -2,14 +2,14 @@ import React from "react";
 import { View, Text } from "react-native";
 import { Slider } from "@react-native-assets/slider";
 
-const QuestionSlider = ({ question, value, onChange, labels }: any) => {
+const QuestionSlider = ({ question, value, onChange, labels, minimumValue, maximumValue }: any) => {
   return (
     <>
       <Text className="mt-8 text-xl">{question}</Text>
       <View className="mt-4">
         <Slider
-          minimumValue={0}
-          maximumValue={7}
+          minimumValue={minimumValue}
+          maximumValue={maximumValue}
           step={1}
           value={value}
           onValueChange={onChange}

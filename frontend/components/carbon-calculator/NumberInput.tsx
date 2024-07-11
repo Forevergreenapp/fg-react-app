@@ -1,14 +1,32 @@
 import React, { useRef } from "react";
-import { View, Text, Pressable } from "react-native";
+import { Text, Pressable } from "react-native";
 import { TextInput, HelperText } from "react-native-paper";
 
-const NumberInput = ({ question, value, onChange, label, error }: any) => {
+const NumberInput = ({
+  question,
+  value,
+  onChange,
+  unit,
+  label,
+  error,
+}: any) => {
   const inputRef = useRef<any>(null);
-  
+
   return (
     <>
       <Text className="mt-6 text-xl">{question}</Text>
-      <View className="mt-4 bg-white shadow-md shadow-black rounded-lg flex-row items-center">
+      <Pressable
+        className="mt-4 bg-white shadow-md shadow-black rounded-lg flex-row items-center"
+        onPress={() => inputRef.current?.focus()}
+      >
+        {value && (
+          <Pressable
+            style={{ position: "absolute", left: 5 }}
+            onPress={() => inputRef.current?.focus()}
+          >
+            <Text>{unit}</Text>
+          </Pressable>
+        )}
         <TextInput
           ref={inputRef}
           placeholder="Your Answer"
@@ -25,13 +43,13 @@ const NumberInput = ({ question, value, onChange, label, error }: any) => {
         />
         {value && (
           <Pressable
-            className="absolute left-16"
+            style={{ position: "absolute", left: 70 }}
             onPress={() => inputRef.current?.focus()}
           >
             <Text>{label}</Text>
           </Pressable>
         )}
-      </View>
+      </Pressable>
       <HelperText type="error" visible={!!error}>
         {error}
       </HelperText>

@@ -68,12 +68,13 @@ const TransportQuestion = ({
                 }}
               />
               <Pressable
-                className="absolute left-16"
                 onPress={() => inputRef.current?.focus()}
                 style={{
                   height: 40,
                   alignItems: "center",
                   justifyContent: "center",
+                  position: "absolute",
+                  right: 5,
                 }}
               >
                 <Text className="text-sm">{label}</Text>

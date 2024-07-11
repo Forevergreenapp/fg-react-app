@@ -52,3 +52,32 @@ exports.makeuppercase = onDocumentCreated("/messages/{documentId}", (event) => {
   // Setting an 'uppercase' field in Firestore document returns a Promise.
   return event.data.ref.set({ uppercase }, { merge: true });
 });
+
+// Trigger a function on user creation
+// https://firebase.google.com/docs/functions/auth-events
+// Create a new user in Cloud Firestore when a new Firebase
+// Authentication account is created
+
+// Functions that need to be written
+// USER PROFILE FUNCTIONS
+// 1. Create a new user in Cloud Firestore when a new Firebase
+//    Authentication account is created
+// 2. Update the user's profile in Cloud Firestore when their
+//    profile is updated in Firebase Auth
+// 3. Delete the user's profile from Cloud Firestore when their
+//    account is deleted in Firebase Auth
+// CARBON CALCULATOR FUNCTIONS
+// 1. When the transportation section is completed, add the data
+//    To the logged in user's data in the db
+// 2. When the diet section is completed, add that data
+//    To the logged in user's data in the db
+// 3. When the energy section is completed, add that data
+//    to the logged in user's data in the db
+// 4. Write a function to access the currently logged in user's
+//    Carbon Calculator data in the db and return it to the client
+// CARBON CREDIT FUNCTIONS
+// 1. Create an HTTPS endpoint and possible web page to allow for
+//    us to create new carbon credits
+// 2. Create a cloud function that triggers when a user purchases a
+//    carbon credit. This function needs to update user schema (add cert),
+//    carbon credit schema (quantity)

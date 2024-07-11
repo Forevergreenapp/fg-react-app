@@ -180,6 +180,8 @@ export default function TransportationCalculator() {
                 markQuestionCompleted("longFlights");
               }}
               labels={["0", "1", "2", "3", "4", "5", "6", "7+"]}
+              minimumValue={0}
+              maximumValue={7}
             />
 
             {/* Short round-trip flights */}
@@ -191,6 +193,8 @@ export default function TransportationCalculator() {
                 markQuestionCompleted("shortFlights");
               }}
               labels={["0", "1", "2", "3", "4", "5", "6", "7+"]}
+              minimumValue={0}
+              maximumValue={7}
             />
 
             {/* Type of Car */}
@@ -208,12 +212,13 @@ export default function TransportationCalculator() {
             <NumberInput
               question="How many miles do you drive per week? 🚗"
               value={milesPerWeek}
-              onChange={(value: React.SetStateAction<string>) => {
-                setMilesPerWeek(value);
+              onChange={(value: string) => {
+                validateNumber(value, setMilesPerWeek, setMilesError);
                 if (value !== "") {
                   markQuestionCompleted("milesPerWeek");
                 }
               }}
+              unit=""
               label="Miles per week"
               error={milesError}
             />

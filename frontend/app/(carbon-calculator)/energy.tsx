@@ -7,33 +7,28 @@ import {
   FlatList,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  useTheme,
-  RadioButton,
-  TextInput,
-  Menu,
-  Searchbar,
-  HelperText,
-} from "react-native-paper";
-import * as Progress from "react-native-progress";
-import Icon from "react-native-vector-icons/FontAwesome";
-import { router } from "expo-router";
-import { Slider } from "@react-native-assets/slider";
+import { Menu, Searchbar } from "react-native-paper";
 import statesData from "../../constants/states.json";
+import {
+  Header,
+  NumberInput,
+  NextButton,
+  QuestionSlider,
+  RadioButtonGroup,
+} from "../../components/carbon-calculator";
 
 export default function EnergyCalculator() {
-  const theme = useTheme();
-  const [state, setState] = useState("");
+  const [state, setState] = useState("Pennsylvania");
   const [searchQuery, setSearchQuery] = useState("");
-  const [electricBill, setElectricBill] = useState("");
+  const [electricBill, setElectricBill] = useState("142.73");
   const [electricBillError, setElectricBillError] = useState("");
-  const [waterBill, setWaterBill] = useState("");
+  const [waterBill, setWaterBill] = useState("77");
   const [waterBillError, setWaterBillError] = useState("");
-  const [propaneBill, setPropaneBill] = useState("");
+  const [propaneBill, setPropaneBill] = useState("134.86");
   const [propaneBillError, setPropaneBillError] = useState("");
-  const [gasBill, setGasBill] = useState("");
+  const [gasBill, setGasBill] = useState("77");
   const [gasBillError, setGasBillError] = useState("");
-  const [useWoodStove, setUseWoodStove] = useState("");
+  const [useWoodStove, setUseWoodStove] = useState("Yes");
   const [peopleInHome, setPeopleInHome] = useState(1);
   const [isFormValid, setIsFormValid] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -44,6 +39,70 @@ export default function EnergyCalculator() {
     useState(0.0);
   const [totalEmissions, setTotalEmissions] = useState(0.0);
   const [progress, setProgress] = useState(0.66);
+  const [stateData, setStateData] = useState(null);
+
+  useEffect(() => {
+    if (state) {
+      const selectedState = statesData.find((s) => s.name === state);
+      if (selectedState) {
+        setStateData(selectedState as any);
+      }
+    }
+  }, [state]);
+
+  useEffect(() => {
+    if (
+      stateData &&
+      electricBill &&
+      waterBill &&
+      propaneBill &&
+      gasBill &&
+      peopleInHome
+    ) {
+      // Calculate electricity emissions
+      const electricityEmissions =
+        ((stateData as any).stateEGridValue / 2000) *
+        (parseFloat(electricBill) /
+          (stateData as any).averageMonthlyElectricityBill);
+
+      // Calculate water emissions
+      const waterEmissions =
+        (parseFloat(waterBill) / (stateData as any).averageMonthlyWaterBill) *
+        0.0052;
+
+      // Calculate propane emissions
+      const propaneEmissions =
+        (parseFloat(propaneBill) /
+          (stateData as any).averageMonthlyPropaneBill) *
+        0.24;
+
+      // Calculate natural gas emissions
+      const gasEmissions =
+        (parseFloat(gasBill) / (stateData as any).averageMonthlyGasBill) * 2.12;
+
+      // Calculate total energy emissions
+      const totalEnergyEmissions =
+        (electricityEmissions +
+          waterEmissions +
+          propaneEmissions +
+          gasEmissions) /
+        peopleInHome;
+
+      // Update state with new emission values
+      setElectricEmissions(electricityEmissions);
+      setWaterEmissions(waterEmissions);
+      setOtherEnergyEmissions(propaneEmissions + gasEmissions);
+      setTotalEmissions(totalEnergyEmissions + transportationDietEmissions);
+    }
+  }, [
+    stateData,
+    electricBill,
+    waterBill,
+    propaneBill,
+    gasBill,
+    peopleInHome,
+    transportationDietEmissions,
+  ]);
 
   const updateProgress = useCallback(() => {
     let completedQuestions = 0;
@@ -84,12 +143,30 @@ export default function EnergyCalculator() {
       <Menu.Item
         onPress={() => {
           setState(item.name);
+          setElectricBill(item.averageMonthlyElectricityBill.toFixed(2));
+          setWaterBill(item.averageMonthlyWaterBill.toFixed(2));
+          setPropaneBill(item.averageMonthlyPropaneBill.toFixed(2));
+          setGasBill(item.averageMonthlyGasBill.toFixed(2));
+          setElectricBillError("");
+          setWaterBillError("");
+          setPropaneBillError("");
+          setGasBillError("");
           setMenuVisible(false);
         }}
         title={`${item.name} (${item.abbreviation})`}
       />
     ),
-    []
+    [
+      setState,
+      setElectricBill,
+      setWaterBill,
+      setPropaneBill,
+      setGasBill,
+      setElectricBillError,
+      setWaterBillError,
+      setPropaneBillError,
+      setGasBillError,
+    ]
   );
 
   const validateNumber = (
@@ -114,7 +191,6 @@ export default function EnergyCalculator() {
   };
 
   useEffect(() => {
-    // Add form validation logic here
     const isElectricBillValid = electricBill !== "" && electricBillError === "";
     const isWaterBillValid = waterBill !== "" && waterBillError === "";
     const isPropaneBillValid = propaneBill !== "" && propaneBillError === "";
@@ -125,7 +201,7 @@ export default function EnergyCalculator() {
       isPropaneBillValid &&
       isGasBillValid;
     setIsFormValid(isFormValid);
-    updateProgress(); // Update progress when form validity changes
+    updateProgress();
   }, [
     state,
     electricBill,
@@ -144,30 +220,9 @@ export default function EnergyCalculator() {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <SafeAreaView>
-        {/* Header */}
-        <View className="flex-row items-center gap-6 mt-4 mx-8">
-          <Icon
-            name="arrow-left"
-            size={24}
-            color="black"
-            onPress={() => router.replace("diet")}
-          />
-          <View className="w-5/6">
-            <Progress.Bar
-              progress={progress}
-              width={null}
-              color="#AEDCA7"
-              unfilledColor="#FFF"
-              borderColor={theme.colors.onBackground}
-              borderWidth={1.5}
-              height={15}
-              borderRadius={9999}
-            />
-          </View>
-        </View>
         <View className="px-12">
-          {/* Title */}
-          <Text className="text-4xl mt-6">Energy</Text>
+          {/* Header */}
+          <Header onBack="diet" progress={progress} title="Energy" />
 
           {/* State Selection */}
           <Text className="mt-6 text-lg">Which State do you live in?</Text>
@@ -196,145 +251,74 @@ export default function EnergyCalculator() {
           </Menu>
 
           {/* Electric Bill */}
-          <Text className="mt-6 text-xl">
-            How much was your electric bill last month?
-          </Text>
-          <View className="mt-4 bg-white shadow-md shadow-black rounded-lg overflow-hidden">
-            <TextInput
-              placeholder="Your Answer"
-              value={electricBill}
-              onChangeText={(value) => {
-                validateNumber(value, setElectricBill, setElectricBillError);
-              }}
-              keyboardType="numeric"
-              mode="outlined"
-              outlineStyle={{ borderColor: "transparent" }}
-              className="p-4"
-              style={{
-                backgroundColor: "#FFF",
-              }}
-            />
-          </View>
-          <HelperText type="error" visible={electricBillError !== ""}>
-            {electricBillError}
-          </HelperText>
+          <NumberInput
+            question="How much was your electric bill last month?"
+            value={electricBill}
+            onChange={(value: string) => {
+              validateNumber(value, setElectricBill, setElectricBillError);
+            }}
+            unit="$"
+            label="per month"
+            error={electricBillError}
+          />
 
           {/* Water Bill */}
-          <Text className="mt-6 text-xl">
-            How much was your water bill last month?
-          </Text>
-          <View className="mt-4 bg-white shadow-md shadow-black rounded-lg overflow-hidden">
-            <TextInput
-              placeholder="Your Answer"
-              value={waterBill}
-              onChangeText={(value) => {
-                validateNumber(value, setWaterBill, setWaterBillError);
-              }}
-              keyboardType="numeric"
-              mode="outlined"
-              outlineStyle={{ borderColor: "transparent" }}
-              className="p-4"
-              style={{
-                backgroundColor: "#FFF",
-              }}
-            />
-          </View>
-          <HelperText type="error" visible={waterBillError !== ""}>
-            {waterBillError}
-          </HelperText>
+          <NumberInput
+            question="How much was your water bill last month?"
+            value={waterBill}
+            onChange={(value: string) => {
+              validateNumber(value, setWaterBill, setWaterBillError);
+            }}
+            unit="$"
+            label="per month"
+            error={waterBillError}
+          />
 
           {/* Propane Bill */}
-          <Text className="mt-6 text-xl">
-            How much was spent on propane last month?
-          </Text>
-          <View className="mt-4 bg-white shadow-md shadow-black rounded-lg overflow-hidden">
-            <TextInput
-              placeholder="Your Answer"
-              value={propaneBill}
-              onChangeText={(value) => {
-                validateNumber(value, setPropaneBill, setPropaneBillError);
-              }}
-              keyboardType="numeric"
-              mode="outlined"
-              outlineStyle={{ borderColor: "transparent" }}
-              className="p-4"
-              style={{
-                backgroundColor: "#FFF",
-              }}
-            />
-          </View>
-          <HelperText type="error" visible={propaneBillError !== ""}>
-            {propaneBillError}
-          </HelperText>
+          <NumberInput
+            question="How much was spent on propane last month?"
+            value={propaneBill}
+            onChange={(value: string) => {
+              validateNumber(value, setPropaneBill, setPropaneBillError);
+            }}
+            unit="$"
+            label="per month"
+            error={propaneBillError}
+          />
 
           {/* Gas Bill */}
-          <Text className="mt-6 text-xl">
-            How much was your gas bill last month?
-          </Text>
-          <View className="mt-4 bg-white shadow-md shadow-black rounded-lg overflow-hidden">
-            <TextInput
-              placeholder="Your Answer"
-              value={gasBill}
-              onChangeText={(value) => {
-                validateNumber(value, setGasBill, setGasBillError);
-              }}
-              keyboardType="numeric"
-              mode="outlined"
-              outlineStyle={{ borderColor: "transparent" }}
-              className="p-4"
-              style={{
-                backgroundColor: "#FFF",
-              }}
-            />
-          </View>
-          <HelperText type="error" visible={gasBillError !== ""}>
-            {gasBillError}
-          </HelperText>
+          <NumberInput
+            question="How much was spent on gas last month?"
+            value={gasBill}
+            onChange={(value: string) => {
+              validateNumber(value, setGasBill, setGasBillError);
+            }}
+            unit="$"
+            label="per month"
+            error={gasBillError}
+          />
 
           {/* Wood Stove */}
-          <Text className="mt-6 text-lg">Do you use a wood stove?</Text>
-          <View className="flex-col mt-4">
-            <View className="flex-row items-center">
-              <RadioButton
-                value="Yes"
-                status={useWoodStove === "Yes" ? "checked" : "unchecked"}
-                onPress={() => setUseWoodStove("Yes")}
-              />
-              <Text className="text-lg">Yes</Text>
-            </View>
-            <View className="flex-row items-center">
-              <RadioButton
-                value="No"
-                status={useWoodStove === "No" ? "checked" : "unchecked"}
-                onPress={() => setUseWoodStove("No")}
-              />
-              <Text className="text-lg">No</Text>
-            </View>
-          </View>
+          <RadioButtonGroup
+            question="Do you use a wood stove?"
+            options={["Yes", "No"]}
+            value={useWoodStove}
+            onChange={(value: React.SetStateAction<string>) => {
+              setUseWoodStove(value);
+            }}
+          />
 
           {/* People in Home */}
-          <Text className="mt-6 text-lg">
-            How many people live in your household?
-          </Text>
-          <View className="mt-4">
-            <Slider
-              minimumValue={1}
-              maximumValue={7}
-              step={1}
-              value={peopleInHome}
-              onValueChange={setPeopleInHome}
-              minimumTrackTintColor="#8E8F8E"
-              maximumTrackTintColor="#D9D9D9"
-              thumbTintColor="#8E8F8E"
-              trackHeight={9}
-              thumbSize={20}
-            />
-          </View>
-          <View className="flex-row justify-between -mr-1.5">
-            {[1, 2, 3, 4, 5, 6, "7+"].map((value) => (
-              <Text key={value}>{value}</Text>
-            ))}
-          </View>
+          <QuestionSlider
+            question="How many people live in your household?"
+            value={peopleInHome}
+            onChange={(value: React.SetStateAction<number>) => {
+              setPeopleInHome(value);
+            }}
+            labels={["1", "2", "3", "4", "5", "6", "7", "8+"]}
+            minimumValue={1}
+            maximumValue={7}
+          />
 
           {/* Emissions Display */}
           <View className="mt-8 mb-16">
@@ -368,29 +352,7 @@ export default function EnergyCalculator() {
         </View>
 
         {/* Next Button */}
-        <View className="flex items-end mb-10 mr-10">
-          <TouchableOpacity
-            onPress={() => {
-              if (isFormValid) {
-                router.replace("breakdown");
-              }
-            }}
-          >
-            <View
-              className={`py-3 px-4 rounded-full border-2 h-16 w-16 ${
-                isFormValid
-                  ? "border-black bg-[#AEDCA7]"
-                  : "border-gray-300 bg-gray-300"
-              }`}
-            >
-              <Icon
-                name="arrow-right"
-                size={30}
-                color={isFormValid ? "#000" : "#AAA"}
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
+        <NextButton isFormValid={isFormValid} onNext={"breakdown"} />
       </SafeAreaView>
     </ScrollView>
   );
