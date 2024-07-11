@@ -101,7 +101,6 @@ export default function LoginScreen() {
                 </Text>
               </TouchableOpacity>
             </View>
-            {/* <Button title="Sign Up!" onPress={() => {}} /> */}
             <View className="flex flex-row items-center my-4">
               <View className="flex-1 h-1 bg-onBackground" />
               <Text className="mx-4 font-bold text-xl">Or</Text>

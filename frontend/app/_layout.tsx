@@ -10,8 +10,13 @@ import "../global.css";
 
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { initializeAuth, getReactNativePersistence, GoogleAuthProvider } from "firebase/auth";
+import {
+  initializeAuth,
+  getReactNativePersistence,
+  GoogleAuthProvider,
+} from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { getFirestore } from "firebase/firestore";
 
 // Optionally import the services that you want to use
 // import {...} from "firebase/database";
@@ -23,7 +28,7 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 const firebaseConfig = {
   apiKey: "AIzaSyBIvTUeN-I9FnCgz7d0ybhdWRpwsyFH0_s",
   authDomain: "fg-react-app.firebaseapp.com",
-  databaseURL: "https://project-id.firebaseio.com",
+  databaseURL: "https://fg-react-app.firebaseio.com",
   projectId: "fg-react-app",
   storageBucket: "fg-react-app.appspot.com",
   messagingSenderId: "489135632905",
@@ -41,8 +46,10 @@ if (getApps().length === 0) {
   const auth = initializeAuth(app, {
     persistence: getReactNativePersistence(ReactNativeAsyncStorage),
   });
-  
+
   const googleProvider = new GoogleAuthProvider();
+
+  const db = getFirestore(app);
 } else {
   getApp();
 }
