@@ -6,10 +6,13 @@ import {
   RadioButtonGroup,
   NextButton,
 } from "../../components/carbon-calculator";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 export default function DietCalculator() {
   const [diet, setDiet] = useState("Average");
   const [dietEmissions, setDietEmissions] = useState(0.0);
+  const [transportationEmissions, setTransportationEmissions] = useState(0.0);
   const [isFormValid, setIsFormValid] = useState(false);
   const [progress, setProgress] = useState(0.33);
 
@@ -43,6 +46,49 @@ export default function DietCalculator() {
     }
   }, [diet]);
 
+  useEffect(() => {
+    const loadData = async () => {
+      const data = await fetchTransportationData();
+      if (data) {
+        setTransportationEmissions(data.transportationEmissions);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const fetchTransportationData = async () => {
+    const auth = getAuth();
+    const db = getFirestore();
+
+    if (!auth.currentUser) {
+      console.error("No user logged in");
+      return null;
+    }
+
+    const userId = auth.currentUser.uid;
+    const userDocRef = doc(db, "users", userId);
+
+    try {
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        return userData.transportationData;
+      } else {
+        console.log("No such document!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching transportation data:", error);
+      return null;
+    }
+  };
+
+  if (!transportationEmissions) {
+    return <Text>Loading...</Text>;
+  }
+
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <SafeAreaView>
@@ -71,16 +117,36 @@ export default function DietCalculator() {
             <Text className="text-xl font-bold ">
               Your Estimated Individual Diet Emissions
             </Text>
+            <View className="flex-row mt-4">
+              <Text className="text-lg mr-4">Transportation Emissions</Text>
+              <Text className="text-lg">
+                {transportationEmissions.toFixed(2)}
+              </Text>
+            </View>
+            <View className="flex-row mt-4">
+              <Text className="text-lg mr-4">Diet Emissions</Text>
+              <Text className="text-lg">{dietEmissions.toFixed(2)}</Text>
+            </View>
             <View className="flex-row justify-between mt-4">
-              <Text className="text-lg font-bold">Diet Emissions</Text>
-              <Text className="text-lg">{dietEmissions.toFixed(1)}</Text>
+              <Text className="text-lg font-bold">Total</Text>
+              <Text className="text-lg">
+                {(transportationEmissions + dietEmissions).toFixed(2)}
+              </Text>
               <Text className="text-lg">tons of CO2 per year</Text>
             </View>
           </View>
         </View>
 
         {/* Next Button */}
-        <NextButton isFormValid={isFormValid} onNext={"energy"} />
+        <NextButton
+          isFormValid={isFormValid}
+          onNext="energy"
+          data={{
+            diet,
+            dietEmissions,
+          }}
+          type="diet"
+        />
       </SafeAreaView>
     </ScrollView>
   );

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, KeyboardAvoidingView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import {
   Header,
   QuestionSlider,
@@ -26,10 +25,10 @@ export default function TransportationCalculator() {
   const [walkBike, setWalkBike] = useState("No");
   const [walkBikeFrequency, setWalkBikeFrequency] = useState("1");
   const [walkBikeFrequencyError, setWalkBikeFrequencyError] = useState("");
-  const [flgihtEmissions, setFlightEmissions] = useState(0.0);
+  const [flightEmissions, setFlightEmissions] = useState(0.0);
   const [carEmissions, setCarEmissions] = useState(0.0);
   const [publicTransportEmissions, setPublicTransportEmissions] = useState(0.0);
-  const [totalEmissions, setTotalEmissions] = useState(0.0);
+  const [transportationEmissions, setTransportationEmissions] = useState(0.0);
   const [isFormValid, setIsFormValid] = useState(false);
   const [progress, setProgress] = useState(0);
   const [completedQuestions, setCompletedQuestions] = useState({
@@ -72,13 +71,13 @@ export default function TransportationCalculator() {
         parseFloat(trainFrequency) * 0.002912 * 52 +
         parseFloat(busFrequency) * 0.005824 * 52;
 
-      const totalEmissions =
+      const transportationEmissions =
         flightEmissions + carEmissions + publicTransportEmissions;
 
       setFlightEmissions(flightEmissions);
       setCarEmissions(carEmissions);
       setPublicTransportEmissions(publicTransportEmissions);
-      setTotalEmissions(totalEmissions);
+      setTransportationEmissions(transportationEmissions);
     };
     calculateEmissions();
   }, [
@@ -166,9 +165,9 @@ export default function TransportationCalculator() {
           {/* Header */}
           <View className="px-12">
             <Header
-              onBack={"/(auth)/get-started"}
+              onBack="/(auth)/get-started"
               progress={progress}
-              title={"Transportation"}
+              title="Transportation"
             />
 
             {/* Long round-trip flights */}
@@ -275,24 +274,46 @@ export default function TransportationCalculator() {
                 Your Individual Transportation Emissions
               </Text>
               <Text className="text-lg">
-                Flight Emissions: {flgihtEmissions.toFixed(1)}
+                Flight Emissions: {flightEmissions.toFixed(2)}
               </Text>
               <Text className="text-lg">
-                Car Emissions: {carEmissions.toFixed(1)}
+                Car Emissions: {carEmissions.toFixed(2)}
               </Text>
               <Text className="text-lg">
-                Public Transport: {publicTransportEmissions.toFixed(1)}
+                Public Transport: {publicTransportEmissions.toFixed(2)}
               </Text>
               <View className="font-bold flex-row justify-between mr-8">
                 <Text className="font-bold text-lg">Total:</Text>
-                <Text className="text-lg">{totalEmissions.toFixed(1)}</Text>
+                <Text className="text-lg">
+                  {transportationEmissions.toFixed(1)}
+                </Text>
                 <Text className="text-lg">tons of CO2 per year</Text>
               </View>
             </View>
           </View>
 
           {/* Next Button */}
-          <NextButton isFormValid={isFormValid} onNext="diet" />
+          <NextButton
+            isFormValid={isFormValid}
+            onNext="diet"
+            data={{
+              longFlights,
+              shortFlights,
+              carType,
+              milesPerWeek,
+              useTrain,
+              trainFrequency,
+              useBus,
+              busFrequency,
+              walkBike,
+              walkBikeFrequency,
+              flightEmissions,
+              carEmissions,
+              publicTransportEmissions,
+              transportationEmissions,
+            }}
+            type="transportation"
+          />
         </SafeAreaView>
       </ScrollView>
     </KeyboardAvoidingView>

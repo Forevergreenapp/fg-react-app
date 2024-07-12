@@ -1,19 +1,15 @@
-import React from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { router } from "expo-router";
-import PieChart from "../../components/PieChart"
+import PieChart from "../../components/PieChart";
 import BarChart from "../../components/BarChart";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { NextButton } from "../../components/carbon-calculator";
 
 export default function Breakdown() {
-  // TODO: Get and set the emissions from the calculator algorithm API
-  const emissionsPerYear = 16;
+  const [emissionsPerYear, setEmissionsPerYear] = useState(0.0);
   const emissionsPerMonth = (emissionsPerYear / 12).toFixed(2);
   const transportationEmissions = 30;
   const dietEmissions = 20;
@@ -66,6 +62,59 @@ export default function Breakdown() {
 
     return rows;
   };
+
+  useEffect(() => {
+    const loadData = async () => {
+      const data = await fetchTransportationDietData();
+      if (data) {
+        setEmissionsPerYear(
+          parseInt(
+            data["transportationData"].transportationEmissions +
+              data["dietData"].dietEmissions +
+              data["energyData"].energyEmissions
+          )
+        );
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const fetchTransportationDietData = async () => {
+    const auth = getAuth();
+    const db = getFirestore();
+
+    if (!auth.currentUser) {
+      console.error("No user logged in");
+      return null;
+    }
+
+    const userId = auth.currentUser.uid;
+    const userDocRef = doc(db, "users", userId);
+
+    try {
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        return {
+          transportationData: userData.transportationData,
+          dietData: userData.dietData,
+          energyData: userData.energyData,
+        };
+      } else {
+        console.log("No such document!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching transportation data:", error);
+      return null;
+    }
+  };
+
+  if (!emissionsPerYear) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <ScrollView className="flex-1 bg-white">
