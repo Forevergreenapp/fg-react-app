@@ -4,6 +4,7 @@ import Icon from "react-native-vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { getAuth, onAuthStateChanged, User, signOut } from "firebase/auth";
 import { useRouter } from "expo-router";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 const SettingsItem = ({ title }: { title: string }) => (
   <TouchableOpacity>
@@ -23,6 +24,7 @@ export default function ProfileSettings() {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const auth = getAuth();
+  const [totalEmissions, setTotalEmissions] = useState(0);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -34,12 +36,50 @@ export default function ProfileSettings() {
     });
 
     return () => unsubscribe();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!user) {
-    // You can show a loading state here if you want
-    return null;
+  useEffect(() => {
+    const loadData = async () => {
+      const data = await fetchData();
+      if (data) {
+        setTotalEmissions(parseInt(data.totalEmissions));
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const fetchData = async () => {
+    const auth = getAuth();
+    const db = getFirestore();
+
+    if (!auth.currentUser) {
+      console.error("No user logged in");
+      return null;
+    }
+
+    const userId = auth.currentUser.uid;
+    const userDocRef = doc(db, "users", userId);
+
+    try {
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        return userData.energyData;
+      } else {
+        console.log("No such document!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return null;
+    }
+  };
+
+  if (!totalEmissions || !user) {
+    return <Text>Loading...</Text>;
   }
 
   const handleLogout = () => {
@@ -110,7 +150,9 @@ export default function ProfileSettings() {
             Your carbon footprint...
           </Text>
           <View className="flex-row items-center justify-between">
-            <Text className="text-xl font-semibold">16 tons of CO₂</Text>
+            <Text className="text-xl font-semibold">
+              {totalEmissions} tons of CO₂
+            </Text>
             <TouchableOpacity className="bg-[#409858] px-4 py-2 rounded-full">
               <Text className="text-white">Offset Now!</Text>
             </TouchableOpacity>
