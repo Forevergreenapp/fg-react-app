@@ -6,8 +6,7 @@ import {
   RadioButtonGroup,
   NextButton,
 } from "../../components/carbon-calculator";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { fetchEmissionsData } from "../../api/emissions";
 
 export default function DietCalculator() {
   const [diet, setDiet] = useState("Average");
@@ -48,42 +47,16 @@ export default function DietCalculator() {
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await fetchTransportationData();
-      if (data) {
+      const data = await fetchEmissionsData("transportation");
+      if (data !== null && data.transportationEmissions !== undefined) {
         setTransportationEmissions(data.transportationEmissions);
+      } else {
+        console.log("No transportation emissions data found");
       }
     };
 
     loadData();
   }, []);
-
-  const fetchTransportationData = async () => {
-    const auth = getAuth();
-    const db = getFirestore();
-
-    if (!auth.currentUser) {
-      console.error("No user logged in");
-      return null;
-    }
-
-    const userId = auth.currentUser.uid;
-    const userDocRef = doc(db, "users", userId);
-
-    try {
-      const userDoc = await getDoc(userDocRef);
-
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        return userData.transportationData;
-      } else {
-        console.log("No such document!");
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching transportation data:", error);
-      return null;
-    }
-  };
 
   if (!transportationEmissions) {
     return <Text>Loading...</Text>;
@@ -94,7 +67,7 @@ export default function DietCalculator() {
       <SafeAreaView>
         <View className="px-12">
           {/* Header */}
-          <Header onBack="transportation" progress={progress} title="Diet" />
+          <Header progress={progress} title="Diet" />
 
           {/* Diet Selection */}
           <RadioButtonGroup

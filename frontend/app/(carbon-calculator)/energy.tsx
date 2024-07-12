@@ -16,8 +16,7 @@ import {
   QuestionSlider,
   RadioButtonGroup,
 } from "../../components/carbon-calculator";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { fetchEmissionsData } from "../../api/emissions";
 
 export default function EnergyCalculator() {
   const [state, setState] = useState("Pennsylvania");
@@ -37,8 +36,8 @@ export default function EnergyCalculator() {
   const [electricEmissions, setElectricEmissions] = useState(0.0);
   const [waterEmissions, setWaterEmissions] = useState(0.0);
   const [otherEnergyEmissions, setOtherEnergyEmissions] = useState(0.0);
-  const [transportationDietEmissions, setTransportationDietEmissions] =
-    useState(0.0);
+  const [transportationEmissions, setTransportationEmissions] = useState(0.0);
+  const [dietEmissions, setDietEmissions] = useState(0.0);
   const [energyEmissions, setEnergyEmissions] = useState(0.0);
   const [totalEmissions, setTotalEmissions] = useState(0.0);
   const [progress, setProgress] = useState(0.66);
@@ -96,7 +95,9 @@ export default function EnergyCalculator() {
       setWaterEmissions(waterEmissions);
       setOtherEnergyEmissions(propaneEmissions + gasEmissions);
       setEnergyEmissions(totalEnergyEmissions);
-      setTotalEmissions(totalEnergyEmissions + transportationDietEmissions);
+      setTotalEmissions(
+        totalEnergyEmissions + transportationEmissions + dietEmissions
+      );
     }
   }, [
     stateData,
@@ -105,53 +106,27 @@ export default function EnergyCalculator() {
     propaneBill,
     gasBill,
     peopleInHome,
-    transportationDietEmissions,
+    transportationEmissions,
+    dietEmissions,
   ]);
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await fetchTransportationDietData();
-      if (data) {
-        setTransportationDietEmissions(
-          data["transportationData"].transportationEmissions +
-            data["dietData"].dietEmissions
-        );
+      const transportationData = await fetchEmissionsData("transportation");
+      const dietData = await fetchEmissionsData("diet");
+      if (
+        transportationData !== null &&
+        transportationData.transportationEmissions !== undefined &&
+        dietData !== null &&
+        dietData.dietEmissions !== undefined
+      ) {
+        setTransportationEmissions(transportationData.transportationEmissions);
+        setDietEmissions(dietData.dietEmissions);
       }
     };
 
     loadData();
   }, []);
-
-  const fetchTransportationDietData = async () => {
-    const auth = getAuth();
-    const db = getFirestore();
-
-    if (!auth.currentUser) {
-      console.error("No user logged in");
-      return null;
-    }
-
-    const userId = auth.currentUser.uid;
-    const userDocRef = doc(db, "users", userId);
-
-    try {
-      const userDoc = await getDoc(userDocRef);
-
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        return {
-          transportationData: userData.transportationData,
-          dietData: userData.dietData,
-        };
-      } else {
-        console.log("No such document!");
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching transportation data:", error);
-      return null;
-    }
-  };
 
   const updateProgress = useCallback(() => {
     let completedQuestions = 0;
@@ -228,6 +203,10 @@ export default function EnergyCalculator() {
       errorSetter("");
     } else if (isNaN(Number(value)) || parseFloat(value) < 0) {
       errorSetter("Please enter a valid amount");
+    } else if (parseFloat(value) > 1000) {
+      // split at the decimal and remove dollar
+      setter("999.99");
+      errorSetter("Please enter an amount under 1000");
     } else {
       const decimalPlaces = value.split(".")[1];
       if (decimalPlaces && decimalPlaces.length > 2) {
@@ -266,7 +245,7 @@ export default function EnergyCalculator() {
     updateProgress,
   ]);
 
-  if (!transportationDietEmissions) {
+  if (!transportationEmissions || !dietEmissions) {
     return <Text>Loading...</Text>;
   }
 
@@ -275,7 +254,7 @@ export default function EnergyCalculator() {
       <SafeAreaView>
         <View className="px-12">
           {/* Header */}
-          <Header onBack="diet" progress={progress} title="Energy" />
+          <Header progress={progress} title="Energy" />
 
           {/* State Selection */}
           <Text className="mt-6 text-lg">Which State do you live in?</Text>
@@ -381,19 +360,21 @@ export default function EnergyCalculator() {
             <View className="mt-4  flex-col gap-4">
               <View className="flex-row justify-between">
                 <Text>Electric Emissions:</Text>
-                <Text>{electricEmissions.toFixed(2)}</Text>
+                <Text>{(electricEmissions / peopleInHome).toFixed(2)}</Text>
               </View>
               <View className="flex-row justify-between">
                 <Text>Water:</Text>
-                <Text>{waterEmissions.toFixed(2)}</Text>
+                <Text>{(waterEmissions / peopleInHome).toFixed(2)}</Text>
               </View>
               <View className="flex-row justify-between">
                 <Text>Other Energy:</Text>
-                <Text>{otherEnergyEmissions.toFixed(2)}</Text>
+                <Text>{(otherEnergyEmissions / peopleInHome).toFixed(2)}</Text>
               </View>
               <View className="flex-row justify-between">
                 <Text>Transportation + Diet:</Text>
-                <Text>{transportationDietEmissions.toFixed(2)}</Text>
+                <Text>
+                  {(transportationEmissions + dietEmissions).toFixed(2)}
+                </Text>
               </View>
               <View className="mt-2 flex-row justify-between mr-10">
                 <Text className="font-bold">Total:</Text>
@@ -420,6 +401,8 @@ export default function EnergyCalculator() {
             waterEmissions,
             otherEnergyEmissions,
             energyEmissions,
+            transportationEmissions,
+            dietEmissions,
             totalEmissions,
           }}
           type="energy"

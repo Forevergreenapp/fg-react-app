@@ -138,15 +138,22 @@ export default function TransportationCalculator() {
   const validateNumber = (
     value: string,
     setter: React.Dispatch<React.SetStateAction<string>>,
-    errorSetter: React.Dispatch<React.SetStateAction<string>>
+    errorSetter: React.Dispatch<React.SetStateAction<string>>,
+    type: "miles" | "trainFrequency" | "busFrequency" | "walkBikeFrequency"
   ) => {
     if (value === "") {
       setter("");
       errorSetter("");
     } else if (isNaN(Number(value)) || parseFloat(value) < 0) {
       errorSetter("Please enter a valid amount");
-    } else if (parseFloat(value) > 10000) {
-      errorSetter("Please enter a value less than 10000");
+    } else if (
+      type === "miles" ? parseFloat(value) > 3500 : parseFloat(value) > 30
+    ) {
+      errorSetter(
+        type === "miles"
+          ? "Please enter a value less than 3500"
+          : "Please enter a value less than 30"
+      );
     } else {
       const decimalPlaces = value.split(".")[1];
       if (decimalPlaces && decimalPlaces.length > 2) {
@@ -164,11 +171,7 @@ export default function TransportationCalculator() {
         <SafeAreaView>
           {/* Header */}
           <View className="px-12">
-            <Header
-              onBack="/(auth)/get-started"
-              progress={progress}
-              title="Transportation"
-            />
+            <Header progress={progress} title="Transportation" />
 
             {/* Long round-trip flights */}
             <QuestionSlider
@@ -212,7 +215,7 @@ export default function TransportationCalculator() {
               question="How many miles do you drive per week? 🚗"
               value={milesPerWeek}
               onChange={(value: string) => {
-                validateNumber(value, setMilesPerWeek, setMilesError);
+                validateNumber(value, setMilesPerWeek, setMilesError, "miles");
                 if (value !== "") {
                   markQuestionCompleted("milesPerWeek");
                 }
@@ -231,7 +234,12 @@ export default function TransportationCalculator() {
               setFrequency={setTrainFrequency}
               frequencyError={trainFrequencyError}
               validateNumber={(value: string) =>
-                validateNumber(value, setTrainFrequency, setTrainFrequencyError)
+                validateNumber(
+                  value,
+                  setTrainFrequency,
+                  setTrainFrequencyError,
+                  "trainFrequency"
+                )
               }
               label="time(s) per week"
             />
@@ -245,7 +253,12 @@ export default function TransportationCalculator() {
               setFrequency={setBusFrequency}
               frequencyError={busFrequencyError}
               validateNumber={(value: string) =>
-                validateNumber(value, setBusFrequency, setBusFrequencyError)
+                validateNumber(
+                  value,
+                  setBusFrequency,
+                  setBusFrequencyError,
+                  "busFrequency"
+                )
               }
               label="time(s) per week"
             />
@@ -262,7 +275,8 @@ export default function TransportationCalculator() {
                 validateNumber(
                   value,
                   setWalkBikeFrequency,
-                  setWalkBikeFrequencyError
+                  setWalkBikeFrequencyError,
+                  "walkBikeFrequency"
                 )
               }
               label="time(s) per week"
@@ -285,7 +299,7 @@ export default function TransportationCalculator() {
               <View className="font-bold flex-row justify-between mr-8">
                 <Text className="font-bold text-lg">Total:</Text>
                 <Text className="text-lg">
-                  {transportationEmissions.toFixed(1)}
+                  {transportationEmissions.toFixed(2)}
                 </Text>
                 <Text className="text-lg">tons of CO2 per year</Text>
               </View>

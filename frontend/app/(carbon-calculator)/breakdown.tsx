@@ -4,23 +4,26 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { router } from "expo-router";
 import PieChart from "../../components/PieChart";
 import BarChart from "../../components/BarChart";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { NextButton } from "../../components/carbon-calculator";
+import { fetchEmissionsData } from "../../api/emissions";
 
 export default function Breakdown() {
   const [emissionsPerYear, setEmissionsPerYear] = useState(0.0);
-  const emissionsPerMonth = (emissionsPerYear / 12).toFixed(2);
-  const transportationEmissions = 30;
-  const dietEmissions = 20;
-  const energyEmissions = 50;
+  const emissionsPerMonth = emissionsPerYear / 12;
+  const [transportationEmissions, setTransportationEmissions] = useState(0.0);
+  const [dietEmissions, setDietEmissions] = useState(0.0);
+  const [energyEmissions, setEnergyEmissions] = useState(0.0);
+  const pieSections = [
+    Math.round(transportationEmissions),
+    Math.round(dietEmissions),
+    Math.round(energyEmissions),
+  ];
   const earthsRequired = parseFloat((emissionsPerYear / 6.4).toFixed(2)); // 6.4 tonne of CO2 per year as the target
   const wholeEarths = Math.floor(earthsRequired);
   const partialEarth = parseFloat((earthsRequired - wholeEarths).toFixed(2));
 
   const renderEarths = () => {
     const earthImages = [];
-    for (let i = 0; i < wholeEarths; i++) {
+    for (let i = 0; i < (wholeEarths > 11 ? 11 : wholeEarths); i++) {
       earthImages.push(
         <Image
           key={`whole-${i}`}
@@ -65,57 +68,25 @@ export default function Breakdown() {
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await fetchTransportationDietData();
-      if (data) {
-        setEmissionsPerYear(
-          parseInt(
-            data["transportationData"].transportationEmissions +
-              data["dietData"].dietEmissions +
-              data["energyData"].energyEmissions
-          )
-        );
+      const data = await fetchEmissionsData("total");
+      if (data !== null && data.totalEmissions !== undefined) {
+        setEmissionsPerYear(data.totalEmissions);
+        setTransportationEmissions(data.transportationEmissions);
+        setDietEmissions(data.dietEmissions);
+        setEnergyEmissions(data.energyEmissions);
       }
     };
 
     loadData();
   }, []);
 
-  const fetchTransportationDietData = async () => {
-    const auth = getAuth();
-    const db = getFirestore();
-
-    if (!auth.currentUser) {
-      console.error("No user logged in");
-      return null;
-    }
-
-    const userId = auth.currentUser.uid;
-    const userDocRef = doc(db, "users", userId);
-
-    try {
-      const userDoc = await getDoc(userDocRef);
-
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        return {
-          transportationData: userData.transportationData,
-          dietData: userData.dietData,
-          energyData: userData.energyData,
-        };
-      } else {
-        console.log("No such document!");
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching transportation data:", error);
-      return null;
-    }
-  };
-
   if (!emissionsPerYear) {
     return <Text>Loading...</Text>;
   }
 
+  console.log("transportationEmissions:" + transportationEmissions);
+  console.log("dietEmissions:" + dietEmissions);
+  console.log("energyEmissions:" + energyEmissions);
   return (
     <ScrollView className="flex-1 bg-white">
       <View className="p-6">
@@ -125,7 +96,7 @@ export default function Breakdown() {
             name="arrow-left"
             size={24}
             color="black"
-            onPress={() => router.replace("/(auth)/getstarted")}
+            onPress={() => router.back()}
           />
           <Text className="text-4xl mt-1">Results</Text>
         </View>
@@ -138,11 +109,11 @@ export default function Breakdown() {
             </Text>
             <Text className="mb-1">Your total emissions are:</Text>
             <Text className="text-green-600 text-xl mb-2">
-              {emissionsPerYear} tons co2/year
+              {emissionsPerYear.toFixed(2)} tons co2/year
             </Text>
             <Text className="mb-1">Your total monthly emissions are:</Text>
             <Text className="text-green-600 text-xl mb-4">
-              {emissionsPerMonth} tons co2/month
+              {emissionsPerMonth.toFixed(2)} tons co2/month
             </Text>
           </View>
 
@@ -154,11 +125,7 @@ export default function Breakdown() {
             <View className="mx-auto mb-4">
               <PieChart
                 widthAndHeight={200}
-                series={[
-                  transportationEmissions,
-                  dietEmissions,
-                  energyEmissions,
-                ]}
+                series={pieSections}
                 sliceColor={["#44945F", "#AEDCA7", "#66A570"]}
                 coverRadius={0.45}
               />
@@ -186,20 +153,23 @@ export default function Breakdown() {
             </Text>
             <View className="mx-auto mb-5">
               <BarChart
-                value1={emissionsPerYear}
+                value1={Math.round(Math.min(emissionsPerYear, 40))}
                 value2={21}
                 label1="You"
                 label2="Average American"
-                maxValue={Math.max(
-                  emissionsPerYear + emissionsPerYear * 0.1,
-                  22
+                maxValue={Math.round(
+                  Math.max(
+                    Math.min(emissionsPerYear, 35) +
+                      Math.min(emissionsPerYear, 35) * 0.1,
+                    22
+                  )
                 )}
               />
             </View>
           </View>
 
           {/* Earth Breakdown */}
-          <View className="shadow-lg rounded-xl bg-white px-4 mb-4">
+          <View className="shadow-lg rounded-xl bg-white px-4 mb-4 max-h-80 overflow-hidden">
             <Text className="text-4xl font-bold mb-2 text-center">
               Earth Breakdown
             </Text>
@@ -217,10 +187,13 @@ export default function Breakdown() {
             <Text className="text-center mb-4 text-lg">
               Support green projects around the world!
             </Text>
-            <View className="bg-[#44945F] rounded-full py-3 mb-4">
+            <View
+              className="bg-[#44945F] rounded-full py-3 mb-4"
+              style={{ backgroundColor: "#44945F" }}
+            >
               <TouchableOpacity
                 onPress={() => {
-                  router.replace("carbon-credit");
+                  router.push("(tabs)/carbon-credit");
                 }}
               >
                 <Text className="text-white text-center text-lg font-bold">
@@ -232,10 +205,13 @@ export default function Breakdown() {
               Build your legacy and leave a lasting impact by planting your own
               forest.
             </Text>
-            <View className="bg-[#44945F] rounded-full py-3 mb-6">
+            <View
+              className="bg-[#44945F] rounded-full py-3 mb-6"
+              style={{ backgroundColor: "#44945F" }}
+            >
               <TouchableOpacity
                 onPress={() => {
-                  router.replace("tree-planting");
+                  router.replace("(misc)/tree-planting");
                 }}
               >
                 <Text className="text-white text-center text-lg font-bold">
