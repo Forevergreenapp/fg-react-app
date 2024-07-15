@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, KeyboardAvoidingView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import {
   Header,
   QuestionSlider,
@@ -26,10 +25,10 @@ export default function TransportationCalculator() {
   const [walkBike, setWalkBike] = useState("No");
   const [walkBikeFrequency, setWalkBikeFrequency] = useState("1");
   const [walkBikeFrequencyError, setWalkBikeFrequencyError] = useState("");
-  const [flgihtEmissions, setFlightEmissions] = useState(0.0);
+  const [flightEmissions, setFlightEmissions] = useState(0.0);
   const [carEmissions, setCarEmissions] = useState(0.0);
   const [publicTransportEmissions, setPublicTransportEmissions] = useState(0.0);
-  const [totalEmissions, setTotalEmissions] = useState(0.0);
+  const [transportationEmissions, setTransportationEmissions] = useState(0.0);
   const [isFormValid, setIsFormValid] = useState(false);
   const [progress, setProgress] = useState(0);
   const [completedQuestions, setCompletedQuestions] = useState({
@@ -72,13 +71,13 @@ export default function TransportationCalculator() {
         parseFloat(trainFrequency) * 0.002912 * 52 +
         parseFloat(busFrequency) * 0.005824 * 52;
 
-      const totalEmissions =
+      const transportationEmissions =
         flightEmissions + carEmissions + publicTransportEmissions;
 
       setFlightEmissions(flightEmissions);
       setCarEmissions(carEmissions);
       setPublicTransportEmissions(publicTransportEmissions);
-      setTotalEmissions(totalEmissions);
+      setTransportationEmissions(transportationEmissions);
     };
     calculateEmissions();
   }, [
@@ -139,15 +138,22 @@ export default function TransportationCalculator() {
   const validateNumber = (
     value: string,
     setter: React.Dispatch<React.SetStateAction<string>>,
-    errorSetter: React.Dispatch<React.SetStateAction<string>>
+    errorSetter: React.Dispatch<React.SetStateAction<string>>,
+    type: "miles" | "trainFrequency" | "busFrequency" | "walkBikeFrequency"
   ) => {
     if (value === "") {
       setter("");
       errorSetter("");
     } else if (isNaN(Number(value)) || parseFloat(value) < 0) {
       errorSetter("Please enter a valid amount");
-    } else if (parseFloat(value) > 10000) {
-      errorSetter("Please enter a value less than 10000");
+    } else if (
+      type === "miles" ? parseFloat(value) > 3500 : parseFloat(value) > 30
+    ) {
+      errorSetter(
+        type === "miles"
+          ? "Please enter a value less than 3500"
+          : "Please enter a value less than 30"
+      );
     } else {
       const decimalPlaces = value.split(".")[1];
       if (decimalPlaces && decimalPlaces.length > 2) {
@@ -165,11 +171,7 @@ export default function TransportationCalculator() {
         <SafeAreaView>
           {/* Header */}
           <View className="px-12">
-            <Header
-              onBack={"/(auth)/get-started"}
-              progress={progress}
-              title={"Transportation"}
-            />
+            <Header progress={progress} title="Transportation" />
 
             {/* Long round-trip flights */}
             <QuestionSlider
@@ -213,7 +215,7 @@ export default function TransportationCalculator() {
               question="How many miles do you drive per week? 🚗"
               value={milesPerWeek}
               onChange={(value: string) => {
-                validateNumber(value, setMilesPerWeek, setMilesError);
+                validateNumber(value, setMilesPerWeek, setMilesError, "miles");
                 if (value !== "") {
                   markQuestionCompleted("milesPerWeek");
                 }
@@ -232,7 +234,12 @@ export default function TransportationCalculator() {
               setFrequency={setTrainFrequency}
               frequencyError={trainFrequencyError}
               validateNumber={(value: string) =>
-                validateNumber(value, setTrainFrequency, setTrainFrequencyError)
+                validateNumber(
+                  value,
+                  setTrainFrequency,
+                  setTrainFrequencyError,
+                  "trainFrequency"
+                )
               }
               label="time(s) per week"
             />
@@ -246,7 +253,12 @@ export default function TransportationCalculator() {
               setFrequency={setBusFrequency}
               frequencyError={busFrequencyError}
               validateNumber={(value: string) =>
-                validateNumber(value, setBusFrequency, setBusFrequencyError)
+                validateNumber(
+                  value,
+                  setBusFrequency,
+                  setBusFrequencyError,
+                  "busFrequency"
+                )
               }
               label="time(s) per week"
             />
@@ -263,7 +275,8 @@ export default function TransportationCalculator() {
                 validateNumber(
                   value,
                   setWalkBikeFrequency,
-                  setWalkBikeFrequencyError
+                  setWalkBikeFrequencyError,
+                  "walkBikeFrequency"
                 )
               }
               label="time(s) per week"
@@ -275,24 +288,46 @@ export default function TransportationCalculator() {
                 Your Individual Transportation Emissions
               </Text>
               <Text className="text-lg">
-                Flight Emissions: {flgihtEmissions.toFixed(1)}
+                Flight Emissions: {flightEmissions.toFixed(2)}
               </Text>
               <Text className="text-lg">
-                Car Emissions: {carEmissions.toFixed(1)}
+                Car Emissions: {carEmissions.toFixed(2)}
               </Text>
               <Text className="text-lg">
-                Public Transport: {publicTransportEmissions.toFixed(1)}
+                Public Transport: {publicTransportEmissions.toFixed(2)}
               </Text>
               <View className="font-bold flex-row justify-between mr-8">
                 <Text className="font-bold text-lg">Total:</Text>
-                <Text className="text-lg">{totalEmissions.toFixed(1)}</Text>
+                <Text className="text-lg">
+                  {transportationEmissions.toFixed(2)}
+                </Text>
                 <Text className="text-lg">tons of CO2 per year</Text>
               </View>
             </View>
           </View>
 
           {/* Next Button */}
-          <NextButton isFormValid={isFormValid} onNext="diet" />
+          <NextButton
+            isFormValid={isFormValid}
+            onNext="diet"
+            data={{
+              longFlights,
+              shortFlights,
+              carType,
+              milesPerWeek,
+              useTrain,
+              trainFrequency,
+              useBus,
+              busFrequency,
+              walkBike,
+              walkBikeFrequency,
+              flightEmissions,
+              carEmissions,
+              publicTransportEmissions,
+              transportationEmissions,
+            }}
+            type="transportation"
+          />
         </SafeAreaView>
       </ScrollView>
     </KeyboardAvoidingView>

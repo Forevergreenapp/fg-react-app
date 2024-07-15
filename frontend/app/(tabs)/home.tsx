@@ -1,16 +1,60 @@
-import React from 'react';
-import { View, Text, Pressable, useWindowDimensions, ScrollView } from 'react-native'
-import { LineChart } from 'react-native-chart-kit';
-import { router } from 'expo-router';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  Pressable,
+  useWindowDimensions,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import { router } from "expo-router";
+import { fetchEmissionsData } from "../../api/emissions";
+import dayjs from "dayjs";
+import {
+  PieChartBreakdown,
+  BarChartBreakdown,
+  EarthBreakdown,
+  LineChartBreakdown,
+} from "../../components/breakdown";
 
 const TextButton = ({ label, style }: { label: string; style: string }) => (
-  <View className={`flex items-center justify-center w-7 h-7 m-1 rounded-full ${style}`}>
+  <View
+    className={`flex items-center justify-center w-7 h-7 m-1 rounded-full ${style}`}
+  >
     <Text className="text-white text-md">{label}</Text>
   </View>
 );
 
 const HomeScreen = () => {
   const { width } = useWindowDimensions();
+  const [emissionsPerYear, setEmissionsPerYear] = useState(0.0);
+  const [transportationEmissions, setTransportationEmissions] = useState(0.0);
+  const [dietEmissions, setDietEmissions] = useState(0.0);
+  const [energyEmissions, setEnergyEmissions] = useState(0.0);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const data = await fetchEmissionsData({ type: "total" });
+      if (data !== null && data.totalEmissions !== undefined) {
+        setEmissionsPerYear(data.totalEmissions);
+        setTransportationEmissions(data.transportationEmissions);
+        setDietEmissions(data.dietEmissions);
+        setEnergyEmissions(data.energyEmissions);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // Generate a list of 6 months ago to now
+  const months = [];
+  if (!emissionsPerYear) {
+    return <Text>Loading...</Text>;
+  }
+  for (let i = 0; i < 6; i++) {
+    months.push(dayjs().subtract(i, "month").format("YYYY-MM"));
+  }
+  months.reverse();
 
   return (
     <ScrollView className="flex-1 bg-white">
@@ -24,19 +68,36 @@ const HomeScreen = () => {
 
         {/* Fast Fact */}
         <View className="bg-[#eeeeee] mb-6 p-6 rounded-2xl">
-          <Text className="text-2xl text-center font-bold mb-4">Forevergreen Fast Fact of the Day</Text>
-          <Text className="text-xl text-center">Turning off the tap while brushing your teeth can save up to 8 gallons of water a day, over 2900 gallons of water a year!</Text>
+          <Text className="text-2xl text-center font-bold mb-4">
+            Forevergreen Fast Fact of the Day
+          </Text>
+          <Text className="text-xl text-center">
+            Turning off the tap while brushing your teeth can save up to 8
+            gallons of water a day, over 2900 gallons of water a year!
+          </Text>
         </View>
 
         {/* Carbon Footprint and Calculator */}
         <View className="flex flex-row justify-between mb-6">
-          <View className="bg-[#f0caca] rounded-2xl w-[47%] h-72 justify-center p-4">
-            <Text className="text-2xl font-bold text-center mb-4">Your Carbon Footprint</Text>
-            <Text className="text-7xl font-bold text-center mb-4">16</Text>
+          <TouchableOpacity
+            className="bg-[#f0caca] rounded-2xl w-[47%] h-72 justify-center p-4"
+            onPress={() => router.push("/(carbon-calculator)/breakdown")}
+          >
+            <Text className="text-2xl font-bold text-center mb-4">
+              Your Carbon Footprint
+            </Text>
+            <Text className="text-7xl font-bold text-center mb-4">
+              {Math.min(emissionsPerYear, 99.9).toFixed(1)}
+            </Text>
             <Text className="text-4xl font-bold text-center">Tons of CO2</Text>
-          </View>
-          <View className="bg-[#eeeeee] rounded-2xl w-[47%] h-72 p-4">
-            <Text className="text-2xl font-bold text-center mb-4">Calculate your impact</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className="bg-[#eeeeee] rounded-2xl w-[47%] h-72 p-4"
+            onPress={() => router.push("/(carbon-calculator)/transportation")}
+          >
+            <Text className="text-2xl font-bold text-center mb-4">
+              Calculate your impact
+            </Text>
             <Pressable className="flex-1 bg-[#eeeeee] rounded-lg justify-center">
               <>
                 <View className="flex flex-row w-full">
@@ -70,60 +131,60 @@ const HomeScreen = () => {
                 </View>
               </>
             </Pressable>
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Monthly Graph of Emissions */}
         <View className="bg-[#eeeeee] mb-6 p-6 rounded-2xl items-center">
-          <Text className="text-2xl font-bold text-center mb-4">Your net-zero journey</Text>
-          <LineChart
-            data={{
-              labels: ['Jan', 'Feb', 'March', 'April', 'May', 'June'],
-              datasets: [{ data: [12, 12, 10, 11, 11, 9] }],
-            }}
-            width={width - 67}
-            height={220}
-            chartConfig={{
-              backgroundGradientFrom: '#eeeeee',
-              backgroundGradientTo: '#eeeeee',
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(27, 117, 179, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              fillShadowGradientOpacity: 0,
-              fillShadowGradientToOpacity: 0,
-              propsForBackgroundLines: { stroke: "transparent" },
-            }}
-            bezier
-            withInnerLines={false}
-            withOuterLines={false}
-            style={{ borderRadius: 16 }}
-          />
+          <Text className="text-2xl font-bold text-center mb-4">
+            Your net-zero journey
+          </Text>
+          <View className="flex-1 items-center justify-center p-4">
+            <LineChartBreakdown />
+          </View>
           <Pressable
             className="mt-2.5 bg-[#409858] rounded-full items-center justify-center h-10 w-[150px]"
-            onPress={() => {/* Add offset action here */ }}
+            style={{ paddingVertical: 4, paddingHorizontal: 16 }}
+            onPress={() => {
+              // TODO: Add offset action here
+            }}
           >
-            <Text className="text-white text-center text-xl font-bold">Offset Now!</Text>
+            <Text className="text-white text-center text-xl font-bold">
+              Offset Now!
+            </Text>
           </Pressable>
         </View>
 
         {/* Community */}
         <View className="mb-6">
-          <Text className="text-2xl mb-4 font-bold text-center">Forevergreen Community</Text>
+          <Text className="text-2xl mb-4 font-bold text-center">
+            Forevergreen Community
+          </Text>
           <View className="flex flex-row justify-between">
             <View className="bg-[#eeeeee] rounded-2xl w-[47%] h-40 items-center justify-center p-4">
-              <Text className="text-4xl font-bold text-center mb-2">10,000</Text>
-              <Text className="text-2xl font-bold text-center">Trees Planted</Text>
+              <Text className="text-4xl font-bold text-center mb-2">
+                10,000
+              </Text>
+              <Text className="text-2xl font-bold text-center">
+                Trees Planted
+              </Text>
             </View>
             <View className="bg-[#eeeeee] rounded-2xl w-[47%] h-40 items-center justify-center p-4">
-              <Text className="text-4xl font-bold text-center mb-2">10,000</Text>
-              <Text className="text-2xl font-bold text-center">Tons CO2 Gone</Text>
+              <Text className="text-4xl font-bold text-center mb-2">
+                10,000
+              </Text>
+              <Text className="text-2xl font-bold text-center">
+                Tons CO2 Gone
+              </Text>
             </View>
           </View>
         </View>
 
         {/* Forevergreen Community Leaders/Referral */}
         <View className="mb-6">
-          <Text className="text-2xl mb-4 text-center font-bold">Community Leaders</Text>
+          <Text className="text-2xl mb-4 text-center font-bold">
+            Community Leaders
+          </Text>
           <View className="flex flex-row justify-between bg-[#eeeeee] p-6 items-center rounded-2xl">
             <View>
               <Text className="text-xl mb-2">
@@ -138,19 +199,92 @@ const HomeScreen = () => {
             </View>
             <Pressable
               className="bg-[#409858] ml-1.25 rounded-full items-center justify-center h-10 w-[150px]"
-              onPress={() => router.push('/(misc)/referral')}
+              onPress={() => router.push("/(misc)/referral")}
             >
-              <Text className="text-white text-center text-xl font-bold">Refer a friend!</Text>
+              <Text className="text-white text-center text-xl font-bold">
+                Refer a friend!
+              </Text>
             </Pressable>
           </View>
         </View>
 
-        {/* Your Breakdown */}
+        {/* Charts */}
         <View className="bg-[#eeeeee] p-6 rounded-2xl mb-6">
-          <Text className="text-2xl mb-4 text-center font-bold">Your Breakdown</Text>
-          <Text className="text-xl text-center">Put breakdown screen here</Text>
-        </View>
+          {/* Your Breakdown Pie Chart */}
+          <View className="bg-white rounded-2xl p-4 mb-6">
+            <Text className="text-2xl mb-4">Your Breakdown</Text>
+            <View className="flex flex-row justify-between align-middle">
+              <PieChartBreakdown
+                names={["Transportation", "Diet", "Energy"]}
+                values={[
+                  transportationEmissions,
+                  dietEmissions,
+                  energyEmissions,
+                ]}
+                colors={["#44945F", "#AEDCA7", "#66A570"]}
+                width={Math.round(width / 3)}
+                height={100}
+              />
+              <View className="flex-col justify-center mb-4 gap-2">
+                <View className="flex-row items-center mr-4">
+                  <View
+                    className="mr-2"
+                    style={{
+                      backgroundColor: "#44945F",
+                      height: 16,
+                      width: 16,
+                    }}
+                  />
+                  <Text>Transportation</Text>
+                </View>
+                <View className="flex-row items-center mr-4">
+                  <View
+                    className="mr-2"
+                    style={{
+                      backgroundColor: "#AEDCA7",
+                      height: 16,
+                      width: 16,
+                    }}
+                  />
+                  <Text>Diet</Text>
+                </View>
+                <View className="flex-row items-center">
+                  <View
+                    className="mr-2"
+                    style={{
+                      backgroundColor: "#66A570",
+                      height: 16,
+                      width: 16,
+                    }}
+                  />
+                  <Text>Energy</Text>
+                </View>
+              </View>
+            </View>
+          </View>
 
+          {/* You vs the Average American */}
+          <View className="bg-white rounded-2xl p-4 mb-6">
+            <Text className="text-2xl">You vs the Average American</Text>
+            <Text className="text-md mb-4">
+              See how you rank vs the average American
+            </Text>
+            <BarChartBreakdown
+              names={["You", "Average American"]}
+              values={[emissionsPerYear, 21]}
+              colors={["#44945F", "#A9A9A9"]}
+            />
+          </View>
+
+          {/* If everyone lived like you */}
+          <View className="bg-white rounded-2xl p-4 mb-6">
+            <Text className="text-lg mb-4">
+              If everyone lived like you we'd need{" "}
+              {(emissionsPerYear / 6.4).toFixed(2)} Earths
+            </Text>
+            <EarthBreakdown emissions={emissionsPerYear} />
+          </View>
+        </View>
       </View>
     </ScrollView>
   );

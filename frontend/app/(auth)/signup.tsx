@@ -18,6 +18,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { router } from "expo-router";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 export default function SignupScreen() {
   const theme = useTheme();
@@ -28,6 +29,8 @@ export default function SignupScreen() {
 
   /* Function to sign up the user with the email and password */
   const signUp = () => {
+    const db = getFirestore();
+
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -35,6 +38,19 @@ export default function SignupScreen() {
         return updateProfile(user, {
           displayName: name,
         });
+      })
+      .then(() => {
+        if (auth.currentUser) {
+          const userDocRef = doc(db, "users", auth.currentUser.uid);
+          return setDoc(userDocRef, {
+            name: name,
+            email: email,
+            createdAt: new Date(),
+            // Add any other initial fields here
+          });
+        } else {
+          throw new Error("User not authenticated");
+        }
       })
       .then(() => {
         router.replace("/(tabs)/home");

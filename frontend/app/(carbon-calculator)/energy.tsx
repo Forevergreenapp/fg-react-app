@@ -16,6 +16,7 @@ import {
   QuestionSlider,
   RadioButtonGroup,
 } from "../../components/carbon-calculator";
+import { fetchEmissionsData } from "../../api/emissions";
 
 export default function EnergyCalculator() {
   const [state, setState] = useState("Pennsylvania");
@@ -35,8 +36,9 @@ export default function EnergyCalculator() {
   const [electricEmissions, setElectricEmissions] = useState(0.0);
   const [waterEmissions, setWaterEmissions] = useState(0.0);
   const [otherEnergyEmissions, setOtherEnergyEmissions] = useState(0.0);
-  const [transportationDietEmissions, setTransportationDietEmissions] =
-    useState(0.0);
+  const [transportationEmissions, setTransportationEmissions] = useState(0.0);
+  const [dietEmissions, setDietEmissions] = useState(0.0);
+  const [energyEmissions, setEnergyEmissions] = useState(0.0);
   const [totalEmissions, setTotalEmissions] = useState(0.0);
   const [progress, setProgress] = useState(0.66);
   const [stateData, setStateData] = useState(null);
@@ -92,7 +94,10 @@ export default function EnergyCalculator() {
       setElectricEmissions(electricityEmissions);
       setWaterEmissions(waterEmissions);
       setOtherEnergyEmissions(propaneEmissions + gasEmissions);
-      setTotalEmissions(totalEnergyEmissions + transportationDietEmissions);
+      setEnergyEmissions(totalEnergyEmissions);
+      setTotalEmissions(
+        totalEnergyEmissions + transportationEmissions + dietEmissions
+      );
     }
   }, [
     stateData,
@@ -101,8 +106,31 @@ export default function EnergyCalculator() {
     propaneBill,
     gasBill,
     peopleInHome,
-    transportationDietEmissions,
+    transportationEmissions,
+    dietEmissions,
   ]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const transportationData = await fetchEmissionsData({
+        type: "transportation",
+      });
+      const dietData = await fetchEmissionsData({
+        type: "diet",
+      });
+      if (
+        transportationData !== null &&
+        transportationData.transportationEmissions !== undefined &&
+        dietData !== null &&
+        dietData.dietEmissions !== undefined
+      ) {
+        setTransportationEmissions(transportationData.transportationEmissions);
+        setDietEmissions(dietData.dietEmissions);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const updateProgress = useCallback(() => {
     let completedQuestions = 0;
@@ -179,6 +207,10 @@ export default function EnergyCalculator() {
       errorSetter("");
     } else if (isNaN(Number(value)) || parseFloat(value) < 0) {
       errorSetter("Please enter a valid amount");
+    } else if (parseFloat(value) > 1000) {
+      // split at the decimal and remove dollar
+      setter("999.99");
+      errorSetter("Please enter an amount under 1000");
     } else {
       const decimalPlaces = value.split(".")[1];
       if (decimalPlaces && decimalPlaces.length > 2) {
@@ -217,12 +249,16 @@ export default function EnergyCalculator() {
     updateProgress,
   ]);
 
+  if (!transportationEmissions || !dietEmissions) {
+    return <Text>Loading...</Text>;
+  }
+
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <SafeAreaView>
         <View className="px-12">
           {/* Header */}
-          <Header onBack="diet" progress={progress} title="Energy" />
+          <Header progress={progress} title="Energy" />
 
           {/* State Selection */}
           <Text className="mt-6 text-lg">Which State do you live in?</Text>
@@ -328,23 +364,25 @@ export default function EnergyCalculator() {
             <View className="mt-4  flex-col gap-4">
               <View className="flex-row justify-between">
                 <Text>Electric Emissions:</Text>
-                <Text>{electricEmissions.toFixed(1)}</Text>
+                <Text>{(electricEmissions / peopleInHome).toFixed(2)}</Text>
               </View>
               <View className="flex-row justify-between">
                 <Text>Water:</Text>
-                <Text>{waterEmissions.toFixed(1)}</Text>
+                <Text>{(waterEmissions / peopleInHome).toFixed(2)}</Text>
               </View>
               <View className="flex-row justify-between">
                 <Text>Other Energy:</Text>
-                <Text>{otherEnergyEmissions.toFixed(1)}</Text>
+                <Text>{(otherEnergyEmissions / peopleInHome).toFixed(2)}</Text>
               </View>
               <View className="flex-row justify-between">
                 <Text>Transportation + Diet:</Text>
-                <Text>{transportationDietEmissions.toFixed(1)}</Text>
+                <Text>
+                  {(transportationEmissions + dietEmissions).toFixed(2)}
+                </Text>
               </View>
               <View className="mt-2 flex-row justify-between mr-10">
                 <Text className="font-bold">Total:</Text>
-                <Text>{totalEmissions.toFixed(1)}</Text>
+                <Text>{totalEmissions.toFixed(2)}</Text>
                 <Text>tons CO2 per year</Text>
               </View>
             </View>
@@ -352,7 +390,27 @@ export default function EnergyCalculator() {
         </View>
 
         {/* Next Button */}
-        <NextButton isFormValid={isFormValid} onNext={"breakdown"} />
+        <NextButton
+          isFormValid={isFormValid}
+          onNext="breakdown"
+          data={{
+            state,
+            electricBill,
+            waterBill,
+            propaneBill,
+            gasBill,
+            useWoodStove,
+            peopleInHome,
+            electricEmissions,
+            waterEmissions,
+            otherEnergyEmissions,
+            energyEmissions,
+            transportationEmissions,
+            dietEmissions,
+            totalEmissions,
+          }}
+          type="energy"
+        />
       </SafeAreaView>
     </ScrollView>
   );

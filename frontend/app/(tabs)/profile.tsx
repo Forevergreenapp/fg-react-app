@@ -4,6 +4,7 @@ import Icon from "react-native-vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { getAuth, onAuthStateChanged, User, signOut } from "firebase/auth";
 import { useRouter } from "expo-router";
+import { fetchEmissionsData } from "../../api/emissions";
 
 const SettingsItem = ({ title }: { title: string }) => (
   <TouchableOpacity>
@@ -23,6 +24,7 @@ export default function ProfileSettings() {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const auth = getAuth();
+  const [totalEmissions, setTotalEmissions] = useState(0);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -34,11 +36,22 @@ export default function ProfileSettings() {
     });
 
     return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!user) {
-    // You can show a loading state here if you want
-    return null;
+  useEffect(() => {
+    const loadData = async () => {
+      const data = await fetchEmissionsData({ type: "total" });
+      if (data) {
+        setTotalEmissions(data.totalEmissions);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  if (!totalEmissions || !user) {
+    return <Text>Loading...</Text>;
   }
 
   const handleLogout = () => {
@@ -109,7 +122,9 @@ export default function ProfileSettings() {
             Your carbon footprint...
           </Text>
           <View className="flex-row items-center justify-between">
-            <Text className="text-xl font-semibold">16 tons of CO₂</Text>
+            <Text className="text-xl font-semibold">
+              {totalEmissions.toFixed(2)} tons of CO₂
+            </Text>
             <TouchableOpacity className="bg-[#409858] px-4 py-2 rounded-full">
               <Text className="text-white">Offset Now!</Text>
             </TouchableOpacity>

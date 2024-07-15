@@ -5,7 +5,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { router } from "expo-router";
 import { useTheme } from "react-native-paper";
 
-const Header = ({ onBack, progress, title }: any) => {
+const Header = ({ progress, title }: any) => {
   const theme = useTheme();
 
   return (
@@ -15,7 +15,7 @@ const Header = ({ onBack, progress, title }: any) => {
           name="arrow-left"
           size={24}
           color="black"
-          onPress={() => router.replace(onBack)}
+          onPress={() => router.back()}
         />
         <View className="w-5/6">
           <Progress.Bar
