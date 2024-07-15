@@ -4,7 +4,7 @@ import Icon from "react-native-vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { getAuth, onAuthStateChanged, User, signOut } from "firebase/auth";
 import { useRouter } from "expo-router";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { fetchEmissionsData } from "../../api/emissions";
 
 const SettingsItem = ({ title }: { title: string }) => (
   <TouchableOpacity>
@@ -41,42 +41,14 @@ export default function ProfileSettings() {
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await fetchData();
+      const data = await fetchEmissionsData({ type: "total" });
       if (data) {
-        setTotalEmissions(parseInt(data.totalEmissions));
+        setTotalEmissions(data.totalEmissions);
       }
     };
 
     loadData();
   }, []);
-
-  const fetchData = async () => {
-    const auth = getAuth();
-    const db = getFirestore();
-
-    if (!auth.currentUser) {
-      console.error("No user logged in");
-      return null;
-    }
-
-    const userId = auth.currentUser.uid;
-    const userDocRef = doc(db, "users", userId);
-
-    try {
-      const userDoc = await getDoc(userDocRef);
-
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        return userData.energyData;
-      } else {
-        console.log("No such document!");
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      return null;
-    }
-  };
 
   if (!totalEmissions || !user) {
     return <Text>Loading...</Text>;
@@ -151,7 +123,7 @@ export default function ProfileSettings() {
           </Text>
           <View className="flex-row items-center justify-between">
             <Text className="text-xl font-semibold">
-              {totalEmissions} tons of CO₂
+              {totalEmissions.toFixed(2)} tons of CO₂
             </Text>
             <TouchableOpacity className="bg-[#409858] px-4 py-2 rounded-full">
               <Text className="text-white">Offset Now!</Text>
