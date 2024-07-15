@@ -112,8 +112,12 @@ export default function EnergyCalculator() {
 
   useEffect(() => {
     const loadData = async () => {
-      const transportationData = await fetchEmissionsData("transportation");
-      const dietData = await fetchEmissionsData("diet");
+      const transportationData = await fetchEmissionsData({
+        type: "transportation",
+      });
+      const dietData = await fetchEmissionsData({
+        type: "diet",
+      });
       if (
         transportationData !== null &&
         transportationData.transportationEmissions !== undefined &&

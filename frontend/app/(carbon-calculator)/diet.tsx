@@ -47,7 +47,7 @@ export default function DietCalculator() {
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await fetchEmissionsData("transportation");
+      const data = await fetchEmissionsData({ type: "transportation" });
       if (data !== null && data.transportationEmissions !== undefined) {
         setTransportationEmissions(data.transportationEmissions);
       } else {

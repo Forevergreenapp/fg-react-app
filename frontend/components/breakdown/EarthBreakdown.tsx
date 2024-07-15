@@ -49,17 +49,7 @@ const EarthBreakdown = ({ emissions }: any) => {
     return rows;
   };
 
-  return (
-    <View className="shadow-lg rounded-xl bg-white px-4 mb-4 max-h-80 overflow-hidden">
-      <Text className="text-4xl font-bold mb-2 text-center">
-        Earth Breakdown
-      </Text>
-      <Text className="mb-4 text-lg">
-        If everyone lived like you we would need {earthsRequired} Earths!
-      </Text>
-      <View className="mb-6">{renderEarths()}</View>
-    </View>
-  );
+  return <View>{renderEarths()}</View>;
 };
 
 export default EarthBreakdown;
