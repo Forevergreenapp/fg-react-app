@@ -53,7 +53,6 @@ export const fetchEmissionsData = async ({
           return null;
       }
     } else {
-      console.log("No such document!");
       return null;
     }
   } catch (error) {
