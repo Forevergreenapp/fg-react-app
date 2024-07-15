@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { router } from "expo-router";
-import PieChart from "../../components/PieChart";
-import BarChart from "../../components/BarChart";
 import { fetchEmissionsData } from "../../api/emissions";
+import {
+  PieChartBreakdown,
+  BarChartBreakdown,
+  EarthBreakdown,
+} from "../../components/breakdown";
 
 export default function Breakdown() {
   const [emissionsPerYear, setEmissionsPerYear] = useState(0.0);
@@ -12,59 +15,6 @@ export default function Breakdown() {
   const [transportationEmissions, setTransportationEmissions] = useState(0.0);
   const [dietEmissions, setDietEmissions] = useState(0.0);
   const [energyEmissions, setEnergyEmissions] = useState(0.0);
-  const pieSections = [
-    Math.round(transportationEmissions),
-    Math.round(dietEmissions),
-    Math.round(energyEmissions),
-  ];
-  const earthsRequired = parseFloat((emissionsPerYear / 6.4).toFixed(2)); // 6.4 tonne of CO2 per year as the target
-  const wholeEarths = Math.floor(earthsRequired);
-  const partialEarth = parseFloat((earthsRequired - wholeEarths).toFixed(2));
-
-  const renderEarths = () => {
-    const earthImages = [];
-    for (let i = 0; i < (wholeEarths > 11 ? 11 : wholeEarths); i++) {
-      earthImages.push(
-        <Image
-          key={`whole-${i}`}
-          source={require("../../assets/images/earth.png")}
-          style={{ height: 64, width: 64, marginRight: 8 }}
-        />
-      );
-    }
-    if (partialEarth > 0) {
-      earthImages.push(
-        <View
-          key="partial"
-          style={{
-            overflow: "hidden",
-            height: 64,
-            width: 64 * partialEarth, // Adjust width to show partial Earth
-            marginRight: 8,
-          }}
-        >
-          <Image
-            source={require("../../assets/images/earth.png")}
-            style={{ height: 64, width: 64 }}
-          />
-        </View>
-      );
-    }
-
-    // Create rows of images
-    const rows = [];
-    const itemsPerRow = 4;
-    for (let i = 0; i < earthImages.length; i += itemsPerRow) {
-      const rowItems = earthImages.slice(i, i + itemsPerRow);
-      rows.push(
-        <View key={`row-${i}`} className="flex flex-row mb-2">
-          {rowItems}
-        </View>
-      );
-    }
-
-    return rows;
-  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -84,9 +34,6 @@ export default function Breakdown() {
     return <Text>Loading...</Text>;
   }
 
-  console.log("transportationEmissions:" + transportationEmissions);
-  console.log("dietEmissions:" + dietEmissions);
-  console.log("energyEmissions:" + energyEmissions);
   return (
     <ScrollView className="flex-1 bg-white">
       <View className="p-6">
@@ -118,66 +65,21 @@ export default function Breakdown() {
           </View>
 
           {/* Emission Breakdown */}
-          <View className="shadow-lg rounded-xl bg-white px-4 mb-4">
-            <Text className="text-2xl font-bold mb-4">
-              Your Emission Breakdown
-            </Text>
-            <View className="mx-auto mb-4">
-              <PieChart
-                widthAndHeight={200}
-                series={pieSections}
-                sliceColor={["#44945F", "#AEDCA7", "#66A570"]}
-                coverRadius={0.45}
-              />
-            </View>
-            <View className="flex-row justify-center mb-4">
-              <View className="flex-row items-center mr-4">
-                <View className="w-4 h-4 bg-[#44945F] mr-2" />
-                <Text>Transportation</Text>
-              </View>
-              <View className="flex-row items-center mr-4">
-                <View className="w-4 h-4 bg-[#AEDCA7] mr-2" />
-                <Text>Diet</Text>
-              </View>
-              <View className="flex-row items-center">
-                <View className="w-4 h-4 bg-[#66A570] mr-2" />
-                <Text>Energy</Text>
-              </View>
-            </View>
-          </View>
+          <PieChartBreakdown
+            names={["Transportation", "Diet", "Energy"]}
+            values={[transportationEmissions, dietEmissions, energyEmissions]}
+            colors={["#44945F", "#AEDCA7", "#66A570"]}
+          />
 
           {/* Average American */}
-          <View className="shadow-lg rounded-xl bg-white px-4 mb-4">
-            <Text className="text-2xl font-bold mb-4">
-              You vs the Average American
-            </Text>
-            <View className="mx-auto mb-5">
-              <BarChart
-                value1={Math.round(Math.min(emissionsPerYear, 40))}
-                value2={21}
-                label1="You"
-                label2="Average American"
-                maxValue={Math.round(
-                  Math.max(
-                    Math.min(emissionsPerYear, 35) +
-                      Math.min(emissionsPerYear, 35) * 0.1,
-                    22
-                  )
-                )}
-              />
-            </View>
-          </View>
+          <BarChartBreakdown
+            names={["You", "Average American"]}
+            values={[emissionsPerYear, 21]}
+            colors={["#44945F", "#A9A9A9"]}
+          />
 
           {/* Earth Breakdown */}
-          <View className="shadow-lg rounded-xl bg-white px-4 mb-4 max-h-80 overflow-hidden">
-            <Text className="text-4xl font-bold mb-2 text-center">
-              Earth Breakdown
-            </Text>
-            <Text className="mb-4 text-lg">
-              If everyone lived like you we would need {earthsRequired} Earths!
-            </Text>
-            <View className="mb-6">{renderEarths()}</View>
-          </View>
+          <EarthBreakdown emissions={emissionsPerYear} />
 
           {/* Call to Action */}
           <View className="shadow-lg rounded-xl bg-white px-4 mb-4">

@@ -26,14 +26,14 @@ import { getFirestore } from "firebase/firestore";
 
 // Initialize Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyBIvTUeN-I9FnCgz7d0ybhdWRpwsyFH0_s",
-  authDomain: "fg-react-app.firebaseapp.com",
-  databaseURL: "https://fg-react-app.firebaseio.com",
-  projectId: "fg-react-app",
-  storageBucket: "fg-react-app.appspot.com",
-  messagingSenderId: "489135632905",
-  appId: "1:489135632905:web:20779662c09acf532a3ed8",
-  measurementId: "G-TSS2FD4QBJ",
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  databaseURL: process.env.DATABASE_URL,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  appId: process.env.APP_ID,
+  measurementId: process.env.MEASUREMENT_ID,
 };
 
 // Check if Firebase is already initialized
