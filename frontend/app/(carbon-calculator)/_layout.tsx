@@ -8,10 +8,11 @@ export default function CarbonCalculatorLayout() {
         headerShown: false,
       }}
     >
+      <Stack.Screen name="pre-survey" />
       <Stack.Screen name="transportation" />
       <Stack.Screen name="diet" />
       <Stack.Screen name="energy" />
-      <Stack.Screen name="breakdown" /> 
+      <Stack.Screen name="breakdown" />
     </Stack>
   );
 }

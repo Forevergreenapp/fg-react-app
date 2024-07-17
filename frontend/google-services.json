@@ -1,18 +1,32 @@
 {
   "project_info": {
     "project_number": "489135632905",
+    "firebase_url": "https://fg-react-app-default-rtdb.firebaseio.com",
     "project_id": "fg-react-app",
     "storage_bucket": "fg-react-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:489135632905:android:68e47bce5e6c23c52a3ed8",
+        "mobilesdk_app_id": "1:489135632905:android:d57ae3fb0a77320d2a3ed8",
         "android_client_info": {
           "package_name": "com.fgdevteam.fgreactapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "489135632905-vsacp04unrags9uphrms8mogeq506o2v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fgdevteam.fgreactapp",
+            "certificate_hash": "07f837845a9e68f1884c53f8247f9f90353ac354"
+          }
+        },
+        {
+          "client_id": "489135632905-iu340mh7lub0iis2q18upvus42fa2roo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDqQfbJd8di0tScVblh2VEbBFUioYYB4Xc"
@@ -20,7 +34,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "489135632905-iu340mh7lub0iis2q18upvus42fa2roo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "489135632905-6gdk211pqcg0bolqmq8621a5h7phm5tc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.fgdevteam.fgreactapp"
+              }
+            }
+          ]
         }
       }
     }

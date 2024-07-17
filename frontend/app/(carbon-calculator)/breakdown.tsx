@@ -14,6 +14,7 @@ import {
   BarChartBreakdown,
   EarthBreakdown,
 } from "../../components/breakdown";
+import CalculatingScreen from "./calculating";
 
 export default function Breakdown() {
   const [emissionsPerYear, setEmissionsPerYear] = useState(0.0);
@@ -39,7 +40,7 @@ export default function Breakdown() {
   const screenWidth = Dimensions.get("window").width;
 
   if (!emissionsPerYear) {
-    return <Text>Loading...</Text>;
+    return <CalculatingScreen />;
   }
 
   return (
