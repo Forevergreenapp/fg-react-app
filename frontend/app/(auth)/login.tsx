@@ -11,9 +11,15 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { Link } from "expo-router";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithCredential,
+} from "firebase/auth";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { fetchEmissionsData } from "../../api/emissions";
 
 export default function LoginScreen() {
   const theme = useTheme();
@@ -22,18 +28,60 @@ export default function LoginScreen() {
   const auth = getAuth();
 
   /* Function to sign up the user with the email and password */
-  const login = () => {
+  const onLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        Alert.alert("Success", "User logged in successfully!");
-        router.replace("/(tabs)/home");
+        if (user) {
+          fetchEmissionsData({ type: "total" }).then((data) => {
+            if (data) {
+              router.replace("/(tabs)/home");
+            } else {
+              router.replace("/(carbon-calculator)/pre-survey");
+            }
+          });
+        }
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         Alert.alert("Error", `Code: ${errorCode}\nMessage: ${errorMessage}`);
       });
+  };
+
+  const onGoogleLogin = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const user = await GoogleSignin.signIn();
+
+      const auth = getAuth();
+      const credential = GoogleAuthProvider.credential(user.idToken);
+      const userCredential = await signInWithCredential(auth, credential);
+
+      const currentUser = userCredential.user;
+      if (currentUser) {
+        fetchEmissionsData({ type: "total" })
+          .then((data) => {
+            if (data) {
+              router.replace("/(tabs)/home");
+            } else {
+              router.replace("/(carbon-calculator)/pre-survey");
+            }
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            Alert.alert(
+              "Error",
+              `Code: ${errorCode}\nMessage: ${errorMessage}`
+            );
+          });
+      }
+    } catch (error: any) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      Alert.alert("Error", `Code: ${errorCode}\nMessage: ${errorMessage}`);
+    }
   };
 
   return (
@@ -91,42 +139,46 @@ export default function LoginScreen() {
             </View>
             <View className="flex flex-row justify-end">
               <Link href="/forgot-password">
-                <Text className="text-lg font-normal underline mt-2">Forgot Password?</Text>
+                <Text className="text-lg font-normal underline mt-2">
+                  Forgot Password?
+                </Text>
               </Link>
             </View>
-            <View className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-8 border">
-              <TouchableOpacity onPress={login}>
-                <Text className="text-onPrimary text-center text-2xl font-bold">
-                  Log in
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              onPress={onLogin}
+              className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-8 border"
+            >
+              <Text className="text-onPrimary text-center text-2xl font-bold">
+                Log in
+              </Text>
+            </TouchableOpacity>
             <View className="flex flex-row items-center my-4">
               <View className="flex-1 h-1 bg-onBackground" />
               <Text className="mx-4 font-bold text-xl">Or</Text>
               <View className="flex-1 h-1 bg-onBackground" />
             </View>
-            <View className="flex flex-row items-center justify-center bg-white border border-black rounded-full p-4 shadow-md">
-              <TouchableOpacity>
-                <Image
-                  source={{
-                    uri: "https://img.icons8.com/color/48/000000/google-logo.png",
-                  }}
-                  className="w-8 h-8 mr-4"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text className="text-center text-xl font-bold">
-                  Continue with Google
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              onPress={() => {
+                onGoogleLogin();
+              }}
+              className="flex flex-row items-center justify-center bg-white border border-black rounded-full p-4 shadow-md"
+            >
+              <Image
+                source={{
+                  uri: "https://img.icons8.com/color/48/000000/google-logo.png",
+                }}
+                className="w-8 h-8 mr-4"
+              />
+              <Text className="text-center text-xl font-bold">
+                Continue with Google
+              </Text>
+            </TouchableOpacity>
             <View className="flex-row justify-center mt-8">
-              <Link href="/signup" asChild>
+              <TouchableOpacity onPress={() => router.navigate("/signup")}>
                 <Text className="text-xl font-extrabold underline">
                   Back to Sign Up
                 </Text>
-              </Link>
+              </TouchableOpacity>
             </View>
           </View>
         </SafeAreaView>

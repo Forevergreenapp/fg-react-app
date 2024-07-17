@@ -1,6 +1,6 @@
 import React from "react";
-import { View, Text, StatusBar, Image } from "react-native";
-import { Link } from "expo-router";
+import { View, Text, StatusBar, Image, TouchableOpacity } from "react-native";
+import { router } from "expo-router";
 
 export default function GetStartedScreen() {
   return (
@@ -16,21 +16,25 @@ export default function GetStartedScreen() {
         />
       </View>
       <View className="w-full mb-8">
-        <Link
-          href="/signup"
-          asChild
+        <TouchableOpacity
+          onPress={() => router.push("/signup")}
           className="bg-primary rounded-full p-6 hover:bg-primary/90 px-12"
         >
           <Text className="text-onPrimary text-center text-3xl font-bold">
             Get Started
           </Text>
-        </Link>
-        <Text className="mt-4 text-xl text-center font-extrabold">
-          Already helping our planet?{" "}
-          <Link href="/login" className="mr-8">
-            <Text className="font-extrabold underline">Log in</Text>
-          </Link>
-        </Text>
+        </TouchableOpacity>
+        <View className="mt-4 flex flex-row justify-center">
+          <Text className="text-xl text-center font-extrabold">
+            Already helping our planet?{" "}
+          </Text>
+          <TouchableOpacity
+            onPress={() => router.push("/login")}
+            className="mr-8"
+          >
+            <Text className="font-extrabold underline text-xl">Log in</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

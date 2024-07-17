@@ -15,10 +15,16 @@ const Sitemap = () => {
         Home Page
       </Link>
       <Link
-        href="/(carbon-calculator)/transportation"
+        href="/(carbon-calculator)/pre-survey"
         className="text-xl underline"
       >
         Carbon Calculator Page
+      </Link>
+      <Link
+        href="/(carbon-calculator)/calculating"
+        className="text-xl underline"
+      >
+        Calculating Page
       </Link>
       <Link href="/(carbon-calculator)/breakdown" className="text-xl underline">
         Carbon Calculator Breakdown
@@ -28,6 +34,9 @@ const Sitemap = () => {
       </Link>
       <Link href="/(tabs)/profile" className="text-xl underline">
         Profile Page
+      </Link>
+      <Link href="/google-sign-in-test" className="text-xl underline">
+        Google Sign In Test
       </Link>
     </View>
   );

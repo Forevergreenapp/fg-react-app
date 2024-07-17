@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,14 +11,17 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { Link } from "expo-router";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   updateProfile,
+  GoogleAuthProvider,
+  signInWithCredential,
 } from "firebase/auth";
 import { router } from "expo-router";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { fetchEmissionsData } from "../../api/emissions";
 
 export default function SignupScreen() {
   const theme = useTheme();
@@ -27,8 +30,15 @@ export default function SignupScreen() {
   const [password, setPassword] = useState("");
   const auth = getAuth();
 
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        "489135632905-iu340mh7lub0iis2q18upvus42fa2roo.apps.googleusercontent.com",
+    });
+  }, []);
+
   /* Function to sign up the user with the email and password */
-  const signUp = () => {
+  const onSignup = () => {
     const db = getFirestore();
 
     createUserWithEmailAndPassword(auth, email, password)
@@ -45,7 +55,7 @@ export default function SignupScreen() {
           return setDoc(userDocRef, {
             name: name,
             email: email,
-            createdAt: new Date(),
+            createdAt: serverTimestamp(),
             // Add any other initial fields here
           });
         } else {
@@ -53,13 +63,47 @@ export default function SignupScreen() {
         }
       })
       .then(() => {
-        router.replace("/(tabs)/home");
+        const data = fetchEmissionsData({ type: "total" });
+        if (!data) {
+          router.replace("/(carbon-calculator)/transportation");
+        } else {
+          router.replace("/(tabs)/home");
+        }
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         Alert.alert("Error", `Code: ${errorCode}\nMessage: ${errorMessage}`);
       });
+  };
+
+  const onGoogleSignUp = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const user = await GoogleSignin.signIn();
+
+      const auth = getAuth();
+      const credential = GoogleAuthProvider.credential(user.idToken);
+      const userCredential = await signInWithCredential(auth, credential);
+
+      const db = getFirestore();
+      if (userCredential.user) {
+        const userDocRef = doc(db, "users", userCredential.user.uid);
+        await setDoc(userDocRef, {
+          name: user.user.name,
+          email: user.user.email,
+          createdAt: serverTimestamp(),
+        });
+      } else {
+        throw new Error("User not authenticated");
+      }
+
+      router.replace("/(tabs)/home");
+    } catch (error: any) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      Alert.alert("Error", `Code: ${errorCode}\nMessage: ${errorMessage}`);
+    }
   };
 
   return (
@@ -134,44 +178,44 @@ export default function SignupScreen() {
                 className="absolute left-6 top-1/2 transform translate-y-1/3"
               />
             </View>
-            <View className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-8 border">
-              <TouchableOpacity onPress={signUp}>
-                <Text className="text-onPrimary text-center text-2xl font-bold">
-                  Create Account
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              onPress={onSignup}
+              className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-8 border"
+            >
+              <Text className="text-onPrimary text-center text-2xl font-bold">
+                Create Account
+              </Text>
+            </TouchableOpacity>
             <View className="flex-row items-center my-4">
               <View className="flex-1 h-1 bg-black" />
               <Text className="px-4 text-black font-bold text-xl">Or</Text>
               <View className="flex-1 h-1 bg-black" />
             </View>
-            <View className="flex flex-row items-center justify-center bg-white border border-black rounded-full p-4 shadow-md">
-              <TouchableOpacity>
-                <Image
-                  source={{
-                    uri: "https://img.icons8.com/color/48/000000/google-logo.png",
-                  }}
-                  className="w-8 h-8 mr-4"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text className="text-center text-xl font-bold">
-                  Continue with Google
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              onPress={() => {
+                onGoogleSignUp();
+              }}
+              className="flex flex-row items-center justify-center bg-white border border-black rounded-full p-4 shadow-md"
+            >
+              <Image
+                source={{
+                  uri: "https://img.icons8.com/color/48/000000/google-logo.png",
+                }}
+                className="w-8 h-8 mr-4"
+              />
+              <Text className="text-center text-xl font-bold">
+                Continue with Google
+              </Text>
+            </TouchableOpacity>
             <View className="mt-4 flex flex-row items-center justify-center gap-8">
               <Text className="text-onPrimaryContainer text-lg font-bold">
                 Already helping our planet?
               </Text>
-              <Link href="/login" asChild>
-                <TouchableOpacity>
-                  <Text className="underline text-onPrimaryContainer text-lg font-bold">
-                    Log In
-                  </Text>
-                </TouchableOpacity>
-              </Link>
+              <TouchableOpacity onPress={() => router.navigate("/login")}>
+                <Text className="underline text-onPrimaryContainer text-lg font-bold">
+                  Log In
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
