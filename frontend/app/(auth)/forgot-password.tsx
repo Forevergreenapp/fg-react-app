@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, useTheme } from "react-native-paper";
-import Icon from "react-native-vector-icons/FontAwesome";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { router } from "expo-router";
 
@@ -70,12 +69,7 @@ export default function ForgotPasswordScreen() {
                 dense={true}
                 outlineStyle={{ borderColor: theme.colors.onBackground }}
                 theme={{ roundness: 9999 }}
-              />
-              <Icon
-                name="at"
-                size={24}
-                color={theme.colors.onBackground}
-                className="absolute left-6 top-1/2 transform translate-y-1/5"
+                left={<TextInput.Icon icon="at" />}
               />
             </View>
 

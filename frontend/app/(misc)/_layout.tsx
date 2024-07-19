@@ -8,8 +8,8 @@ export default function MiscLayout() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="referral"/>
-      <Stack.Screen name="plant-a-tree"/>
+      <Stack.Screen name="referral" />
+      <Stack.Screen name="plant-a-tree" />
     </Stack>
   );
 }

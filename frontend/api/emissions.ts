@@ -1,16 +1,61 @@
-import { getFirestore, doc, getDoc, collection } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  serverTimestamp,
+} from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import dayjs from "dayjs";
 
-type EmissionsType = "energy" | "transportation" | "diet" | "total";
+interface EmissionsData {
+  energyData?: any;
+  transportationData?: any;
+  dietData?: any;
+  totalData: {
+    transportationEmissions: number;
+    dietEmissions: number;
+    energyEmissions: number;
+    totalEmissions: number;
+  };
+}
 
-export const fetchEmissionsData = async ({
-  type,
-  month,
-}: {
-  type: EmissionsType;
-  month?: string;
-}) => {
+// Todo: Especially port this to Cloud Functions
+export const saveEmissionsData = async (data: EmissionsData) => {
+  const auth = getAuth();
+  const db = getFirestore();
+
+  if (!auth.currentUser) {
+    console.error("No user logged in");
+    throw new Error("No user logged in");
+  }
+
+  const userId = auth.currentUser.uid;
+  const formattedMonth = dayjs().format("YYYY-MM");
+  const userDocRef = doc(
+    collection(db, "users", userId, "surveys"),
+    formattedMonth
+  );
+
+  try {
+    await setDoc(
+      userDocRef,
+      {
+        ...data,
+        lastUpdated: serverTimestamp(),
+      },
+      { merge: true }
+    );
+    console.log("Emissions data saved successfully");
+  } catch (error) {
+    console.error("Error saving emissions data:", error);
+    throw error;
+  }
+};
+
+// Todo: Eventually port this to Cloud Functions
+export const fetchEmissionsData = async (month?: string) => {
   const auth = getAuth();
   const db = getFirestore();
 
@@ -40,23 +85,17 @@ export const fetchEmissionsData = async ({
 
     if (Doc.exists()) {
       const data = Doc.data();
-      switch (type) {
-        case "energy":
-          return data.energyData;
-        case "transportation":
-          return data.transportationData;
-        case "diet":
-          return data.dietData;
-        case "total":
-          return data.totalData;
-        default:
-          return null;
-      }
+      return data;
     } else {
       return null;
     }
   } catch (error) {
-    console.error("Error fetching transportation data:", error);
+    console.error("Error fetching data:", error);
     return null;
   }
 };
+
+// Todo: Create function to calculate emissions and send it back
+// ^ this function will only be used after finishing the carbon calc 
+
+// Todo: Create function to delete emissions for user

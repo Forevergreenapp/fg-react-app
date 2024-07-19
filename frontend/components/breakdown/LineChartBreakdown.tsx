@@ -20,11 +20,9 @@ const LineChartBreakdown = () => {
     const fetchData = async () => {
       setLoading(true);
       const months = generateLastSixMonths();
-      const promises = months.map((month) =>
-        fetchEmissionsData({ type: "total", month })
-      );
+      const promises = months.map((month) => fetchEmissionsData(month));
       const results = await Promise.all(promises);
-      setData(results.map((result) => result?.totalEmissions || 0)); // Extract totalEmissions and default to 0 if no data
+      setData(results.map((result) => result?.totalData.totalEmissions || 0)); // Extract totalEmissions and default to 0 if no data
       setLoading(false);
     };
 

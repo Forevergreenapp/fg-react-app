@@ -4,6 +4,7 @@ import RadioButtonGroup from "./RadioButtonGroup";
 import NumberInput from "./NumberInput";
 import TransportQuestion from "./TransportQuestion";
 import NextButton from "./NextButton";
+import { useEmissions, EmissionsProvider } from "./EmissionsContext";
 
 export {
   Header,
@@ -12,4 +13,6 @@ export {
   NumberInput,
   TransportQuestion,
   NextButton,
+  useEmissions,
+  EmissionsProvider,
 };

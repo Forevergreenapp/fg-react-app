@@ -17,10 +17,30 @@ const CalculatingScreen = () => {
 
   return (
     <View className="p-6 bg-white" style={{ flex: 1 }}>
-      <View className="absolute w-[300px] h-[300px] bg-[#409858] rounded-full -bottom-8 -right-1/4" />
-      <View className="absolute w-[200px] h-[200px] bg-[#409858] rounded-full -top-32 -left-1/4" />
+      <View
+        style={{
+          position: "absolute",
+          width: 300,
+          height: 300,
+          backgroundColor: "#409858",
+          borderRadius: 150,
+          bottom: -8,
+          right: "-25%",
+        }}
+      />
+      <View
+        style={{
+          position: "absolute",
+          width: 200,
+          height: 200,
+          backgroundColor: "#409858",
+          borderRadius: 100,
+          top: -32,
+          left: "-25%",
+        }}
+      />
 
-      <View className="flex items-center mt-24">
+      <View className="flex items-center" style={{ marginTop: 128 }}>
         <Text className="text-5xl font-bold my-2">
           Forever<Text className="text-primary">green</Text>
         </Text>
@@ -30,7 +50,12 @@ const CalculatingScreen = () => {
         <Text className="text-4xl mt-4 font-bold text-center">
           Calculating your result
         </Text>
-        <View className="flex items-center justify-center mt-8">
+        <View
+          style={{
+            marginTop: 200,
+            marginHorizontal: "auto",
+          }}
+        >
           <Icon name={icons[iconIndex]} size={100} color="#409858" />
         </View>
       </View>

@@ -35,8 +35,11 @@ const Sitemap = () => {
       <Link href="/(tabs)/profile" className="text-xl underline">
         Profile Page
       </Link>
-      <Link href="/google-sign-in-test" className="text-xl underline">
-        Google Sign In Test
+      <Link href="/(misc)/offset-now" className="text-xl underline">
+        Offset Now!
+      </Link>
+      <Link href="/(misc)/plant-a-tree" className="text-xl underline">
+        Plant a tree
       </Link>
     </View>
   );

@@ -8,12 +8,12 @@ export default function SettingsLayout() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="personal-info" />
+      {/* <Stack.Screen name="personal-info" />
       <Stack.Screen name="payment-methods" />
       <Stack.Screen name="purchaes-history" />
       <Stack.Screen name="notifications" />
       <Stack.Screen name="settings" />
-      <Stack.Screen name="view-subscriptions" />
+      <Stack.Screen name="view-subscriptions" /> */}
     </Stack>
   );
 }

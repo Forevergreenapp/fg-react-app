@@ -3,16 +3,19 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function TabsLayout() {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       <Tabs.Screen
         name="carbon-credit"
         options={{
           tabBarLabel: "",
-          tabBarActiveTintColor: '#409858',
-          tabBarInactiveTintColor: 'gray',
-          headerShown: false,
-          tabBarStyle: { 
-            backgroundColor: '#f4f4f4',
+          tabBarActiveTintColor: "#409858",
+          tabBarInactiveTintColor: "gray",
+          tabBarStyle: {
+            backgroundColor: "#f4f4f4",
             paddingTop: 10,
           },
           tabBarIcon: ({ color, size }) => (
@@ -24,11 +27,10 @@ export default function TabsLayout() {
         name="tree-planting"
         options={{
           tabBarLabel: "",
-          tabBarActiveTintColor: '#409858',
-          tabBarInactiveTintColor: 'gray',
-          headerShown: false,
-          tabBarStyle: { 
-            backgroundColor: '#f4f4f4',
+          tabBarActiveTintColor: "#409858",
+          tabBarInactiveTintColor: "gray",
+          tabBarStyle: {
+            backgroundColor: "#f4f4f4",
             paddingTop: 10,
           },
           tabBarIcon: ({ color, size }) => (
@@ -40,11 +42,10 @@ export default function TabsLayout() {
         name="home"
         options={{
           tabBarLabel: "",
-          tabBarActiveTintColor: '#409858',
-          tabBarInactiveTintColor: 'gray',
-          headerShown: false,
-          tabBarStyle: { 
-            backgroundColor: '#f4f4f4',
+          tabBarActiveTintColor: "#409858",
+          tabBarInactiveTintColor: "gray",
+          tabBarStyle: {
+            backgroundColor: "#f4f4f4",
             paddingTop: 10,
           },
           tabBarIcon: ({ color, size }) => (
@@ -57,11 +58,10 @@ export default function TabsLayout() {
         name="learn"
         options={{
           tabBarLabel: "",
-          tabBarActiveTintColor: '#409858',
-          tabBarInactiveTintColor: 'gray',
-          headerShown: false,
-          tabBarStyle: { 
-            backgroundColor: '#f4f4f4',
+          tabBarActiveTintColor: "#409858",
+          tabBarInactiveTintColor: "gray",
+          tabBarStyle: {
+            backgroundColor: "#f4f4f4",
             paddingTop: 10,
           },
           tabBarIcon: ({ color, size }) => (
@@ -73,11 +73,10 @@ export default function TabsLayout() {
         name="profile"
         options={{
           tabBarLabel: "",
-          tabBarActiveTintColor: '#409858',
-          tabBarInactiveTintColor: 'gray',
-          headerShown: false,
-          tabBarStyle: { 
-            backgroundColor: '#f4f4f4',
+          tabBarActiveTintColor: "#409858",
+          tabBarInactiveTintColor: "gray",
+          tabBarStyle: {
+            backgroundColor: "#f4f4f4",
             paddingTop: 10,
           },
           tabBarIcon: ({ color, size }) => (

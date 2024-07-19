@@ -5,6 +5,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { getAuth, onAuthStateChanged, User, signOut } from "firebase/auth";
 import { useRouter } from "expo-router";
 import { fetchEmissionsData } from "../../api/emissions";
+import { Image } from "expo-image";
+const blurhash =
+  "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
 const SettingsItem = ({ title }: { title: string }) => (
   <TouchableOpacity>
@@ -20,11 +23,12 @@ const SettingsItem = ({ title }: { title: string }) => (
   </TouchableOpacity>
 );
 
-export default function ProfileSettings() {
+export default function ProfileScreen() {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const auth = getAuth();
   const [totalEmissions, setTotalEmissions] = useState(0);
+  const profileIcon = auth.currentUser?.photoURL;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -41,9 +45,10 @@ export default function ProfileSettings() {
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await fetchEmissionsData({ type: "total" });
+      const data = await fetchEmissionsData();
       if (data) {
-        setTotalEmissions(data.totalEmissions);
+        const totalData = data.totalData;
+        setTotalEmissions(totalData.totalEmissions);
       }
     };
 
@@ -96,7 +101,21 @@ export default function ProfileSettings() {
           className="bg-blue-50 p-6 rounded-lg mb-3 flex-row items-center"
         >
           {/* <ProfileIcon /> */}
-          <Text className="text-4xl mr-4">👤</Text>
+          {profileIcon ? (
+            <Image
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 9999,
+                marginRight: 16,
+              }}
+              source={profileIcon}
+              placeholder={blurhash}
+              contentFit={"cover"}
+            />
+          ) : (
+            <Text className="text-4xl mr-4">👤</Text>
+          )}
           <View className="ml-3">
             <Text className="text-lg font-semibold">
               {user.displayName || "User"}
@@ -125,7 +144,11 @@ export default function ProfileSettings() {
             <Text className="text-xl font-semibold">
               {totalEmissions.toFixed(2)} tons of CO₂
             </Text>
-            <TouchableOpacity className="bg-[#409858] px-4 py-2 rounded-full">
+            <TouchableOpacity
+              className="bg-[#409858] rounded-full"
+              style={{ paddingHorizontal: 16, paddingVertical: 8 }}
+              onPress={() => router.push("/(misc)/offset-now")}
+            >
               <Text className="text-white">Offset Now!</Text>
             </TouchableOpacity>
           </View>
@@ -156,7 +179,8 @@ export default function ProfileSettings() {
         {/* Logout Button */}
         <TouchableOpacity
           onPress={handleLogout}
-          className="bg-red-400 p-4 rounded-lg mt-4"
+          className="p-4 rounded-lg mt-4"
+          style={{ backgroundColor: "#FF4141" }}
         >
           <Text className="text-center font-bold text-2xl">Logout</Text>
         </TouchableOpacity>

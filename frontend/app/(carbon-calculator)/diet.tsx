@@ -6,12 +6,18 @@ import {
   RadioButtonGroup,
   NextButton,
 } from "../../components/carbon-calculator";
-import { fetchEmissionsData } from "../../api/emissions";
+import { useEmissions } from "../../components/carbon-calculator";
 
 export default function DietCalculator() {
-  const [diet, setDiet] = useState("Average");
-  const [dietEmissions, setDietEmissions] = useState(0.0);
-  const [transportationEmissions, setTransportationEmissions] = useState(0.0);
+  const { transportationData, dietData, updateDietData, updateTotalData } =
+    useEmissions();
+
+  const [diet, setDiet] = useState(dietData.diet || "Average");
+  const [dietEmissions, setDietEmissions] = useState(
+    dietData.dietEmissions || 0.0
+  );
+  const transportationEmissions =
+    transportationData.transportationEmissions || 0;
   const [isFormValid, setIsFormValid] = useState(false);
   const [progress, setProgress] = useState(0.33);
 
@@ -38,29 +44,18 @@ export default function DietCalculator() {
         setDietEmissions(0.0);
     }
 
+    updateDietData({ diet, dietEmissions });
+    updateTotalData({
+      dietEmissions: dietEmissions,
+    });
+
     if (diet !== "") {
       setProgress(0.66);
     } else {
       setProgress(0.33);
     }
-  }, [diet]);
-
-  useEffect(() => {
-    const loadData = async () => {
-      const data = await fetchEmissionsData({ type: "transportation" });
-      if (data !== null && data.transportationEmissions !== undefined) {
-        setTransportationEmissions(data.transportationEmissions);
-      } else {
-        console.log("No transportation emissions data found");
-      }
-    };
-
-    loadData();
-  }, []);
-
-  if (!transportationEmissions) {
-    return <Text>Loading...</Text>;
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [diet, dietEmissions]);
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -111,15 +106,7 @@ export default function DietCalculator() {
         </View>
 
         {/* Next Button */}
-        <NextButton
-          isFormValid={isFormValid}
-          onNext="energy"
-          data={{
-            diet,
-            dietEmissions,
-          }}
-          type="diet"
-        />
+        <NextButton isFormValid={isFormValid} onNext="energy" />
       </SafeAreaView>
     </ScrollView>
   );

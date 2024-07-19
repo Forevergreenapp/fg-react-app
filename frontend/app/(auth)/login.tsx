@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, useTheme } from "react-native-paper";
-import Icon from "react-native-vector-icons/FontAwesome";
 import { Link, router } from "expo-router";
 import {
   getAuth,
@@ -25,6 +24,7 @@ export default function LoginScreen() {
   const theme = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const auth = getAuth();
 
   /* Function to sign up the user with the email and password */
@@ -33,7 +33,7 @@ export default function LoginScreen() {
       .then((userCredential) => {
         const user = userCredential.user;
         if (user) {
-          fetchEmissionsData({ type: "total" }).then((data) => {
+          fetchEmissionsData().then((data) => {
             if (data) {
               router.replace("/(tabs)/home");
             } else {
@@ -60,7 +60,7 @@ export default function LoginScreen() {
 
       const currentUser = userCredential.user;
       if (currentUser) {
-        fetchEmissionsData({ type: "total" })
+        fetchEmissionsData()
           .then((data) => {
             if (data) {
               router.replace("/(tabs)/home");
@@ -109,19 +109,14 @@ export default function LoginScreen() {
                 dense={true}
                 outlineStyle={{ borderColor: theme.colors.onBackground }}
                 theme={{ roundness: 9999 }}
-              />
-              <Icon
-                name="at"
-                size={24}
-                color={theme.colors.onBackground}
-                className="absolute left-6 top-1/2 transform translate-y-1/5"
+                left={<TextInput.Icon icon="at" />}
               />
             </View>
             <View className="relative mt-6">
               <Text className="mt-4 mb-2">Your Password</Text>
               <TextInput
                 placeholder="Your Password"
-                secureTextEntry
+                secureTextEntry={!showPassword}
                 className="w-full pl-16"
                 value={password}
                 onChangeText={setPassword}
@@ -129,12 +124,13 @@ export default function LoginScreen() {
                 dense={true}
                 outlineStyle={{ borderColor: theme.colors.onBackground }}
                 theme={{ roundness: 9999 }}
-              />
-              <Icon
-                name="lock"
-                size={24}
-                color={theme.colors.onBackground}
-                className="absolute left-6 top-1/2 transform translate-y-1/3"
+                left={<TextInput.Icon icon="lock" />}
+                right={
+                  <TextInput.Icon
+                    icon={showPassword ? "eye-off" : "eye"}
+                    onPress={() => setShowPassword(!showPassword)}
+                  />
+                }
               />
             </View>
             <View className="flex flex-row justify-end">

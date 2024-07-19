@@ -18,7 +18,7 @@ export default function GetStartedScreen() {
       <View className="w-full mb-8">
         <TouchableOpacity
           onPress={() => router.push("/signup")}
-          className="bg-primary rounded-full p-6 hover:bg-primary/90 px-12"
+          className="bg-primary rounded-full p-6 px-12"
         >
           <Text className="text-onPrimary text-center text-3xl font-bold">
             Get Started

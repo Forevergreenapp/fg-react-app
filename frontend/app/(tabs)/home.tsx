@@ -34,12 +34,13 @@ const HomeScreen = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await fetchEmissionsData({ type: "total" });
-      if (data !== null && data.totalEmissions !== undefined) {
-        setEmissionsPerYear(data.totalEmissions);
-        setTransportationEmissions(data.transportationEmissions);
-        setDietEmissions(data.dietEmissions);
-        setEnergyEmissions(data.energyEmissions);
+      const data = await fetchEmissionsData();
+      if (data !== null) {
+        const totalData = data.totalData;
+        setEmissionsPerYear(totalData.totalEmissions);
+        setTransportationEmissions(totalData.transportationEmissions);
+        setDietEmissions(totalData.dietEmissions);
+        setEnergyEmissions(totalData.energyEmissions);
       }
     };
 
@@ -142,17 +143,17 @@ const HomeScreen = () => {
           <View className="flex-1 items-center justify-center p-4">
             <LineChartBreakdown />
           </View>
-          <Pressable
+          <TouchableOpacity
             className="mt-2.5 bg-[#409858] rounded-full items-center justify-center h-10 w-[150px]"
             style={{ paddingVertical: 4, paddingHorizontal: 16 }}
             onPress={() => {
-              // TODO: Add offset action here
+              router.push("/(misc)/offset-now");
             }}
           >
             <Text className="text-white text-center text-xl font-bold">
               Offset Now!
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
 
         {/* Community */}
