@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { router } from "expo-router";
+// todo: replace fetchEmissionsData with the calculate emissions data function (not written yet)
 import { fetchEmissionsData } from "../../api/emissions";
 import {
   PieChartBreakdown,
@@ -25,12 +26,13 @@ export default function Breakdown() {
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await fetchEmissionsData({ type: "total" });
-      if (data !== null && data.totalEmissions !== undefined) {
-        setEmissionsPerYear(data.totalEmissions);
-        setTransportationEmissions(data.transportationEmissions);
-        setDietEmissions(data.dietEmissions);
-        setEnergyEmissions(data.energyEmissions);
+      const data = await fetchEmissionsData();
+      if (data) {
+        const totalData = data.totalData;
+        setEmissionsPerYear(totalData.totalEmissions);
+        setTransportationEmissions(totalData.transportationEmissions);
+        setDietEmissions(totalData.dietEmissions);
+        setEnergyEmissions(totalData.energyEmissions);
       }
     };
 
@@ -161,38 +163,34 @@ export default function Breakdown() {
             <Text className="text-center mb-4 text-lg">
               Support green projects around the world!
             </Text>
-            <View
-              className="bg-[#44945F] rounded-full py-3 mb-4"
+
+            <TouchableOpacity
+              onPress={() => {
+                router.push("(misc)/offset-now");
+              }}
+              className="rounded-full py-3 mb-4"
               style={{ backgroundColor: "#44945F" }}
             >
-              <TouchableOpacity
-                onPress={() => {
-                  router.push("(tabs)/carbon-credit");
-                }}
-              >
-                <Text className="text-white text-center text-lg font-bold">
-                  Learn More
-                </Text>
-              </TouchableOpacity>
-            </View>
+              <Text className="text-white text-center text-lg font-bold">
+                Learn More
+              </Text>
+            </TouchableOpacity>
             <Text className="text-center mb-4 text-lg">
               Build your legacy and leave a lasting impact by planting your own
               forest.
             </Text>
-            <View
-              className="bg-[#44945F] rounded-full py-3 mb-6"
+
+            <TouchableOpacity
+              onPress={() => {
+                router.replace("(tabs)/tree-planting");
+              }}
+              className="rounded-full py-3 mb-6"
               style={{ backgroundColor: "#44945F" }}
             >
-              <TouchableOpacity
-                onPress={() => {
-                  router.replace("(misc)/tree-planting");
-                }}
-              >
-                <Text className="text-white text-center text-lg font-bold">
-                  Start the Pledge today!
-                </Text>
-              </TouchableOpacity>
-            </View>
+              <Text className="text-white text-center text-lg font-bold">
+                Start the Pledge today!
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

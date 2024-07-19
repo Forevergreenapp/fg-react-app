@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, useTheme } from "react-native-paper";
-import Icon from "react-native-vector-icons/FontAwesome";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -28,6 +27,7 @@ export default function SignupScreen() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const auth = getAuth();
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function SignupScreen() {
         }
       })
       .then(() => {
-        const data = fetchEmissionsData({ type: "total" });
+        const data = fetchEmissionsData();
         if (!data) {
           router.replace("/(carbon-calculator)/transportation");
         } else {
@@ -131,12 +131,7 @@ export default function SignupScreen() {
                 dense={true}
                 outlineStyle={{ borderColor: theme.colors.onBackground }}
                 theme={{ roundness: 9999 }}
-              />
-              <Icon
-                name="at"
-                size={25}
-                color={theme.colors.onBackground}
-                className="absolute left-6 top-1/2 transform translate-y-1/5"
+                left={<TextInput.Icon icon="at" />}
               />
             </View>
             <View className="relative">
@@ -150,19 +145,14 @@ export default function SignupScreen() {
                 dense={true}
                 outlineStyle={{ borderColor: theme.colors.onBackground }}
                 theme={{ roundness: 9999 }}
-              />
-              <Icon
-                name="user-o"
-                size={25}
-                color={theme.colors.onBackground}
-                className="absolute left-6 top-1/2 transform translate-y-1/3"
+                left={<TextInput.Icon icon="account" />}
               />
             </View>
             <View className="relative">
               <Text className="mt-4 mb-2">Your Password</Text>
               <TextInput
                 placeholder="Your Password"
-                secureTextEntry
+                secureTextEntry={!showPassword}
                 className="w-full pl-16"
                 value={password}
                 onChangeText={setPassword}
@@ -170,12 +160,13 @@ export default function SignupScreen() {
                 dense={true}
                 outlineStyle={{ borderColor: theme.colors.onBackground }}
                 theme={{ roundness: 9999 }}
-              />
-              <Icon
-                name="lock"
-                size={25}
-                color={theme.colors.onBackground}
-                className="absolute left-6 top-1/2 transform translate-y-1/3"
+                left={<TextInput.Icon icon="lock" />}
+                right={
+                  <TextInput.Icon
+                    icon={showPassword ? "eye-off" : "eye"}
+                    onPress={() => setShowPassword(!showPassword)}
+                  />
+                }
               />
             </View>
             <TouchableOpacity

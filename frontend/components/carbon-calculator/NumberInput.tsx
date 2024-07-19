@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Text, Pressable } from "react-native";
+import { Text } from "react-native";
 import { TextInput, HelperText } from "react-native-paper";
 
 const NumberInput = ({
@@ -9,47 +9,42 @@ const NumberInput = ({
   unit,
   label,
   error,
-}: any) => {
+}: {
+  question: string;
+  value: string;
+  onChange: (value: string) => void;
+  unit?: string;
+  label?: string;
+  error?: string;
+}) => {
   const inputRef = useRef<any>(null);
 
   return (
     <>
       <Text className="mt-6 text-xl">{question}</Text>
-      <Pressable
-        className="mt-4 bg-white shadow-md shadow-black rounded-lg flex-row items-center"
-        onPress={() => inputRef.current?.focus()}
-      >
-        {value && (
-          <Pressable
-            style={{ position: "absolute", left: 5 }}
-            onPress={() => inputRef.current?.focus()}
-          >
-            <Text>{unit}</Text>
-          </Pressable>
-        )}
-        <TextInput
-          ref={inputRef}
-          placeholder="Your Answer"
-          value={value}
-          onChangeText={onChange}
-          keyboardType="numeric"
-          mode="outlined"
-          outlineStyle={{ borderColor: "transparent" }}
-          className="p-4"
-          style={{
-            backgroundColor: "",
-            width: "100%",
-          }}
-        />
-        {value && (
-          <Pressable
-            style={{ position: "absolute", left: 70 }}
-            onPress={() => inputRef.current?.focus()}
-          >
-            <Text>{label}</Text>
-          </Pressable>
-        )}
-      </Pressable>
+      <TextInput
+        ref={inputRef}
+        placeholder="Your Answer"
+        value={value}
+        onChangeText={onChange}
+        keyboardType="numeric"
+        mode="outlined"
+        outlineStyle={{
+          borderWidth: 0,
+        }}
+        style={{
+          backgroundColor: "#fff",
+          width: "100%",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 1.41,
+          borderRadius: 8,
+          marginTop: 16,
+        }}
+        right={label ? <TextInput.Affix text={label} /> : null}
+        left={unit ? <TextInput.Affix text={unit} /> : null}
+      />
       <HelperText type="error" visible={!!error}>
         {error}
       </HelperText>
