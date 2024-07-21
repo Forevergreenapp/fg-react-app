@@ -55,6 +55,7 @@ export const saveEmissionsData = async (data: EmissionsData) => {
 };
 
 // Todo: Eventually port this to Cloud Functions
+// Todo: Also implement caching and async storage to reduce API calls
 export const fetchEmissionsData = async (month?: string) => {
   const auth = getAuth();
   const db = getFirestore();
@@ -66,14 +67,7 @@ export const fetchEmissionsData = async (month?: string) => {
 
   const userId = auth.currentUser.uid;
 
-  // If the user gives a month, try to fetch that month
-  // Otherwise use current month
-  let formattedMonth;
-  if (!month) {
-    formattedMonth = dayjs().format("YYYY-MM");
-  } else {
-    formattedMonth = month;
-  }
+  let formattedMonth = month || dayjs().format("YYYY-MM");
 
   const DocRef = doc(
     collection(db, "users", userId, "surveys"),
@@ -82,13 +76,7 @@ export const fetchEmissionsData = async (month?: string) => {
 
   try {
     const Doc = await getDoc(DocRef);
-
-    if (Doc.exists()) {
-      const data = Doc.data();
-      return data;
-    } else {
-      return null;
-    }
+    return Doc.exists() ? Doc.data() : null
   } catch (error) {
     console.error("Error fetching data:", error);
     return null;
@@ -96,6 +84,6 @@ export const fetchEmissionsData = async (month?: string) => {
 };
 
 // Todo: Create function to calculate emissions and send it back
-// ^ this function will only be used after finishing the carbon calc 
+// ^ this function will only be used after finishing the carbon calc
 
 // Todo: Create function to delete emissions for user

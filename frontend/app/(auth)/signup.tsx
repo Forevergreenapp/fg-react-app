@@ -38,54 +38,50 @@ export default function SignupScreen() {
   }, []);
 
   /* Function to sign up the user with the email and password */
-  const onSignup = () => {
+  const onSignup = async () => {
     const db = getFirestore();
-
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        // Update the user's profile with the display name
-        return updateProfile(user, {
-          displayName: name,
+  
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      await updateProfile(user, {
+        displayName: name,
+      });
+  
+      if (auth.currentUser) {
+        const userDocRef = doc(db, "users", auth.currentUser.uid);
+        await setDoc(userDocRef, {
+          name: name,
+          email: email,
+          createdAt: serverTimestamp(),
         });
-      })
-      .then(() => {
-        if (auth.currentUser) {
-          const userDocRef = doc(db, "users", auth.currentUser.uid);
-          return setDoc(userDocRef, {
-            name: name,
-            email: email,
-            createdAt: serverTimestamp(),
-            // Add any other initial fields here
-          });
-        } else {
-          throw new Error("User not authenticated");
-        }
-      })
-      .then(() => {
-        const data = fetchEmissionsData();
+  
+        const data = await fetchEmissionsData();
         if (!data) {
           router.replace("/(carbon-calculator)/transportation");
         } else {
           router.replace("/(tabs)/home");
         }
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        Alert.alert("Error", `Code: ${errorCode}\nMessage: ${errorMessage}`);
-      });
+      } else {
+        throw new Error("User not authenticated");
+      }
+    } catch (error: any) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      Alert.alert("Error", `Code: ${errorCode}\nMessage: ${errorMessage}`);
+    }
   };
 
   const onGoogleSignUp = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       const user = await GoogleSignin.signIn();
-
+  
       const auth = getAuth();
       const credential = GoogleAuthProvider.credential(user.idToken);
       const userCredential = await signInWithCredential(auth, credential);
-
+  
       const db = getFirestore();
       if (userCredential.user) {
         const userDocRef = doc(db, "users", userCredential.user.uid);
@@ -94,11 +90,19 @@ export default function SignupScreen() {
           email: user.user.email,
           createdAt: serverTimestamp(),
         });
+  
+        // Fetch emissions data after creating the user document
+        const data = await fetchEmissionsData();
+        if (!data) {
+          // If no data for the current month, redirect to the carbon calculator
+          router.replace("/(carbon-calculator)/transportation");
+        } else {
+          // If data exists for the current month, redirect to home
+          router.replace("/(tabs)/home");
+        }
       } else {
         throw new Error("User not authenticated");
       }
-
-      router.replace("/(tabs)/home");
     } catch (error: any) {
       const errorCode = error.code;
       const errorMessage = error.message;
