@@ -166,7 +166,7 @@ export default function Breakdown() {
 
             <TouchableOpacity
               onPress={() => {
-                router.push("(misc)/offset-now");
+                router.push("/offset-now");
               }}
               className="rounded-full py-3 mb-4"
               style={{ backgroundColor: "#44945F" }}
@@ -182,7 +182,7 @@ export default function Breakdown() {
 
             <TouchableOpacity
               onPress={() => {
-                router.replace("(tabs)/tree-planting");
+                router.replace("/tree-planting");
               }}
               className="rounded-full py-3 mb-6"
               style={{ backgroundColor: "#44945F" }}
@@ -198,7 +198,7 @@ export default function Breakdown() {
       <View className="flex items-end mb-10 mr-10">
         <TouchableOpacity
           onPress={() => {
-            router.replace("home");
+            router.replace("/home");
           }}
         >
           <View className="py-3 px-4 rounded-full border-2 h-16 w-16 border-black bg-[#AEDCA7]">

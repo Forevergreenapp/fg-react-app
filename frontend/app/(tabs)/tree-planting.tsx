@@ -18,7 +18,7 @@ export default function TreePlantingScreen() {
             <View className="flex-row justify-around mb-6">
                 <Pressable
                     className="bg-[#eeeeee] p-4 rounded-lg"
-                    onPress={() => router.push('plant-a-tree')}
+                    onPress={() => router.push('/plant-a-tree')}
                 >
                     <Text className='text-3xl text-center'>🌱</Text>
                     <Text className='text-lg'>Plant a new tree!</Text>

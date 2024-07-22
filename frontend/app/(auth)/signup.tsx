@@ -59,9 +59,9 @@ export default function SignupScreen() {
   
         const data = await fetchEmissionsData();
         if (!data) {
-          router.replace("/(carbon-calculator)/transportation");
+          router.replace("/pre-survey");
         } else {
-          router.replace("/(tabs)/home");
+          router.replace("/home");
         }
       } else {
         throw new Error("User not authenticated");
@@ -95,10 +95,10 @@ export default function SignupScreen() {
         const data = await fetchEmissionsData();
         if (!data) {
           // If no data for the current month, redirect to the carbon calculator
-          router.replace("/(carbon-calculator)/transportation");
+          router.replace("/pre-survey");
         } else {
           // If data exists for the current month, redirect to home
-          router.replace("/(tabs)/home");
+          router.replace("/home");
         }
       } else {
         throw new Error("User not authenticated");

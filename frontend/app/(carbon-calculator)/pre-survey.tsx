@@ -44,7 +44,7 @@ const PreSurveyScreen = () => {
           reduce your impact on the environment.
         </Text>
         <TouchableOpacity
-          onPress={() => router.navigate("transportation")}
+          onPress={() => router.navigate("/transportation")}
           className="mt-8 mx-[90px] py-3 px-8 bg-[#409858] rounded-full active:bg-[#3a8a4f]"
         >
           <Text className="text-white text-center text-2xl font-bold">

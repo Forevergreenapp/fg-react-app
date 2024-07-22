@@ -16,6 +16,7 @@ module.exports = {
     "quotes": ["error", "double", { "allowTemplateLiterals": true }],
     "object-curly-spacing": ["error", "always"],
     "indent": ["error", 2],
+    "linebreak-style": 0,
   },
   overrides: [
     {

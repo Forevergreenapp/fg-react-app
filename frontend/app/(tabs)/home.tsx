@@ -49,9 +49,7 @@ const HomeScreen = () => {
 
   // Generate a list of 6 months ago to now
   const months = [];
-  if (!emissionsPerYear) {
-    return <Text>Loading...</Text>;
-  }
+
   for (let i = 0; i < 6; i++) {
     months.push(dayjs().subtract(i, "month").format("YYYY-MM"));
   }
@@ -82,7 +80,7 @@ const HomeScreen = () => {
         <View className="flex flex-row justify-between mb-6">
           <TouchableOpacity
             className="bg-[#f0caca] rounded-2xl w-[47%] h-72 justify-center p-4"
-            onPress={() => router.push("/(carbon-calculator)/breakdown")}
+            onPress={() => router.push("/breakdown")}
           >
             <Text className="text-2xl font-bold text-center mb-4">
               Your Carbon Footprint
@@ -94,7 +92,7 @@ const HomeScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity
             className="bg-[#eeeeee] rounded-2xl w-[47%] h-72 p-4"
-            onPress={() => router.push("/(carbon-calculator)/transportation")}
+            onPress={() => router.push("/transportation")}
           >
             <Text className="text-2xl font-bold text-center mb-4">
               Calculate your impact
@@ -147,7 +145,7 @@ const HomeScreen = () => {
             className="mt-2.5 bg-[#409858] rounded-full items-center justify-center h-10 w-[150px]"
             style={{ paddingVertical: 4, paddingHorizontal: 16 }}
             onPress={() => {
-              router.push("/(misc)/offset-now");
+              router.push("/offset-now");
             }}
           >
             <Text className="text-white text-center text-xl font-bold">
@@ -200,7 +198,7 @@ const HomeScreen = () => {
             </View>
             <Pressable
               className="bg-[#409858] ml-1.25 rounded-full items-center justify-center h-10 w-[150px]"
-              onPress={() => router.push("/(misc)/referral")}
+              onPress={() => router.push("/referral")}
             >
               <Text className="text-white text-center text-xl font-bold">
                 Refer a friend!

@@ -70,7 +70,7 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="my-profile"
         options={{
           tabBarLabel: "",
           tabBarActiveTintColor: "#409858",

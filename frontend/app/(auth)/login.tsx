@@ -35,9 +35,9 @@ export default function LoginScreen() {
         if (user) {
           fetchEmissionsData().then((data) => {
             if (data) {
-              router.replace("/(tabs)/home");
+              router.replace("/home");
             } else {
-              router.replace("/(carbon-calculator)/pre-survey");
+              router.replace("/pre-survey");
             }
           });
         }
@@ -63,9 +63,9 @@ export default function LoginScreen() {
         fetchEmissionsData()
           .then((data) => {
             if (data) {
-              router.replace("/(tabs)/home");
+              router.replace("/home");
             } else {
-              router.replace("/(carbon-calculator)/pre-survey");
+              router.replace("/pre-survey");
             }
           })
           .catch((error) => {
