@@ -10,6 +10,7 @@ export default function MiscLayout() {
     >
       <Stack.Screen name="referral" />
       <Stack.Screen name="plant-a-tree" />
+      <Stack.Screen name="search" />
     </Stack>
   );
 }

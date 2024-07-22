@@ -1,25 +1,13 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
 import { router } from "expo-router";
+import BackButton from "../../components/BackButton";
+
 export default function OffsetNowScreen() {
   return (
     <ScrollView className="flex-1 bg-white">
       <View className="p-6">
-        <View
-          style={{
-            position: "absolute",
-            top: 40,
-            left: 20,
-          }}
-        >
-          <Icon
-            name="arrow-left"
-            size={24}
-            color="black"
-            onPress={() => router.back()}
-          />
-        </View>
+        <BackButton />
         <View className="flex items-center mt-8">
           <Text className="text-5xl font-bold">
             Forever<Text className="text-[#409858]">green</Text>
@@ -52,8 +40,9 @@ export default function OffsetNowScreen() {
                 style={{
                   backgroundColor: "#409858",
                   padding: 16,
-                  borderRadius: 9999,
+                  borderRadius: 9999
                 }}
+                onPress={() => router.navigate("/tree-planting")}
               >
                 <Text className="text-white font-bold text-lg">
                   Plant a tree
