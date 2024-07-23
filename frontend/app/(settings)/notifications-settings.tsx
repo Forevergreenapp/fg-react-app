@@ -1,5 +1,5 @@
 import UnderConstructionScreen from "../../components/UnderConstruction";
 
-export default function subscriptions() {
+export default function notificationsSettings() {
   return <UnderConstructionScreen />;
 }
