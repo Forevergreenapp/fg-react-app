@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
+import { View, Text, ScrollView, Alert, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
-import { LinearGradient } from "expo-linear-gradient";
 import { getAuth, onAuthStateChanged, User, signOut } from "firebase/auth";
-import { useRouter } from "expo-router";
+import { router, useRouter } from "expo-router";
 import { fetchEmissionsData } from "../../api/emissions";
 import { Image } from "expo-image";
 import BackButton from "../../components/BackButton";
@@ -11,18 +10,11 @@ import BackButton from "../../components/BackButton";
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
-const SettingsItem = ({ title }: { title: string }) => (
-  <TouchableOpacity>
-    <LinearGradient
-      colors={["#F8F8F8", "#BDFFFF"]}
-      start={{ x: 0.5, y: 0 }}
-      end={{ x: 0.5, y: 1 }}
-      className="flex-row items-center justify-between bg-blue-50 p-6 rounded-lg mb-3"
-    >
-      <Text className="text-lg font-semibold">{title}</Text>
-      <Icon name="chevron-right" size={48} />
-    </LinearGradient>
-  </TouchableOpacity>
+const SettingsItem = ({ title, screen }: { title: string, screen: string }) => (
+  <Pressable className="flex-row items-center justify-between bg-gray-200 p-4 rounded-lg mb-3" onPress={() => router.push(screen)}>
+    <Text className="text-xl font-semibold">{title}</Text>
+    <Icon name="chevron-right" size={48} />
+  </Pressable>
 );
 
 export default function ProfileScreen() {
@@ -83,28 +75,23 @@ export default function ProfileScreen() {
       <View className="p-6">
         <BackButton />
         {/* Header */}
-        <View className="flex items-center mt-8 mb-6">
-          <Text className="text-5xl font-bold">
+        <View className="flex items-center mt-8">
+          <Text className="text-5xl font-extrabold">
             Forever<Text className="text-[#409858]">green</Text>
           </Text>
           <Text className="text-3xl font-bold text-center mb-3">
-            Profile/Settings
+            Settings
           </Text>
         </View>
 
         {/* Profile Info */}
-        <LinearGradient
-          colors={["#F8F8F8", "#BDFFFF"]}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          className="bg-blue-50 p-6 rounded-lg mb-3 flex-row items-center"
-        >
+        <View className="p-4 rounded-lg mb-3 flex-row items-center">
           {/* <ProfileIcon /> */}
           {profileIcon ? (
             <Image
               style={{
-                width: 40,
-                height: 40,
+                width: 70,
+                height: 70,
                 borderRadius: 9999,
                 marginRight: 16,
               }}
@@ -116,73 +103,64 @@ export default function ProfileScreen() {
             <Text className="text-4xl mr-4">👤</Text>
           )}
           <View className="ml-3">
-            <Text className="text-lg font-semibold">
+            <Text className="text-2xl font-semibold">
               {user?.displayName || "Guest"}
             </Text>
-            <Text className="">{user?.email || ""}</Text>
+            <Text className="text-lg">{user?.email || ""}</Text>
           </View>
-        </LinearGradient>
+        </View>
 
         {/* Settings */}
-        <SettingsItem title="Personal Info" />
-        <SettingsItem title="Payment Methods" />
-        <SettingsItem title="Purchase History" />
-        <SettingsItem title="Notifications" />
+        <SettingsItem title="Personal Info" screen="/profile-settings" />
+        <SettingsItem title="Payment Methods" screen="/payment-methods" />
+        <SettingsItem title="Purchase History" screen="/purchase-history" />
+        <SettingsItem title="Notifications" screen="/notifications-settings" />
 
         {/* Carbon Footprint */}
-        <LinearGradient
-          colors={["#F8F8F8", "#BDFFFF"]}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          className="p-4 rounded-lg mb-3"
-        >
-          <Text className="text-lg mb-2 font-semibold">
+        <View className="p-4 rounded-lg mb-3 mt-8 bg-gray-200">
+          <Text className="text-2xl text-center mb-3 font-bold">
             Your carbon footprint...
           </Text>
           <View className="flex-row items-center justify-between">
-            <Text className="text-xl font-semibold">
-              {totalEmissions.toFixed(2)} tons of CO₂
+            <Text className="text-3xl font-bold text-red">
+              {totalEmissions.toFixed(2)}<Text className="text-xl font-semibold"> tons of CO₂</Text>
             </Text>
-            <TouchableOpacity
-              className="bg-[#409858] rounded-full"
-              style={{ paddingHorizontal: 16, paddingVertical: 8 }}
+            <Pressable
+              className="bg-[#409858] rounded-full px-7 py-3"
               onPress={() => router.push("/offset-now")}
             >
-              <Text className="text-white">Offset Now!</Text>
-            </TouchableOpacity>
+              <Text className="text-white text-xl font-semibold">Offset Now!</Text>
+            </Pressable>
           </View>
-        </LinearGradient>
+        </View>
 
         {/* Manage Subscriptions */}
-        <LinearGradient
-          colors={["#F8F8F8", "#BDFFFF"]}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          className="bg-blue-50 p-4 rounded-lg"
-        >
-          <Text className="text-lg mb-2 font-semibold">
+        <View className="bg-gray-200 p-4 rounded-lg">
+          <Text className="text-2xl text-center mb-3 font-bold">
             Manage Subscriptions
           </Text>
           <View className="flex-row justify-around">
-            <TouchableOpacity className="items-center">
+            <Pressable onPress={() => router.push("/(subscriptions)/subscriptions-settings")} className="items-center">
               <Text className="text-3xl">⚙️</Text>
-              <Text>Settings</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="items-center">
+              <Text className="font-semibold">Settings</Text>
+            </Pressable>
+            <Pressable onPress={() => router.push("/(subscriptions)/subscriptions")} className="items-center">
               <Text className="text-3xl">🛒</Text>
-              <Text>View Subscriptions</Text>
-            </TouchableOpacity>
+              <Text className="font-semibold">View Subscriptions</Text>
+            </Pressable>
           </View>
-        </LinearGradient>
+        </View>
 
         {/* Logout Button */}
-        <TouchableOpacity
-          onPress={handleLogout}
-          className="p-4 rounded-lg mt-4"
-          style={{ backgroundColor: "#FF4141" }}
-        >
+        <Pressable onPress={handleLogout} className="p-3 rounded-lg mt-11 bg-gray-200">
           <Text className="text-center font-bold text-2xl">Logout</Text>
-        </TouchableOpacity>
+        </Pressable>
+
+        {/* Delete Account Button */}
+        <Pressable className="p-3 rounded-lg mt-4 bg-red-700">
+          <Text className="text-center font-bold text-white text-2xl">Delete Account</Text>
+        </Pressable>
+        
       </View>
     </ScrollView>
   );

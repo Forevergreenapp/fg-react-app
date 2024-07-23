@@ -12,6 +12,7 @@ export default function SettingsLayout() {
       <Stack.Screen name="tree-planting-sub" />
       <Stack.Screen name="carbon-credit-sub" />
       <Stack.Screen name="newsletter-sub" />
+      <Stack.Screen name="subscriptions-settings" />
     </Stack>
   );
 }
