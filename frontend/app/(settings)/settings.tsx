@@ -111,7 +111,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* Settings */}
-        <SettingsItem title="Personal Info" screen="/profile-settings" />
+        <SettingsItem title="Profile Settings" screen="/profile-settings" />
         <SettingsItem title="Payment Methods" screen="/payment-methods" />
         <SettingsItem title="Purchase History" screen="/purchase-history" />
         <SettingsItem title="Notifications" screen="/notifications-settings" />
