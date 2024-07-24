@@ -16,6 +16,7 @@ import {
   EarthBreakdown,
 } from "../../components/breakdown";
 import CalculatingScreen from "./calculating";
+import { useEmissions } from "../../components/carbon-calculator";
 
 export default function Breakdown() {
   const [emissionsPerYear, setEmissionsPerYear] = useState(0.0);
@@ -23,6 +24,7 @@ export default function Breakdown() {
   const [transportationEmissions, setTransportationEmissions] = useState(0.0);
   const [dietEmissions, setDietEmissions] = useState(0.0);
   const [energyEmissions, setEnergyEmissions] = useState(0.0);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const loadData = async () => {
@@ -33,11 +35,15 @@ export default function Breakdown() {
         setTransportationEmissions(totalData.transportationEmissions);
         setDietEmissions(totalData.dietEmissions);
         setEnergyEmissions(totalData.energyEmissions);
+      } else if (retryCount < 3) {
+        setTimeout(() => {
+          setRetryCount((prevCount) => prevCount + 1);
+        }, 1000 * (retryCount + 1));
       }
     };
 
     loadData();
-  }, []);
+  }, [retryCount]);
 
   const screenWidth = Dimensions.get("window").width;
 
