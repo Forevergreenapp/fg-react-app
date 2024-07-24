@@ -11,12 +11,14 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { Image } from "expo-image";
 import { LineChartBreakdown } from "../../components/breakdown";
+import { getUserFollowCounts } from '../../api/follow';
 
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
-const ProfileScreen = () => {
+const MyProfileScreen = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [followCounts, setFollowCounts] = useState({ followerCount: 0, followingCount: 0 });
   const auth = getAuth();
   const profileIcon = auth.currentUser?.photoURL;
 
@@ -24,6 +26,7 @@ const ProfileScreen = () => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
+        fetchFollowCounts(currentUser.uid);
       } else {
         router.replace("/login");
       }
@@ -32,6 +35,18 @@ const ProfileScreen = () => {
     return () => unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const fetchFollowCounts = async (userId: string) => {
+    try {
+      const counts = await getUserFollowCounts(userId);
+      if (counts) {
+        setFollowCounts(counts);
+      }
+    } catch (error) {
+      console.error("Error fetching follow counts:", error);
+      // Might want to show an error message to the user here
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -67,7 +82,7 @@ const ProfileScreen = () => {
             asChild
           >
             <TouchableOpacity style={styles.followData}>
-              <Text style={{ fontSize: 24 }}>0</Text>
+              <Text style={{ fontSize: 24 }}>{followCounts.followerCount}</Text>
               <Text style={{ fontSize: 24 }}>Followers</Text>
             </TouchableOpacity>
           </Link>
@@ -80,7 +95,7 @@ const ProfileScreen = () => {
             asChild
           >
             <TouchableOpacity style={styles.followData}>
-              <Text style={{ fontSize: 24 }}>0</Text>
+              <Text style={{ fontSize: 24 }}>{followCounts.followingCount}</Text>
               <Text style={{ fontSize: 24 }}>Following</Text>
             </TouchableOpacity>
           </Link>
@@ -188,4 +203,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileScreen;
+export default MyProfileScreen;

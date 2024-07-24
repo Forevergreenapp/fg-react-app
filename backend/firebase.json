@@ -18,5 +18,25 @@
         "npm --prefix \"$RESOURCE_DIR\" run lint"
       ]
     }
-  ]
+  ],
+  "emulators": {
+    "functions": {
+      "port": 5001
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true,
+    "auth": {
+      "port": 9099
+    }
+  },
+  "extensions": {
+    "firestore-send-email": "firebase/firestore-send-email@0.1.34",
+    "firestore-send-email-4awu": "firebase/firestore-send-email@0.1.34",
+    "firestore-send-email-oah7": "firebase/firestore-send-email@0.1.34"
+  }
 }
