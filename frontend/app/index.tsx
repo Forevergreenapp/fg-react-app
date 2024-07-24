@@ -26,7 +26,7 @@ const Sitemap = () => {
       <Link href="/carbon-credit" className="text-xl underline">
         Carbon Credit Screen
       </Link>
-      <Link href="/my-profile" className="text-xl underline">
+      <Link href="(tabs)/my-profile" className="text-xl underline">
         Profile Page
       </Link>
       <Link href="/offset-now" className="text-xl underline">

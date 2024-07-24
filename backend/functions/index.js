@@ -81,3 +81,4 @@ exports.makeuppercase = onDocumentCreated("/messages/{documentId}", (event) => {
 // 2. Create a cloud function that triggers when a user purchases a
 //    carbon credit. This function needs to update user schema (add cert),
 //    carbon credit schema (quantity)
+
