@@ -21,6 +21,7 @@ import { router } from "expo-router";
 import { getFirestore, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { fetchEmissionsData } from "../../api/emissions";
+import { sendWelcomeEmail } from "../../api/email";
 
 export default function SignupScreen() {
   const theme = useTheme();
@@ -40,23 +41,34 @@ export default function SignupScreen() {
   /* Function to sign up the user with the email and password */
   const onSignup = async () => {
     const db = getFirestore();
-  
+
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
-      
+
       await updateProfile(user, {
         displayName: name,
       });
-  
+
       if (auth.currentUser) {
         const userDocRef = doc(db, "users", auth.currentUser.uid);
         await setDoc(userDocRef, {
           name: name,
           email: email,
+          photoURL: null,
           createdAt: serverTimestamp(),
+          followers: [],
+          following: [],
+          followerCount: 0,
+          followingCount: 0,
         });
-  
+
+        await sendWelcomeEmail(email, name);
+
         const data = await fetchEmissionsData();
         if (!data) {
           router.replace("/pre-survey");
@@ -77,20 +89,27 @@ export default function SignupScreen() {
     try {
       await GoogleSignin.hasPlayServices();
       const user = await GoogleSignin.signIn();
-  
+
       const auth = getAuth();
       const credential = GoogleAuthProvider.credential(user.idToken);
       const userCredential = await signInWithCredential(auth, credential);
-  
+
       const db = getFirestore();
       if (userCredential.user) {
         const userDocRef = doc(db, "users", userCredential.user.uid);
         await setDoc(userDocRef, {
           name: user.user.name,
           email: user.user.email,
+          photoURL: user.user.photo,
           createdAt: serverTimestamp(),
+          followers: [],
+          following: [],
+          followerCount: 0,
+          followingCount: 0,
         });
-  
+
+        await sendWelcomeEmail(user.user.email, name);
+
         // Fetch emissions data after creating the user document
         const data = await fetchEmissionsData();
         if (!data) {
