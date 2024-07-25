@@ -12,7 +12,7 @@ const generateLastSixMonths = (): string[] => {
   return months.reverse();
 };
 
-const LineChartBreakdown = () => {
+const LineChartBreakdown = ({ userId }: { userId?: string }) => {
   const [data, setData] = useState<number[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -20,7 +20,7 @@ const LineChartBreakdown = () => {
     const fetchData = async () => {
       setLoading(true);
       const months = generateLastSixMonths();
-      const promises = months.map((month) => fetchEmissionsData(month));
+      const promises = months.map((month) => fetchEmissionsData(month, userId));
       const results = await Promise.all(promises);
       setData(results.map((result) => result?.totalData.totalEmissions || 0)); // Extract totalEmissions and default to 0 if no data
       setLoading(false);

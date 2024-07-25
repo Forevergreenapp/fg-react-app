@@ -1,26 +1,43 @@
 import { router, Link } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { Image } from "expo-image";
 import { LineChartBreakdown } from "../../components/breakdown";
-import { getUserFollowCounts } from '../../api/follow';
+import { getUserFollowCounts } from "../../api/social";
+import { useFocusEffect } from "@react-navigation/native";
 
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
 const MyProfileScreen = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [followCounts, setFollowCounts] = useState({ followerCount: 0, followingCount: 0 });
+  const [followCounts, setFollowCounts] = useState({
+    followerCount: 0,
+    followingCount: 0,
+  });
   const auth = getAuth();
   const profileIcon = auth.currentUser?.photoURL;
+
+  const fetchFollowCounts = useCallback(async (userId: string) => {
+    try {
+      const counts = await getUserFollowCounts(userId);
+      if (counts) {
+        setFollowCounts(counts);
+      }
+    } catch (error) {
+      console.error("Error fetching follow counts:", error);
+      // Might want to show an error message to the user here
+    }
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -33,31 +50,33 @@ const MyProfileScreen = () => {
     });
 
     return () => unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [auth, fetchFollowCounts]);
 
-  const fetchFollowCounts = async (userId: string) => {
-    try {
-      const counts = await getUserFollowCounts(userId);
-      if (counts) {
-        setFollowCounts(counts);
+  useFocusEffect(
+    useCallback(() => {
+      if (user) {
+        fetchFollowCounts(user.uid);
       }
-    } catch (error) {
-      console.error("Error fetching follow counts:", error);
-      // Might want to show an error message to the user here
-    }
-  };
+    }, [user, fetchFollowCounts])
+  );
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.navigate("/notifications")}>
-          <Icon name={"bell"} size={40} style={styles.icon} />
-          <View style={styles.indicator} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.navigate("/settings")}>
-          <Icon name={"gear"} size={40} style={styles.icon} />
-        </TouchableOpacity>
+        <Pressable
+          hitSlop={{ top: 50, bottom: 50, left: 50, right: 50 }}
+          onPress={() => router.navigate("/notifications")}
+        >
+          <TouchableOpacity onPress={() => router.navigate("/notifications")}>
+            <Icon name={"bell"} size={40} style={styles.icon} />
+            <View style={styles.indicator} />
+          </TouchableOpacity>
+        </Pressable>
+        <Pressable>
+          <TouchableOpacity onPress={() => router.navigate("/settings")}>
+            <Icon name={"gear"} size={40} style={styles.icon} />
+          </TouchableOpacity>
+        </Pressable>
       </View>
 
       <View style={styles.profile}>
@@ -74,31 +93,30 @@ const MyProfileScreen = () => {
         )}
         <Text style={styles.name}>{user?.displayName || "Guest"}</Text>
         <View style={styles.followInfo}>
-          <Link
-            href={{
-              pathname: "/friends/[uid]",
-              params: { uid: user?.uid },
-            }}
-            asChild
-          >
-            <TouchableOpacity style={styles.followData}>
-              <Text style={{ fontSize: 24 }}>{followCounts.followerCount}</Text>
-              <Text style={{ fontSize: 24 }}>Followers</Text>
-            </TouchableOpacity>
-          </Link>
-          <Link
+          <TouchableOpacity
             style={styles.followData}
-            href={{
-              pathname: "/friends/[uid]",
-              params: { uid: user?.uid },
-            }}
-            asChild
+            onPress={() =>
+              router.push({
+                pathname: "/friends/[uid]",
+                params: { uid: user?.uid, type: "Followers" },
+              })
+            }
           >
-            <TouchableOpacity style={styles.followData}>
-              <Text style={{ fontSize: 24 }}>{followCounts.followingCount}</Text>
-              <Text style={{ fontSize: 24 }}>Following</Text>
-            </TouchableOpacity>
-          </Link>
+            <Text style={{ fontSize: 24 }}>{followCounts.followerCount}</Text>
+            <Text style={{ fontSize: 24 }}>Followers</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.followData}
+            onPress={() =>
+              router.push({
+                pathname: "/friends/[uid]",
+                params: { uid: user?.uid, type: "Following" },
+              })
+            }
+          >
+            <Text style={{ fontSize: 24 }}>{followCounts.followingCount}</Text>
+            <Text style={{ fontSize: 24 }}>Following</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.horizontalLine}></View>
         <View style={styles.buttons}>
