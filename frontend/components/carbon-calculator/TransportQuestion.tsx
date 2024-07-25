@@ -29,7 +29,7 @@ const TransportQuestion = ({
   return (
     <>
       <Text className="mt-8 text-xl">{question}</Text>
-      <View className="flex-row items-top justify-between mt-6">
+      <View className="flex-row align-middle justify-between mt-6">
         <View className="-ml-2 w-1/2">
           {["Yes", "No"].map((option) => (
             <TouchableOpacity
@@ -38,11 +38,12 @@ const TransportQuestion = ({
               activeOpacity={0.7}
             >
               <View className="flex-row items-center">
-                <RadioButton
+                <RadioButton.Android
                   value={option}
                   status={useTransport === option ? "checked" : "unchecked"}
                   onPress={() => setUseTransport(option)}
                   color="#44945F"
+                  uncheckedColor="#808080"
                 />
                 <Text className="text-lg">{option}</Text>
               </View>
@@ -52,34 +53,35 @@ const TransportQuestion = ({
         {useTransport === "Yes" && (
           <View className="w-1/2">
             <Text className="text-sm">How many times a week?</Text>
-            <View className="mt-2 bg-white border border-[#D9D9D9] rounded-lg overflow-hidden flex-row items-center">
-              <TextInput
-                ref={inputRef}
-                value={frequency}
-                onChangeText={(value) => validateNumber(value, setFrequency)}
-                keyboardType="numeric"
-                mode="outlined"
-                outlineStyle={{ borderColor: "transparent" }}
-                dense={true}
-                style={{
-                  height: 40,
-                  backgroundColor: "#FFF",
-                  width: "auto",
-                }}
-              />
-              <Pressable
-                onPress={() => inputRef.current?.focus()}
-                style={{
-                  height: 40,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  position: "absolute",
-                  right: 5,
-                }}
-              >
-                <Text className="text-sm">{label}</Text>
-              </Pressable>
-            </View>
+            <TextInput
+              ref={inputRef}
+              placeholder="Number of times"
+              value={frequency}
+              onChangeText={(value) => validateNumber(value, setFrequency)}
+              keyboardType="numeric"
+              mode="outlined"
+              outlineStyle={{
+                borderWidth: 0,
+              }}
+              style={{
+                height: 40,
+                backgroundColor: "#FFF",
+                width: "auto",
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 1.41,
+                borderRadius: 8,
+                marginTop: 16,
+              }}
+              dense={true}
+              textColor="#000"
+              right={
+                label ? (
+                  <TextInput.Affix text={label} textStyle={{ color: "#000" }} />
+                ) : null
+              }
+            />
             <HelperText type="error" visible={!!frequencyError}>
               {frequencyError}
             </HelperText>

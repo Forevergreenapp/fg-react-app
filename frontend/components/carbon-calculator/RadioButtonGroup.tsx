@@ -14,11 +14,12 @@ const RadioButtonGroup = ({ question, options, value, onChange }: any) => {
             activeOpacity={0.7}
           >
             <View className="flex-row items-center">
-              <RadioButton
+              <RadioButton.Android
                 value={item}
                 status={value === item ? "checked" : "unchecked"}
                 onPress={() => onChange(item)}
                 color="#44945F"
+                uncheckedColor="#808080"
               />
               <Text className="text-lg">{item}</Text>
             </View>

@@ -108,8 +108,9 @@ export default function LoginScreen() {
                 mode="outlined"
                 dense={true}
                 outlineStyle={{ borderColor: theme.colors.onBackground }}
-                theme={{ roundness: 9999 }}
-                left={<TextInput.Icon icon="at" />}
+                theme={{ roundness: 9999, colors: { background: "#fff" } }}
+                textColor="#000"
+                left={<TextInput.Icon icon="at" color={"#000"} />}
               />
             </View>
             <View className="relative mt-6">
@@ -123,12 +124,14 @@ export default function LoginScreen() {
                 mode="outlined"
                 dense={true}
                 outlineStyle={{ borderColor: theme.colors.onBackground }}
-                theme={{ roundness: 9999 }}
-                left={<TextInput.Icon icon="lock" />}
+                theme={{ roundness: 9999, colors: { background: "#fff" } }}
+                textColor="#000"
+                left={<TextInput.Icon icon="lock" color="#000" />}
                 right={
                   <TextInput.Icon
                     icon={showPassword ? "eye-off" : "eye"}
                     onPress={() => setShowPassword(!showPassword)}
+                    color="#000"
                   />
                 }
               />
@@ -142,7 +145,7 @@ export default function LoginScreen() {
             </View>
             <TouchableOpacity
               onPress={onLogin}
-              className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-8 border"
+              className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-8 border shadow-sm"
             >
               <Text className="text-onPrimary text-center text-2xl font-bold">
                 Log in
@@ -157,7 +160,7 @@ export default function LoginScreen() {
               onPress={() => {
                 onGoogleLogin();
               }}
-              className="flex flex-row items-center justify-center bg-white border border-black rounded-full p-4 shadow-md"
+              className="flex flex-row items-center justify-center bg-white border border-black rounded-full p-4 shadow-sm"
             >
               <Image
                 source={{
