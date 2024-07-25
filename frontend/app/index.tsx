@@ -38,6 +38,9 @@ const Sitemap = () => {
       <Link href="/settings" className="text-xl underline">
         Settings
       </Link>
+      <Link href="/profile/jeKbw3I30sdsZXRU9yQmhVla9Y12" className="text-xl underline">
+        Mark's profile
+      </Link>
     </View>
   );
 };

@@ -7,6 +7,7 @@ import {
   ScrollView,
   Alert,
   TouchableOpacity,
+  useWindowDimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, useTheme } from "react-native-paper";
@@ -43,6 +44,7 @@ export default function SignupScreen() {
     const db = getFirestore();
 
     try {
+      // todo check if user already has account with this email
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -87,6 +89,7 @@ export default function SignupScreen() {
 
   const onGoogleSignUp = async () => {
     try {
+      // todo check if a user already exists with this account
       await GoogleSignin.hasPlayServices();
       const user = await GoogleSignin.signIn();
 
@@ -129,107 +132,115 @@ export default function SignupScreen() {
     }
   };
 
+  const screenHeight = useWindowDimensions().height;
+
   return (
-    <KeyboardAvoidingView>
-      <SafeAreaView className="flex-1 justify-center px-4 bg-background">
-        <ScrollView>
-          <Text className="text-5xl font-bold text-center tracking-tighter my-10">
-            Sign <Text className="text-primary">Up</Text>
-          </Text>
-          <View className="items-center">
-            <Image
-              className="w-80 h-40"
-              source={require("../../assets/images/tree-logo.png")}
-            />
-          </View>
-          <View className="space-y-4 px-12">
-            <View className="relative">
-              <Text className="mb-2">Email</Text>
-              <TextInput
-                placeholder="Ex. abc@example.com"
-                className="w-full pl-16"
-                value={email}
-                onChangeText={setEmail}
-                mode="outlined"
-                dense={true}
-                outlineStyle={{ borderColor: theme.colors.onBackground }}
-                theme={{ roundness: 9999 }}
-                left={<TextInput.Icon icon="at" />}
-              />
-            </View>
-            <View className="relative">
-              <Text className="mt-4 mb-2">Your Name</Text>
-              <TextInput
-                placeholder="Ex. John Smith"
-                className="w-full pl-16"
-                value={name}
-                onChangeText={setName}
-                mode="outlined"
-                dense={true}
-                outlineStyle={{ borderColor: theme.colors.onBackground }}
-                theme={{ roundness: 9999 }}
-                left={<TextInput.Icon icon="account" />}
-              />
-            </View>
-            <View className="relative">
-              <Text className="mt-4 mb-2">Your Password</Text>
-              <TextInput
-                placeholder="Your Password"
-                secureTextEntry={!showPassword}
-                className="w-full pl-16"
-                value={password}
-                onChangeText={setPassword}
-                mode="outlined"
-                dense={true}
-                outlineStyle={{ borderColor: theme.colors.onBackground }}
-                theme={{ roundness: 9999 }}
-                left={<TextInput.Icon icon="lock" />}
-                right={
-                  <TextInput.Icon
-                    icon={showPassword ? "eye-off" : "eye"}
-                    onPress={() => setShowPassword(!showPassword)}
-                  />
-                }
-              />
-            </View>
-            <TouchableOpacity
-              onPress={onSignup}
-              className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-8 border"
-            >
-              <Text className="text-onPrimary text-center text-2xl font-bold">
-                Create Account
-              </Text>
-            </TouchableOpacity>
-            <View className="flex-row items-center my-4">
-              <View className="flex-1 h-1 bg-black" />
-              <Text className="px-4 text-black font-bold text-xl">Or</Text>
-              <View className="flex-1 h-1 bg-black" />
-            </View>
-            <TouchableOpacity
-              onPress={() => {
-                onGoogleSignUp();
-              }}
-              className="flex flex-row items-center justify-center bg-white border border-black rounded-full p-4 shadow-md"
-            >
+    <KeyboardAvoidingView className="flex-1 bg-white">
+      <SafeAreaView className="justify-center px-4 flex-1">
+        <ScrollView className="h-screen">
+          <View className="justify-between" style={{ height: screenHeight-100 }}>
+            <Text className="text-5xl font-bold text-center tracking-tighter my-10">
+              Sign <Text className="text-primary">Up</Text>
+            </Text>
+            <View className="items-center">
               <Image
-                source={{
-                  uri: "https://img.icons8.com/color/48/000000/google-logo.png",
-                }}
-                className="w-8 h-8 mr-4"
+                className="w-80 h-40"
+                source={require("../../assets/images/tree-logo.png")}
               />
-              <Text className="text-center text-xl font-bold">
-                Continue with Google
-              </Text>
-            </TouchableOpacity>
-            <View className="mt-4 flex flex-row items-center justify-center gap-8">
-              <Text className="text-onPrimaryContainer text-lg font-bold">
-                Already helping our planet?
-              </Text>
-              <TouchableOpacity onPress={() => router.navigate("/login")}>
-                <Text className="underline text-onPrimaryContainer text-lg font-bold">
-                  Log In
+            </View>
+            <View className="space-y-4 px-12">
+              <View className="relative">
+                <Text className="mb-2">Email</Text>
+                <TextInput
+                  placeholder="Ex. abc@example.com"
+                  className="w-full pl-16"
+                  value={email}
+                  onChangeText={setEmail}
+                  mode="outlined"
+                  dense={true}
+                  outlineStyle={{ borderColor: theme.colors.onBackground }}
+                  theme={{ roundness: 9999, colors: { background: "#fff" } }}
+                  textColor="#000"
+                  left={<TextInput.Icon icon="at" color={"#000"} />}
+                />
+              </View>
+              <View className="relative">
+                <Text className="mt-4 mb-2">Your Name</Text>
+                <TextInput
+                  placeholder="Ex. John Smith"
+                  className="w-full pl-16"
+                  value={name}
+                  onChangeText={setName}
+                  mode="outlined"
+                  dense={true}
+                  outlineStyle={{ borderColor: theme.colors.onBackground }}
+                  theme={{ roundness: 9999, colors: { background: "#fff" } }}
+                  textColor="#000"
+                  left={<TextInput.Icon icon="account" color={"#000"} />}
+                />
+              </View>
+              <View className="relative">
+                <Text className="mt-4 mb-2">Your Password</Text>
+                <TextInput
+                  placeholder="Your Password"
+                  secureTextEntry={!showPassword}
+                  className="w-full pl-16"
+                  value={password}
+                  onChangeText={setPassword}
+                  mode="outlined"
+                  dense={true}
+                  outlineStyle={{ borderColor: theme.colors.onBackground }}
+                  theme={{ roundness: 9999, colors: { background: "#fff" } }}
+                  textColor="#000"
+                  left={<TextInput.Icon icon="lock" color={"#000"} />}
+                  right={
+                    <TextInput.Icon
+                      icon={showPassword ? "eye-off" : "eye"}
+                      onPress={() => setShowPassword(!showPassword)}
+                      color={"#000"}
+                    />
+                  }
+                />
+              </View>
+              <TouchableOpacity
+                onPress={onSignup}
+                className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-8 border shadow-sm"
+              >
+                <Text className="text-onPrimary text-center text-2xl font-bold">
+                  Create Account
                 </Text>
               </TouchableOpacity>
+              <View className="flex-row items-center my-4">
+                <View className="flex-1 h-1 bg-black" />
+                <Text className="px-4 text-black font-bold text-xl">Or</Text>
+                <View className="flex-1 h-1 bg-black" />
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  onGoogleSignUp();
+                }}
+                className="flex flex-row items-center justify-center bg-white border border-black rounded-full p-4 shadow-sm"
+              >
+                <Image
+                  source={{
+                    uri: "https://img.icons8.com/color/48/000000/google-logo.png",
+                  }}
+                  className="w-8 h-8 mr-4"
+                />
+                <Text className="text-center text-xl font-bold">
+                  Continue with Google
+                </Text>
+              </TouchableOpacity>
+              <View className="mt-4 flex flex-row items-center justify-center gap-8">
+                <Text className="text-onPrimaryContainer text-xl font-bold">
+                  Already helping our planet?
+                </Text>
+                <TouchableOpacity onPress={() => router.navigate("/login")}>
+                  <Text className="underline text-onPrimaryContainer text-xl font-bold">
+                    Log In
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </ScrollView>

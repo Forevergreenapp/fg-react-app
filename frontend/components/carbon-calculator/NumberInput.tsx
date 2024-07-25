@@ -42,8 +42,17 @@ const NumberInput = ({
           borderRadius: 8,
           marginTop: 16,
         }}
-        right={label ? <TextInput.Affix text={label} /> : null}
-        left={unit ? <TextInput.Affix text={unit} /> : null}
+        textColor="#000"
+        right={
+          label ? (
+            <TextInput.Affix text={label} textStyle={{ color: "#000" }} />
+          ) : null
+        }
+        left={
+          unit ? (
+            <TextInput.Affix text={unit} textStyle={{ color: "#000" }} />
+          ) : null
+        }
       />
       <HelperText type="error" visible={!!error}>
         {error}

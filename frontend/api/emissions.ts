@@ -56,7 +56,7 @@ export const saveEmissionsData = async (data: EmissionsData) => {
 
 // Todo: Eventually port this to Cloud Functions
 // Todo: Also implement caching and async storage to reduce API calls
-export const fetchEmissionsData = async (month?: string) => {
+export const fetchEmissionsData = async (month?: string, userId?: string) => {
   const auth = getAuth();
   const db = getFirestore();
 
@@ -65,7 +65,9 @@ export const fetchEmissionsData = async (month?: string) => {
     return null;
   }
 
-  const userId = auth.currentUser.uid;
+  if (!userId) {
+    userId = auth.currentUser.uid;
+  }
 
   let formattedMonth = month || dayjs().format("YYYY-MM");
 
@@ -76,7 +78,7 @@ export const fetchEmissionsData = async (month?: string) => {
 
   try {
     const Doc = await getDoc(DocRef);
-    return Doc.exists() ? Doc.data() : null
+    return Doc.exists() ? Doc.data() : null;
   } catch (error) {
     console.error("Error fetching data:", error);
     return null;

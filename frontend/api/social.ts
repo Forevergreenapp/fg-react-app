@@ -115,12 +115,47 @@ export const getUserFollowCounts = async (userId: string) => {
 // Get a user's followers
 export const getUserFollowers = async (userId: string) => {
   const db = getFirestore();
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
+
+  if (!currentUser) {
+    throw new Error("No user logged in");
+  }
 
   try {
     const userDoc = await getDoc(doc(db, "users", userId));
     if (userDoc.exists()) {
       const { followers } = userDoc.data();
-      return followers;
+
+      // Get the current user's following list
+      const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
+      const currentUserFollowing = currentUserDoc.exists()
+        ? currentUserDoc.data().following || []
+        : [];
+
+      // Fetch full profile information for each followed user
+      const followersProfiles = await Promise.all(
+        followers.map(async (followerUserId: string) => {
+          const followedUserDoc = await getDoc(
+            doc(db, "users", followerUserId)
+          );
+          if (followedUserDoc.exists()) {
+            const userData = followedUserDoc.data();
+            return {
+              id: followerUserId,
+              name: userData.name,
+              photoURL: userData.photoURL,
+              followers: userData.followerCount || 0,
+              following: userData.followingCount || 0,
+              isFollowing: currentUserFollowing.includes(followerUserId),
+              // Add any other fields you need
+            };
+          }
+          return null;
+        })
+      );
+
+      return followersProfiles.filter((profile) => profile !== null);
     }
     throw new Error("User not found");
   } catch (error) {
@@ -132,16 +167,89 @@ export const getUserFollowers = async (userId: string) => {
 // Get a user's following
 export const getUserFollowing = async (userId: string) => {
   const db = getFirestore();
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
+
+  if (!currentUser) {
+    throw new Error("No user logged in");
+  }
 
   try {
     const userDoc = await getDoc(doc(db, "users", userId));
     if (userDoc.exists()) {
       const { following } = userDoc.data();
-      return following;
+
+      // Get the current user's following list
+      const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
+      const currentUserFollowing = currentUserDoc.exists()
+        ? currentUserDoc.data().following || []
+        : [];
+
+      // Fetch full profile information for each followed user
+      const followingProfiles = await Promise.all(
+        following.map(async (followedUserId: string) => {
+          const followedUserDoc = await getDoc(
+            doc(db, "users", followedUserId)
+          );
+          if (followedUserDoc.exists()) {
+            const userData = followedUserDoc.data();
+            return {
+              id: followedUserId,
+              name: userData.name,
+              photoURL: userData.photoURL,
+              followers: userData.followerCount || 0,
+              following: userData.followingCount || 0,
+              isFollowing: currentUserFollowing.includes(followedUserId),
+              // Add any other fields you need
+            };
+          }
+          return null;
+        })
+      );
+
+      return followingProfiles.filter((profile) => profile !== null);
     }
     throw new Error("User not found");
   } catch (error) {
     console.error("Error getting user following:", error);
+    return null;
+  }
+};
+
+export const getUserProfile = async (userId: string) => {
+  const db = getFirestore();
+  const auth = getAuth();
+
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error("No user logged in");
+  }
+
+  const currentUserId = currentUser.uid;
+
+  try {
+    const currentUserRef = doc(db, "users", currentUserId);
+    const currentUserDoc = await getDoc(currentUserRef);
+
+    const userDoc = await getDoc(doc(db, "users", userId));
+    if (userDoc.exists()) {
+      const { name, photoURL, followerCount, followingCount } = userDoc.data();
+
+      // Check if the current user is following this profile
+      const currentUserFollowing = currentUserDoc.data()?.following || [];
+      const isFollowing = currentUserFollowing.includes(userId);
+
+      return {
+        name,
+        photoURL,
+        followerCount,
+        followingCount,
+        isFollowing, // Add this boolean to the returned object
+      };
+    }
+    throw new Error("User not found");
+  } catch (error) {
+    console.error("Error getting user profile:", error);
     return null;
   }
 };

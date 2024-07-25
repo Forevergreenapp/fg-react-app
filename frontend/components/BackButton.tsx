@@ -7,9 +7,7 @@ export default function BackButton() {
   return (
     <TouchableOpacity
       style={{
-        position: "absolute",
-        top: 70,
-        left: 30,
+        paddingTop: 70,
         display: "flex",
         flexDirection: "row",
         gap: 8,
