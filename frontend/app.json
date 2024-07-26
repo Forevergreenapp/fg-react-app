@@ -2,6 +2,7 @@
   "expo": {
     "name": "fg-react-app",
     "slug": "fg-react-app",
+    "owner": "forevergreen-earth-inc",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

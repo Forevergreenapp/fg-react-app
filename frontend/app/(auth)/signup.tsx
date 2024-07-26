@@ -5,24 +5,19 @@ import {
   Image,
   KeyboardAvoidingView,
   ScrollView,
-  Alert,
   TouchableOpacity,
   useWindowDimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, useTheme } from "react-native-paper";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  updateProfile,
-  GoogleAuthProvider,
-  signInWithCredential,
-} from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { router } from "expo-router";
-import { getFirestore, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { fetchEmissionsData } from "../../api/emissions";
-import { sendWelcomeEmail } from "../../api/email";
+import {
+  onSignup,
+  onGoogleSignUp,
+  onContinueAnonymously,
+} from "../../api/auth";
 
 export default function SignupScreen() {
   const theme = useTheme();
@@ -30,107 +25,23 @@ export default function SignupScreen() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const auth = getAuth();
+  const [isAnonymous, setIsAnonymous] = useState(false);
 
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
         "489135632905-iu340mh7lub0iis2q18upvus42fa2roo.apps.googleusercontent.com",
     });
+
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAnonymous(user.isAnonymous);
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
-
-  /* Function to sign up the user with the email and password */
-  const onSignup = async () => {
-    const db = getFirestore();
-
-    try {
-      // todo check if user already has account with this email
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-
-      await updateProfile(user, {
-        displayName: name,
-      });
-
-      if (auth.currentUser) {
-        const userDocRef = doc(db, "users", auth.currentUser.uid);
-        await setDoc(userDocRef, {
-          name: name,
-          email: email,
-          photoURL: null,
-          createdAt: serverTimestamp(),
-          followers: [],
-          following: [],
-          followerCount: 0,
-          followingCount: 0,
-        });
-
-        await sendWelcomeEmail(email, name);
-
-        const data = await fetchEmissionsData();
-        if (!data) {
-          router.replace("/pre-survey");
-        } else {
-          router.replace("/home");
-        }
-      } else {
-        throw new Error("User not authenticated");
-      }
-    } catch (error: any) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      Alert.alert("Error", `Code: ${errorCode}\nMessage: ${errorMessage}`);
-    }
-  };
-
-  const onGoogleSignUp = async () => {
-    try {
-      // todo check if a user already exists with this account
-      await GoogleSignin.hasPlayServices();
-      const user = await GoogleSignin.signIn();
-
-      const auth = getAuth();
-      const credential = GoogleAuthProvider.credential(user.idToken);
-      const userCredential = await signInWithCredential(auth, credential);
-
-      const db = getFirestore();
-      if (userCredential.user) {
-        const userDocRef = doc(db, "users", userCredential.user.uid);
-        await setDoc(userDocRef, {
-          name: user.user.name,
-          email: user.user.email,
-          photoURL: user.user.photo,
-          createdAt: serverTimestamp(),
-          followers: [],
-          following: [],
-          followerCount: 0,
-          followingCount: 0,
-        });
-
-        await sendWelcomeEmail(user.user.email, name);
-
-        // Fetch emissions data after creating the user document
-        const data = await fetchEmissionsData();
-        if (!data) {
-          // If no data for the current month, redirect to the carbon calculator
-          router.replace("/pre-survey");
-        } else {
-          // If data exists for the current month, redirect to home
-          router.replace("/home");
-        }
-      } else {
-        throw new Error("User not authenticated");
-      }
-    } catch (error: any) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      Alert.alert("Error", `Code: ${errorCode}\nMessage: ${errorMessage}`);
-    }
-  };
 
   const screenHeight = useWindowDimensions().height;
 
@@ -138,7 +49,10 @@ export default function SignupScreen() {
     <KeyboardAvoidingView className="flex-1 bg-white">
       <SafeAreaView className="justify-center px-4 flex-1">
         <ScrollView className="h-screen">
-          <View className="justify-between" style={{ height: screenHeight-100 }}>
+          <View
+            className="justify-between"
+            style={{ height: screenHeight - 100 }}
+          >
             <Text className="text-5xl font-bold text-center tracking-tighter my-10">
               Sign <Text className="text-primary">Up</Text>
             </Text>
@@ -203,7 +117,7 @@ export default function SignupScreen() {
                 />
               </View>
               <TouchableOpacity
-                onPress={onSignup}
+                onPress={() => onSignup(email, password, name)}
                 className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-8 border shadow-sm"
               >
                 <Text className="text-onPrimary text-center text-2xl font-bold">
@@ -241,6 +155,23 @@ export default function SignupScreen() {
                   </Text>
                 </TouchableOpacity>
               </View>
+              {isAnonymous ? (
+                <View className="mt-4 px-4">
+                  <Text className="text-center text-lg text-gray-700">
+                    Create an account to save your progress, access all
+                    features, and continue making a real impact on the
+                    environment!
+                  </Text>
+                </View>
+              ) : (
+                <View className="mt-4 flex flex-row items-center justify-center gap-8">
+                  <TouchableOpacity onPress={onContinueAnonymously}>
+                    <Text className="underline text-onPrimaryContainer text-xl font-bold">
+                      Or continue as guest
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
           </View>
         </ScrollView>
