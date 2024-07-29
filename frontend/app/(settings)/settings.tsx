@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Alert, Pressable } from "react-native";
+import { View, Text, ScrollView, Alert, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import { getAuth, onAuthStateChanged, User, signOut } from "firebase/auth";
 import { router, useRouter } from "expo-router";
@@ -10,18 +10,23 @@ import BackButton from "../../components/BackButton";
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
-const SettingsItem = ({ title, screen }: { title: string, screen: string }) => (
-  <Pressable className="flex-row items-center justify-between bg-gray-200 p-4 rounded-lg mb-3" onPress={() => router.push(screen)}>
-    <Text className="text-xl font-semibold">{title}</Text>
+interface SettingsItemProps {
+  title: string;
+  screen: string;
+}
+
+const SettingsItem: React.FC<SettingsItemProps> = ({ title, screen }) => (
+  <TouchableOpacity onPress={() => router.push(screen)} style={styles.settingsItem}>
+    <Text style={styles.settingsItemTitle}>{title}</Text>
     <Icon name="chevron-right" size={48} />
-  </Pressable>
+  </TouchableOpacity>
 );
 
 export default function ProfileScreen() {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const auth = getAuth();
-  const [totalEmissions, setTotalEmissions] = useState(0);
+  const [totalEmissions, setTotalEmissions] = useState<number>(0);
   const profileIcon = auth.currentUser?.photoURL;
 
   useEffect(() => {
@@ -34,8 +39,7 @@ export default function ProfileScreen() {
     });
 
     return () => unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [auth, router]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -71,97 +75,231 @@ export default function ProfileScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-white">
-      <View className="p-6">
-        <BackButton />
-        {/* Header */}
-        <View className="flex items-center mt-8">
-          <Text className="text-5xl font-extrabold">
-            Forever<Text className="text-[#409858]">green</Text>
-          </Text>
-          <Text className="text-3xl font-bold text-center mb-3">
-            Settings
-          </Text>
-        </View>
+    <ScrollView style={styles.container}>
+      <BackButton />
+      <View style={styles.header}>
+        <Text style={styles.title}>
+          Forever<Text style={styles.greenText}>green</Text>
+        </Text>
+        <Text style={styles.subtitle}>Settings</Text>
+      </View>
 
-        {/* Profile Info */}
-        <View className="p-4 rounded-lg mb-3 flex-row items-center">
-          {/* <ProfileIcon /> */}
+      <View style={styles.profileInfo}>
+        <View style={styles.profileImageBG}>
           {profileIcon ? (
             <Image
-              style={{
-                width: 70,
-                height: 70,
-                borderRadius: 9999,
-                marginRight: 16,
-              }}
-              source={profileIcon}
+              style={styles.profileImage}
+              source={{ uri: profileIcon }}
               placeholder={blurhash}
-              contentFit={"cover"}
+              contentFit="cover"
             />
           ) : (
-            <Text className="text-4xl mr-4">👤</Text>
+            <Text style={styles.profileEmoji}>👤</Text>
           )}
-          <View className="ml-3">
-            <Text className="text-2xl font-semibold">
-              {user?.displayName || "Guest"}
-            </Text>
-            <Text className="text-lg">{user?.email || ""}</Text>
-          </View>
         </View>
-
-        {/* Settings */}
-        <SettingsItem title="Profile Settings" screen="/profile-settings" />
-        <SettingsItem title="Payment Methods" screen="/payment-methods" />
-        <SettingsItem title="Purchase History" screen="/purchase-history" />
-        <SettingsItem title="Notifications" screen="/notifications-settings" />
-
-        {/* Carbon Footprint */}
-        <View className="p-4 rounded-lg mb-3 mt-8 bg-gray-200">
-          <Text className="text-2xl text-center mb-3 font-bold">
-            Your carbon footprint...
-          </Text>
-          <View className="flex-row items-center justify-between">
-            <Text className="text-3xl font-bold text-red">
-              {totalEmissions.toFixed(2)}<Text className="text-xl font-semibold"> tons of CO₂</Text>
-            </Text>
-            <Pressable
-              className="bg-[#409858] rounded-full px-7 py-3"
-              onPress={() => router.push("/offset-now")}
-            >
-              <Text className="text-white text-xl font-semibold">Offset Now!</Text>
-            </Pressable>
-          </View>
+        <View style={styles.profileTextContainer}>
+          <Text style={styles.profileName}>{user?.displayName || "Guest"}</Text>
+          <Text style={styles.profileEmail}>{user?.email || ""}</Text>
         </View>
-
-        {/* Manage Subscriptions */}
-        <View className="bg-gray-200 p-4 rounded-lg">
-          <Text className="text-2xl text-center mb-3 font-bold">
-            Manage Subscriptions
-          </Text>
-          <View className="flex-row justify-around">
-            <Pressable onPress={() => router.push("/(subscriptions)/subscriptions-settings")} className="items-center">
-              <Text className="text-3xl">⚙️</Text>
-              <Text className="font-semibold">Settings</Text>
-            </Pressable>
-            <Pressable onPress={() => router.push("/(subscriptions)/subscriptions")} className="items-center">
-              <Text className="text-3xl">🛒</Text>
-              <Text className="font-semibold">View Subscriptions</Text>
-            </Pressable>
-          </View>
-        </View>
-
-        {/* Logout Button */}
-        <Pressable onPress={handleLogout} className="p-3 rounded-lg mt-11 bg-gray-200">
-          <Text className="text-center font-bold text-2xl">Logout</Text>
-        </Pressable>
-
-        {/* Delete Account Button */}
-        <Pressable className="p-3 rounded-lg mt-4 bg-red-700">
-          <Text className="text-center font-bold text-white text-2xl">Delete Account</Text>
-        </Pressable>
-        
       </View>
+
+      <SettingsItem title="Profile Settings" screen="/profile-settings" />
+      <SettingsItem title="Payment Methods" screen="/payment-methods" />
+      <SettingsItem title="Purchase History" screen="/purchase-history" />
+      <SettingsItem title="Notifications" screen="/notifications-settings" />
+
+      <View style={styles.carbonFootprint}>
+        <Text style={styles.carbonFootprintTitle}>Your carbon footprint...</Text>
+        <View style={styles.carbonFootprintContent}>
+          <Text style={styles.emissionText}>
+            {totalEmissions.toFixed(2)}<Text style={styles.emissionUnit}> tons of CO₂</Text>
+          </Text>
+          <TouchableOpacity onPress={() => router.push("/offset-now")} style={styles.offsetButton}>
+            <Text style={styles.offsetButtonText}>Offset Now!</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.manageSubscriptions}>
+        <Text style={styles.manageSubscriptionsTitle}>Manage Subscriptions</Text>
+        <View style={styles.subscriptionButtons}>
+          <TouchableOpacity onPress={() => router.push("/(subscriptions)/subscriptions-settings")} style={styles.subscriptionButton}>
+            <Text style={styles.subscriptionEmoji}>⚙️</Text>
+            <Text style={styles.subscriptionButtonText}>Settings</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/(subscriptions)/subscriptions")} style={styles.subscriptionButton}>
+            <Text style={styles.subscriptionEmoji}>🛒</Text>
+            <Text style={styles.subscriptionButtonText}>View Subscriptions</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+        <Text style={styles.logoutButtonText}>Logout</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.deleteAccountButton}>
+        <Text style={styles.deleteAccountButtonText}>Delete Account</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+  },
+  header: {
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 40,
+    fontWeight: '800',
+  },
+  greenText: {
+    color: '#409858',
+    fontWeight: '600'
+  },
+  subtitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 12,
+  },
+  profileInfo: {
+    padding: 8,
+    borderRadius: 8,
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginLeft: 5,
+    marginTop: 5
+  },
+  profileImageBG: {
+    backgroundColor: '#337946',
+    width: 110,
+    height: 110,
+    borderRadius: 60,
+    marginRight: 10,
+  },
+  profileEmoji: {
+    fontSize: 32,
+    marginRight: 16,
+  },
+  profileTextContainer: {
+    marginLeft: 12,
+  },
+  profileName: {
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  profileEmail: {
+    fontSize: 16,
+  },
+  settingsItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#e5e7eb',
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  settingsItemTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  carbonFootprint: {
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 12,
+    marginTop: 30,
+    backgroundColor: '#e5e7eb',
+  },
+  carbonFootprintTitle: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 12,
+    fontWeight: '700',
+  },
+  carbonFootprintContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  emissionText: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#b91c1c',
+  },
+  emissionUnit: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: 'black',
+  },
+  offsetButton: {
+    backgroundColor: '#409858',
+    borderRadius: 999,
+    paddingHorizontal: 28,
+    paddingVertical: 12,
+  },
+  offsetButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  manageSubscriptions: {
+    backgroundColor: '#e5e7eb',
+    padding: 16,
+    borderRadius: 8,
+  },
+  manageSubscriptionsTitle: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 12,
+    fontWeight: '700',
+  },
+  subscriptionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  subscriptionButton: {
+    alignItems: 'center',
+  },
+  subscriptionEmoji: {
+    fontSize: 24,
+  },
+  subscriptionButtonText: {
+    fontWeight: '600',
+  },
+  logoutButton: {
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 42,
+    backgroundColor: '#e5e7eb',
+  },
+  logoutButtonText: {
+    textAlign: 'center',
+    fontWeight: '700',
+    fontSize: 20,
+  },
+  deleteAccountButton: {
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 12,
+    backgroundColor: '#b91c1c',
+    marginBottom: 15,
+  },
+  deleteAccountButtonText: {
+    textAlign: 'center',
+    fontWeight: '700',
+    fontSize: 20,
+    color: 'white',
+  },
+});
