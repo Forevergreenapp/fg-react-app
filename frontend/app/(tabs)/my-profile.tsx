@@ -89,7 +89,7 @@ const MyProfileScreen = () => {
             style={styles.avatar}
           />
         ) : (
-          <Icon name={"user"} style={styles.avatar} />
+          <Icon name={"user"} size={192} />
         )}
         <Text style={styles.name}>{user?.displayName || "Guest"}</Text>
         <View style={styles.followInfo}>

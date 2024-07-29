@@ -2,6 +2,7 @@
   "expo": {
     "name": "fg-react-app",
     "slug": "fg-react-app",
+    "owner": "forevergreen-earth-inc",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -34,6 +35,12 @@
       "expo-router",
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app needs access to your photos to let you choose a profile picture."
+        }
+      ],
       "@react-native-firebase/crashlytics",
       [
         "expo-build-properties",

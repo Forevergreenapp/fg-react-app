@@ -16,7 +16,7 @@ import {
   EarthBreakdown,
 } from "../../components/breakdown";
 import CalculatingScreen from "./calculating";
-import { useEmissions } from "../../components/carbon-calculator";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default function Breakdown() {
   const [emissionsPerYear, setEmissionsPerYear] = useState(0.0);
@@ -46,6 +46,20 @@ export default function Breakdown() {
   }, [retryCount]);
 
   const screenWidth = Dimensions.get("window").width;
+
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAnonymous(user.isAnonymous);
+      }
+    });
+
+    // Rest of your existing useEffect code...
+
+    return () => unsubscribe();
+  }, [retryCount]);
 
   if (!emissionsPerYear) {
     return <CalculatingScreen />;
@@ -204,7 +218,11 @@ export default function Breakdown() {
       <View className="flex items-end mb-10 mr-10">
         <TouchableOpacity
           onPress={() => {
-            router.replace("/home");
+            if (isAnonymous) {
+              router.push("/signup");
+            } else {
+              router.replace("/home");
+            }
           }}
         >
           <View className="py-3 px-4 rounded-full border-2 h-16 w-16 border-black bg-[#AEDCA7]">
