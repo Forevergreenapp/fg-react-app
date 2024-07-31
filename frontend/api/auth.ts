@@ -8,6 +8,8 @@ import {
   signInAnonymously,
   EmailAuthProvider,
   linkWithCredential,
+  signOut,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { router } from "expo-router";
 import {
@@ -180,4 +182,48 @@ export const onContinueAnonymously = async () => {
     const errorMessage = error.message;
     Alert.alert("Error", `Code: ${errorCode}\nMessage: ${errorMessage}`);
   }
+};
+
+export const handleLogout = () => {
+  const auth = getAuth();
+
+  Alert.alert("Logout", "Are you sure you want to logout?", [
+    {
+      text: "Cancel",
+      style: "cancel",
+    },
+    {
+      text: "Logout",
+      onPress: () => {
+        signOut(auth)
+          .then(() => {
+            router.dismissAll();
+          })
+          .catch((error) => {
+            Alert.alert("Error", "Failed to logout. Please try again.");
+          });
+      },
+    },
+  ]);
+};
+
+export const handleResetPassword = (email: string) => {
+  const auth = getAuth();
+  if (email.trim() === "") {
+    Alert.alert("Error", "Please enter your email address.");
+    return;
+  }
+
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      Alert.alert(
+        "Success",
+        "Password reset email sent. Please check your inbox.",
+        [{ text: "OK", onPress: () => router.push("/login") }]
+      );
+    })
+    .catch((error) => {
+      const errorMessage = error.message;
+      Alert.alert("Error", `Failed to send reset email: ${errorMessage}`);
+    });
 };

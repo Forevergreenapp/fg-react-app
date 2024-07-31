@@ -21,7 +21,6 @@ interface EmissionsData {
   };
 }
 
-// Todo: Especially port this to Cloud Functions
 export const saveEmissionsData = async (data: EmissionsData) => {
   const auth = getAuth();
   const db = getFirestore();
@@ -54,8 +53,6 @@ export const saveEmissionsData = async (data: EmissionsData) => {
   }
 };
 
-// Todo: Eventually port this to Cloud Functions
-// Todo: Also implement caching and async storage to reduce API calls
 export const fetchEmissionsData = async (month?: string, userId?: string) => {
   const auth = getAuth();
   const db = getFirestore();
@@ -85,7 +82,13 @@ export const fetchEmissionsData = async (month?: string, userId?: string) => {
   }
 };
 
-// Todo: Create function to calculate emissions and send it back
-// ^ this function will only be used after finishing the carbon calc
+export const calculateEmissions = (data: EmissionsData) => {
+  const {
+    energyData,
+    transportationData,
+    dietData,
+    totalData,
+  } = data;
 
-// Todo: Create function to delete emissions for user
+  
+};

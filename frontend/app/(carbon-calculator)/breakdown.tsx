@@ -9,12 +9,12 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import { router } from "expo-router";
 // todo: replace fetchEmissionsData with the calculate emissions data function (not written yet)
-import { fetchEmissionsData } from "../../api/emissions";
+import { fetchEmissionsData } from "@/api/emissions";
 import {
   PieChartBreakdown,
   BarChartBreakdown,
   EarthBreakdown,
-} from "../../components/breakdown";
+} from "@/components/breakdown";
 import CalculatingScreen from "./calculating";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
@@ -186,7 +186,11 @@ export default function Breakdown() {
 
             <TouchableOpacity
               onPress={() => {
-                router.push("/offset-now");
+                if (isAnonymous) {
+                  router.push("/signup");
+                } else {
+                  router.push("/offset-now");
+                }
               }}
               className="rounded-full py-3 mb-4"
               style={{ backgroundColor: "#44945F" }}
@@ -202,7 +206,11 @@ export default function Breakdown() {
 
             <TouchableOpacity
               onPress={() => {
-                router.replace("/tree-planting");
+                if (isAnonymous) {
+                  router.push("/signup");
+                } else {
+                  router.replace("/tree-planting");
+                }
               }}
               className="rounded-full py-3 mb-6"
               style={{ backgroundColor: "#44945F" }}

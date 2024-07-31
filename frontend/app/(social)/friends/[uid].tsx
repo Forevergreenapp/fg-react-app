@@ -11,11 +11,11 @@ import {
   getUserFollowing,
   followUser,
   unfollowUser,
-} from "../../../api/social"; // Adjust the import path as needed
+} from "@/api/social"; // Adjust the import path as needed
 import { router, useLocalSearchParams } from "expo-router";
 import { Image } from "expo-image";
 import { getAuth } from "firebase/auth";
-import BackButton from "../../../components/BackButton";
+import BackButton from "@/components/BackButton";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const blurhash =

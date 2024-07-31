@@ -13,6 +13,9 @@ export default function SettingsLayout() {
       <Stack.Screen name="carbon-credit-sub" />
       <Stack.Screen name="newsletter-sub" />
       <Stack.Screen name="subscriptions-settings" />
+      <Stack.Screen name="shopping-cart" />
+      <Stack.Screen name="fg-coins" />
+      <Stack.Screen name="confirmation" />
     </Stack>
   );
 }

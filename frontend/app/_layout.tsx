@@ -7,9 +7,11 @@ import { PaperProvider } from "react-native-paper";
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import Purchases, { LOG_LEVEL } from "react-native-purchases";
 
 // Import your global CSS file
 import "../global.css";
+import { Platform } from "react-native";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -47,21 +49,38 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
+  useEffect(() => {
+    const setup = async () => {
+      if (Platform.OS === "android") {
+        await Purchases.configure({
+          apiKey: "goog_lNxsUrbWohfeSKDEuwoJGBGtlIy",
+        });
+      } else {
+        await Purchases.configure({
+          apiKey: "appl_ZuRqSmehWozCJjjIbGrcZxQuCpi",
+        });
+      }
+      Purchases.setLogLevel(LOG_LEVEL.DEBUG);
+    };
+
+    setup().catch(console.log);
+  }, []);
+
   if (!loaded) {
     return null;
   }
 
   return (
     <PaperProvider>
-        <Stack
-          screenOptions={{
-            // Hide the header for all other routes.
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="+not-found" />
-          <Stack.Screen name="index" />
-        </Stack>
+      <Stack
+        screenOptions={{
+          // Hide the header for all other routes.
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="+not-found" />
+        <Stack.Screen name="index" />
+      </Stack>
     </PaperProvider>
   );
 }

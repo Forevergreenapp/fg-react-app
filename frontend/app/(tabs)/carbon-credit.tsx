@@ -1,70 +1,95 @@
-import React, { useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-// TODO: Host the carbon credit data in a db (prolly Firestore) and access it with API call
-import carbonCredits from "../../constants/carbon-credits.json";
-import CreditItem from "../../components/CreditItem";
-import ProjectCard from "../../components/ProjectCard";
-
-const images = {
-  "canadian-energy-and-waste": require("../../assets/images/carbon-credits/canadian-energy-and-waste.png"),
-  "panoma-hydroelectric": require("../../assets/images/carbon-credits/panoma-hydroelectric.png"),
-  "the-russas-project": require("../../assets/images/carbon-credits/the-russas-project.png"),
-  "colombian-reforestation": require("../../assets/images/carbon-credits/colombian-reforestation.png"),
-  placeholder: require("../../assets/images/carbon-credits/placeholder.png"),
-};
-
-const chunkArray = (array: any[], size: number) => {
-  const chunkedArr = [];
-  for (let i = 0; i < array.length; i += size) {
-    chunkedArr.push(array.slice(i, i + size));
-  }
-  return chunkedArr;
-};
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  SafeAreaView,
+} from "react-native";
+import CreditItem from "../../components/carbon-credit/CreditItem";
+import ProjectCard from "../../components/carbon-credit/ProjectCard";
+import { fetchCredits } from "@/api/credits";
+import { addToCart, removeFromCart, getCart, clearCart } from "@/api/cart";
+import { CarbonCredit } from "@/types";
+import ShoppingCart from "@/components/ShoppingCart";
 
 export default function CarbonCreditScreen() {
-  const [selectedProject, setSelectedProject] = useState(carbonCredits[0]);
-  const creditChunks = chunkArray(carbonCredits, 3);
+  const [selectedProject, setSelectedProject] = useState<CarbonCredit | null>(
+    null
+  );
+  const [credits, setCredits] = useState<CarbonCredit[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [cartItems, setCartItems] = useState<CarbonCredit[]>([]);
+  const [showCart, setShowCart] = useState(false);
 
-  return (
-    <ScrollView className="flex-1 bg-white">
-      <View className="p-6">
-        <View className="flex items-center mt-8">
-          <Text className="text-5xl font-bold">
-            Forever<Text className="text-[#409858]">green</Text>
-          </Text>
-          <Text className="text-3xl font-bold text-center mb-3">
-            Carbon Credits
-          </Text>
-          <Text className="text-lg text-center">
-            Click on a project to learn more or purchase
-          </Text>
-        </View>
+  useEffect(() => {
+    setLoading(true);
+    const initializeData = async () => {
+      const result = await fetchCredits();
+      if (result && result.length > 0) {
+        setCredits(result as CarbonCredit[]);
+        setSelectedProject(result[0] as CarbonCredit);
+      }
+      const cartData = await getCart();
+      setCartItems(cartData);
+    };
+    initializeData();
+    setLoading(false);
+  }, []);
+
+  const handleAddToCart = async (project: CarbonCredit) => {
+    await addToCart(project);
+    setCartItems([...cartItems, project]);
+  };
+
+  const handleRemoveFromCart = async (projectId: string) => {
+    await removeFromCart(projectId);
+    setCartItems(cartItems.filter((item) => item.id !== projectId));
+  };
+
+  const handleCheckout = async () => {
+    // Implement checkout logic here
+    await clearCart();
+    setCartItems([]);
+    setShowCart(false);
+  };
+
+  const renderCreditItem = ({ item }: { item: CarbonCredit }) => (
+    <CreditItem
+      name={item.name}
+      price={item.price}
+      image={item.image}
+      colors={item.colors}
+      onPress={() => setSelectedProject(item)}
+    />
+  );
+
+  const renderHeader = () => (
+    <View className="p-6">
+      <View className="flex items-center mt-8">
+        <Text className="text-5xl font-bold">
+          Forever<Text className="text-[#409858]">green</Text>
+        </Text>
+        <Text className="text-3xl font-bold text-center mb-3">
+          Carbon Credits
+        </Text>
+        <Text className="text-lg text-center">
+          Click on a project to learn more or purchase
+        </Text>
       </View>
+    </View>
+  );
 
-      {/* Credits */}
-      {/* NOTE: I have no idea why flex wrap is not working. So I have to do it manually. */}
-      <View className="flex flex-col">
-        {creditChunks.map((chunk, chunkIndex) => (
-          <View key={chunkIndex} className="flex flex-row justify-around">
-            {chunk.map((credit, index) => (
-              <CreditItem
-                key={index}
-                name={credit.name}
-                amount={credit.amount}
-                icon={images[credit.icon as keyof typeof images]}
-                colors={credit.colors}
-                onPress={() => setSelectedProject(credit)}
-              />
-            ))}
-          </View>
-        ))}
-      </View>
+  const renderFooter = () => (
+    <>
+      {selectedProject && (
+        <ProjectCard
+          project={selectedProject}
+          onAddToCart={() => handleAddToCart(selectedProject)}
+        />
+      )}
 
-      {/* Project Info */}
-      <ProjectCard project={selectedProject} />
-
-      {/* Subscription */}
-      <View className="bg-gray-100 rounded-lg p-4 m-6">
+      <View className="bg-gray-100 rounded-2xl p-4 mb-6">
         <Text className="text-3xl font-bold mb-6 text-center">
           Carbon Credit Subscription
         </Text>
@@ -80,6 +105,44 @@ export default function CarbonCreditScreen() {
           </Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </>
+  );
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  return (
+    <SafeAreaView className="flex-1 bg-white">
+      {showCart ? (
+        <ShoppingCart
+          items={cartItems}
+          removeItem={handleRemoveFromCart}
+          checkout={handleCheckout}
+        />
+      ) : (
+        <>
+          <TouchableOpacity
+            onPress={() => setShowCart(true)}
+            className="absolute top-4 right-4 z-10"
+          >
+            <Text className="font-bold">Cart ({cartItems.length})</Text>
+          </TouchableOpacity>
+          <FlatList
+            ListHeaderComponent={renderHeader}
+            data={credits}
+            renderItem={renderCreditItem}
+            keyExtractor={(item) => item.name}
+            numColumns={3}
+            columnWrapperStyle={{
+              justifyContent: "space-between",
+              paddingVertical: 30,
+            }}
+            style={{ paddingHorizontal: 16 }}
+            ListFooterComponent={renderFooter}
+          />
+        </>
+      )}
+    </SafeAreaView>
   );
 }

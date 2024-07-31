@@ -1,5 +1,5 @@
 import UnderConstructionScreen from "../../components/UnderConstruction";
 
-export default function ProfileScreen() {
+export default function TreePlantingSubScreen() {
   return <UnderConstructionScreen />;
 }

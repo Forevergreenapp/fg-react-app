@@ -133,37 +133,5 @@
       }
     ],
     "COA": "Embrace a greener future today with Forevergreen Forestry Carbon Credits."
-  },
-  {
-    "name": "Coming Soon!",
-    "amount": "?",
-    "cost": 0,
-    "icon": "placeholder",
-    "colors": [
-      "#9EB0BC",
-      "#A5B8C4",
-      "#485156"
-    ],
-    "details": [
-      {
-        "title": "",
-        "content": ""
-      },
-      {
-        "title": "",
-        "content": ""
-      },
-      {
-        "title": "",
-        "content": ""
-      }
-    ],
-    "registry": [
-      {
-        "title": "",
-        "link": ""
-      }
-    ],
-    "COA": ""
   }
 ]

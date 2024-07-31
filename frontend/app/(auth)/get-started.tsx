@@ -4,7 +4,7 @@ import { router } from "expo-router";
 
 export default function GetStartedScreen() {
   return (
-    <View className="flex-1 bg-background items-center justify-center px-5">
+    <View className="flex-1 bg-white items-center justify-center px-5">
       <StatusBar barStyle="dark-content" />
       <View className="grow items-center justify-center gap-24">
         <Text className="text-5xl font-bold my-2">

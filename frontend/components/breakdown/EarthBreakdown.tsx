@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Image } from "react-native";
-import { Earth } from "../../constants/images";
+import { Earth } from "../../constants/Images";
 
 const EarthBreakdown = ({ emissions }: any) => {
   const earthsRequired = parseFloat((emissions / 6.4).toFixed(2)); // 6.4 tonne of CO2 per year as the target

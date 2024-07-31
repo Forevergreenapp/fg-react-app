@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, Alert, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
-import { getAuth, onAuthStateChanged, User, signOut } from "firebase/auth";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { router, useRouter } from "expo-router";
 import { fetchEmissionsData } from "../../api/emissions";
 import { Image } from "expo-image";
 import BackButton from "../../components/BackButton";
+import { handleLogout } from "../../api/auth";
 
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
@@ -52,27 +53,6 @@ export default function ProfileScreen() {
 
     loadData();
   }, []);
-
-  const handleLogout = () => {
-    Alert.alert("Logout", "Are you sure you want to logout?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-      },
-      {
-        text: "Logout",
-        onPress: () => {
-          signOut(auth)
-            .then(() => {
-              router.replace("/login");
-            })
-            .catch((error) => {
-              Alert.alert("Error", "Failed to logout. Please try again.");
-            });
-        },
-      },
-    ]);
-  };
 
   return (
     <ScrollView style={styles.container}>

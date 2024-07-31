@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TextInput, useTheme } from "react-native-paper";
+import { TextInput } from "react-native-paper";
 import { Link, router } from "expo-router";
 import {
   getAuth,
@@ -21,7 +21,6 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { fetchEmissionsData } from "../../api/emissions";
 
 export default function LoginScreen() {
-  const theme = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -85,9 +84,12 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      behavior="padding"
+      style={{ flex: 1, backgroundColor: "white" }}
+    >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <SafeAreaView className="flex-1 justify-center px-4 bg-background">
+        <SafeAreaView className="flex-1 justify-center px-4">
           <Text className="text-5xl font-bold text-center tracking-tighter my-10">
             Log <Text className="text-primary">in</Text>
           </Text>
@@ -107,7 +109,7 @@ export default function LoginScreen() {
                 onChangeText={setEmail}
                 mode="outlined"
                 dense={true}
-                outlineStyle={{ borderColor: theme.colors.onBackground }}
+                outlineStyle={{ borderColor: "#000" }}
                 theme={{ roundness: 9999, colors: { background: "#fff" } }}
                 textColor="#000"
                 left={<TextInput.Icon icon="at" color={"#000"} />}
@@ -123,7 +125,7 @@ export default function LoginScreen() {
                 onChangeText={setPassword}
                 mode="outlined"
                 dense={true}
-                outlineStyle={{ borderColor: theme.colors.onBackground }}
+                outlineStyle={{ borderColor: "#000" }}
                 theme={{ roundness: 9999, colors: { background: "#fff" } }}
                 textColor="#000"
                 left={<TextInput.Icon icon="lock" color="#000" />}

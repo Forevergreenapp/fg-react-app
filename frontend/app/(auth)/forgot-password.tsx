@@ -5,43 +5,23 @@ import {
   Image,
   KeyboardAvoidingView,
   ScrollView,
-  Alert,
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TextInput, useTheme } from "react-native-paper";
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { TextInput } from "react-native-paper";
 import { router } from "expo-router";
+import { handleResetPassword } from "../../api/auth";
 
 export default function ForgotPasswordScreen() {
-  const theme = useTheme();
   const [email, setEmail] = useState("");
-  const auth = getAuth();
-
-  const handleResetPassword = () => {
-    if (email.trim() === "") {
-      Alert.alert("Error", "Please enter your email address.");
-      return;
-    }
-
-    sendPasswordResetEmail(auth, email)
-      .then(() => {
-        Alert.alert(
-          "Success",
-          "Password reset email sent. Please check your inbox.",
-          [{ text: "OK", onPress: () => router.push("/login") }]
-        );
-      })
-      .catch((error) => {
-        const errorMessage = error.message;
-        Alert.alert("Error", `Failed to send reset email: ${errorMessage}`);
-      });
-  };
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <SafeAreaView className="flex-1 justify-center px-4 bg-background">
+        <SafeAreaView
+          className="flex-1 justify-center px-4"
+          style={{ backgroundColor: "#fff" }}
+        >
           {/* Header */}
           <Text className="text-5xl font-bold text-center tracking-tighter my-10">
             Reset <Text className="text-primary">Password</Text>
@@ -67,9 +47,10 @@ export default function ForgotPasswordScreen() {
                 onChangeText={setEmail}
                 mode="outlined"
                 dense={true}
-                outlineStyle={{ borderColor: theme.colors.onBackground }}
-                theme={{ roundness: 9999 }}
-                left={<TextInput.Icon icon="at" />}
+                outlineStyle={{ borderColor: "#000" }}
+                theme={{ roundness: 9999, colors: { background: "#fff" } }}
+                textColor="#000"
+                left={<TextInput.Icon icon="at" color="#000" />}
               />
             </View>
 
@@ -86,13 +67,14 @@ export default function ForgotPasswordScreen() {
           {/* Controls */}
           <View className="px-12 mt-6">
             {/* Reset password button */}
-            <View className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-4 border">
-              <TouchableOpacity onPress={handleResetPassword}>
-                <Text className="text-onPrimary text-center text-2xl font-bold">
-                  Reset Password
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              className="bg-primary rounded-full p-4 hover:bg-primary/90 mt-4 border shadow-sm"
+              onPress={() => handleResetPassword(email)}
+            >
+              <Text className="text-onPrimary text-center text-2xl font-bold">
+                Reset Password
+              </Text>
+            </TouchableOpacity>
 
             {/* Or */}
             <View className="flex flex-row items-center my-4">
@@ -102,13 +84,14 @@ export default function ForgotPasswordScreen() {
             </View>
 
             {/* Back to Log in button */}
-            <View className="flex flex-row items-center justify-center bg-white border border-black rounded-full p-4 shadow-md">
-              <TouchableOpacity onPress={() => router.push("/login")}>
-                <Text className="text-center text-xl font-bold">
-                  Back to Log in
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              className="flex flex-row items-center justify-center bg-white border border-black rounded-full p-4 shadow-sm"
+              onPress={() => router.push("/login")}
+            >
+              <Text className="text-center text-xl font-bold">
+                Back to Log in
+              </Text>
+            </TouchableOpacity>
           </View>
         </SafeAreaView>
       </ScrollView>

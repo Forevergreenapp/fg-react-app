@@ -3,11 +3,8 @@ import { View, Text } from "react-native";
 import * as Progress from "react-native-progress";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { router } from "expo-router";
-import { useTheme } from "react-native-paper";
 
 const Header = ({ progress, title }: any) => {
-  const theme = useTheme();
-
   return (
     <>
       <View className="flex-row items-center gap-6 mt-4">
@@ -23,7 +20,7 @@ const Header = ({ progress, title }: any) => {
             width={null}
             color="#AEDCA7"
             unfilledColor="#FFF"
-            borderColor={theme.colors.onBackground}
+            borderColor={"#000"}
             borderWidth={1.5}
             height={15}
             borderRadius={9999}

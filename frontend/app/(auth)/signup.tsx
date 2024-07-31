@@ -9,7 +9,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TextInput, useTheme } from "react-native-paper";
+import { TextInput } from "react-native-paper";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { router } from "expo-router";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
@@ -20,7 +20,6 @@ import {
 } from "../../api/auth";
 
 export default function SignupScreen() {
-  const theme = useTheme();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -72,7 +71,7 @@ export default function SignupScreen() {
                   onChangeText={setEmail}
                   mode="outlined"
                   dense={true}
-                  outlineStyle={{ borderColor: theme.colors.onBackground }}
+                  outlineStyle={{ borderColor: "#000" }}
                   theme={{ roundness: 9999, colors: { background: "#fff" } }}
                   textColor="#000"
                   left={<TextInput.Icon icon="at" color={"#000"} />}
@@ -87,7 +86,7 @@ export default function SignupScreen() {
                   onChangeText={setName}
                   mode="outlined"
                   dense={true}
-                  outlineStyle={{ borderColor: theme.colors.onBackground }}
+                  outlineStyle={{ borderColor: "#000" }}
                   theme={{ roundness: 9999, colors: { background: "#fff" } }}
                   textColor="#000"
                   left={<TextInput.Icon icon="account" color={"#000"} />}
@@ -103,7 +102,7 @@ export default function SignupScreen() {
                   onChangeText={setPassword}
                   mode="outlined"
                   dense={true}
-                  outlineStyle={{ borderColor: theme.colors.onBackground }}
+                  outlineStyle={{ borderColor: "#000" }}
                   theme={{ roundness: 9999, colors: { background: "#fff" } }}
                   textColor="#000"
                   left={<TextInput.Icon icon="lock" color={"#000"} />}
