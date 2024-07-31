@@ -1,5 +1,5 @@
 import UnderConstructionScreen from "../../components/UnderConstruction";
 
-export default function carbonCreditSubScreen() {
+export default function CarbonCreditSubScreen() {
   return <UnderConstructionScreen />;
 }
